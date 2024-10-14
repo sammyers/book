@@ -9,18 +9,51 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^2.1.4",
+    "@hookform/resolvers": "^3.6.0",
+    "@nextui-org/react": "^2.4.2",
+    "@supabase/ssr": "^0.4.0",
+    "@supabase/supabase-js": "^2.44.1",
+    "framer-motion": "^11.2.12",
+    "lodash": "^4.17.21",
+    "next": "^14.2.15",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.4"
+    "react-hook-form": "^7.52.0",
+    "zod": "^3.23.8",
+    "zod-form-data": "^2.0.2"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@ianvs/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/lodash": "^4.17.10",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
+    "@typescript-eslint/eslint-plugin": "^7.14.1",
+    "@typescript-eslint/parser": "^7.14.1",
     "eslint": "^8",
-    "eslint-config-next": "14.2.4"
+    "eslint-config-next": "14.2.4",
+    "eslint-config-prettier": "^9.1.0",
+    "postcss": "^8",
+    "prettier": "3.3.2",
+    "tailwindcss": "^3.4.1",
+    "type-fest": "^4.26.1",
+    "typescript": "^5"
+  },
+  "prettier": {
+    "plugins": [
+      "@ianvs/prettier-plugin-sort-imports"
+    ],
+    "importOrder": [
+      "<BUILTIN_MODULES>",
+      "<THIRD_PARTY_MODULES>",
+      "",
+      "@/(.*)$",
+      "",
+      "^[.]",
+      "",
+      "<TYPES>",
+      "<TYPES>^[.]"
+    ]
   }
 }
