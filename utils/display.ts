@@ -1,4 +1,4 @@
-import { Enums, Tables } from "./supabase/database.types";
+import type { Enums, Tables } from "./supabase/database.types";
 
 export type FieldingPosition = Enums<"fielding_position">;
 

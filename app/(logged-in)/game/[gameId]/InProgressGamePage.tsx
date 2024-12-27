@@ -1,5 +1,5 @@
-import type { Tables } from "@/utils/supabase/database.types";
+import type { GamePageGame } from "./page";
 
-export default function InProgressGamePage({ game }: { game: Tables<"game"> }) {
+export default function InProgressGamePage({ game }: { game: GamePageGame }) {
   return <div className="h-full"></div>;
 }

@@ -14,7 +14,10 @@ import {
 } from "@nextui-org/react";
 import { map } from "lodash";
 import { useCallback, useMemo, useState } from "react";
+import { useFormState } from "react-dom";
 
+import { Alert } from "@/components/Alert";
+import { FormSubmitButton } from "@/components/FormSubmitButton";
 import { getPositions, Player } from "@/utils/display";
 import { useDebouncedState } from "@/utils/hooks/useDebouncedState";
 import { createClient } from "@/utils/supabase/browser";
@@ -77,6 +80,8 @@ export default function NewTeamPage() {
     [searchResults, addedPlayerIds],
   );
 
+  const [formState, formAction] = useFormState(createTeam, null);
+
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-center">Create Your Team</h2>
@@ -89,7 +94,7 @@ export default function NewTeamPage() {
         onValueChange={setTeamName}
       />
       <h2 className="text-center">Add Players</h2>
-      <div className="flex gap-4">
+      <div className="flex gap-4 flex-col sm:flex-row">
         <Table
           className="flex-1"
           topContent={
@@ -139,12 +144,16 @@ export default function NewTeamPage() {
           </TableBody>
         </Table>
       </div>
-      <Button
+      {formState?.status === "error" && <Alert>{formState.message}</Alert>}
+      <FormSubmitButton
         color="success"
-        onClick={() => createTeam(teamName, Array.from(addedPlayerIds))}
+        isValid={teamName.length > 0 && addedPlayerIds.size > 0}
+        onClick={() =>
+          formAction({ name: teamName, playerIds: Array.from(addedPlayerIds) })
+        }
       >
         Create Team
-      </Button>
+      </FormSubmitButton>
     </div>
   );
 }

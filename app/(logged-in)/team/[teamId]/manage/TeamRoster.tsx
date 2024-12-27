@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  AvatarIcon,
   Table,
   TableBody,
   TableCell,
@@ -26,7 +27,11 @@ export default function TeamRoster({ players }: Props) {
         {(item) => (
           <TableRow key={item.id}>
             <TableCell>
-              <User name={item.name} description={getPositions(item)} />
+              <User
+                name={item.name}
+                description={getPositions(item)}
+                avatarProps={{ name: undefined }}
+              />
             </TableCell>
           </TableRow>
         )}

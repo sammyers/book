@@ -36,6 +36,7 @@ export default function UserMenuClient({ user }: { user: UserMenuData }) {
       key={`team_${team.id}`}
       as={Link}
       href={`/team/${team.id}/manage`}
+      className="text-foreground hover:opacity-100"
     >
       {team.name}
     </DropdownItem>
@@ -51,7 +52,7 @@ export default function UserMenuClient({ user }: { user: UserMenuData }) {
     <DropdownItem
       key="create_team"
       color="success"
-      className="text-success"
+      className="text-success hover:opacity-100"
       as={Link}
       href="/team/new"
     >

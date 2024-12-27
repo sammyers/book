@@ -26,18 +26,26 @@ export async function createGame(
     };
   }
 
-  const { name, awayTeamId, homeTeamId } = parsed.data;
+  const { name, teamId, opponentTeamId, role } = parsed.data;
 
   const supabase = createClient();
 
-  const { data, error } = await supabase
-    .from("game")
-    .insert({ name, away_team_id: awayTeamId, home_team_id: homeTeamId })
-    .select();
+  const { data: newGame, error } = await supabase.rpc("create_game", {
+    game_name: name,
+    teams: [
+      {
+        team_id: teamId,
+        role,
+      },
+      {
+        team_id: opponentTeamId,
+        role: role === "away" ? "home" : "away",
+      },
+    ],
+  });
 
   if (!error) {
-    const [{ id }] = data;
-    redirect(`/game/${id}`);
+    redirect(`/game/${newGame.id}`);
   }
 
   return {

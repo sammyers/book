@@ -4,7 +4,17 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/server";
 
-export async function createTeam(name: string, playerIds: string[]) {
+import type { FormState } from "@/utils/types";
+
+interface NewTeamData {
+  name: string;
+  playerIds: string[];
+}
+
+export async function createTeam(
+  _prevState: FormState | null,
+  { name, playerIds }: NewTeamData,
+): Promise<FormState> {
   const supabase = createClient();
 
   const { data: newTeam, error } = await supabase.rpc(
@@ -17,4 +27,10 @@ export async function createTeam(name: string, playerIds: string[]) {
   if (!error) {
     redirect(`/team/${newTeam.id}/manage`);
   }
+
+  return {
+    status: "error",
+    message: error.message,
+    errors: [],
+  };
 }

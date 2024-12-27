@@ -1,5 +1,5 @@
-import type { Tables } from "@/utils/supabase/database.types";
+import type { GamePageGame } from "./page";
 
-export default function CompletedGamePage({ game }: { game: Tables<"game"> }) {
+export default function CompletedGamePage({ game }: { game: GamePageGame }) {
   return <div>{game.name} complete</div>;
 }

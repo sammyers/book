@@ -1,8 +1,9 @@
 import { z } from "zod";
 
 export const newGameFormSchema = z.object({
-  awayTeamId: z.string().uuid(),
-  homeTeamId: z.string().uuid(),
+  teamId: z.string().uuid(),
+  opponentTeamId: z.string().uuid(),
+  role: z.enum(["home", "away"]),
   name: z.string().min(1, { message: "Required" }),
 });
 
