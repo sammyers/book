@@ -1,9 +1,10 @@
 "use client";
 
+import { Checkbox } from "@heroui/checkbox";
+import { Input } from "@heroui/input";
+import { Tab, Tabs } from "@heroui/tabs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Checkbox, Input, Tab, Tabs } from "@nextui-org/react";
-import { useState } from "react";
-import { useFormState } from "react-dom";
+import { useActionState, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { Alert } from "@/components/Alert";
@@ -36,7 +37,7 @@ export default function NewGameForm({ teamId, teams }: Props) {
 
   const [trackOpponentAtBats, setTrackOpponentAtBats] = useState(true);
 
-  const [state, formAction] = useFormState(createGame, null);
+  const [state, formAction] = useActionState(createGame, null);
   const [newTeamError, setNewTeamError] = useState<PostgrestError | null>(null);
 
   return (

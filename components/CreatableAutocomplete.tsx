@@ -1,8 +1,10 @@
-import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
+"use client";
+
+import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { some } from "lodash";
 import { forwardRef, useMemo, useState } from "react";
 
-import type { AutocompleteProps } from "@nextui-org/react";
+import type { AutocompleteProps } from "@heroui/autocomplete";
 import type { Key } from "@react-types/shared";
 import type { CollectionElement } from "@react-types/shared/src/collections";
 import type { ForwardedRef, ReactElement, Ref } from "react";

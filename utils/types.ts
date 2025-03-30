@@ -17,9 +17,9 @@ export type PageProps<
   SearchParams extends Record<string, unknown> | undefined = undefined,
 > = SearchParams extends undefined
   ? {
-      params: Params;
+      params: Promise<Params>;
     }
   : {
-      params: Params;
-      searchParams: SearchParams;
+      params: Promise<Params>;
+      searchParams: Promise<SearchParams>;
     };

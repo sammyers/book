@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "@nextui-org/button";
+import { Button } from "@heroui/button";
 import { forwardRef } from "react";
 import { useFormStatus } from "react-dom";
 
-import type { ButtonProps } from "@nextui-org/button";
+import type { ButtonProps } from "@heroui/button";
 
 export const FormSubmitButton = forwardRef<
   HTMLButtonElement,

@@ -1,9 +1,10 @@
-import { Card, CardBody, CardHeader, Link } from "@nextui-org/react";
+import { Card, CardBody, CardHeader } from "@heroui/card";
+import { Link } from "@heroui/link";
 
-import { createClient } from "@/utils/supabase/server";
+import { createServerClient } from "@/utils/supabase/server";
 
 export default async function GamesPage() {
-  const supabase = createClient();
+  const supabase = await createServerClient();
 
   const { data: games, error } = await supabase.from("game").select();
 

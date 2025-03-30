@@ -2,10 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 
-import { createClient } from "@/utils/supabase/server";
+import { createServerClient } from "@/utils/supabase/server";
 
 export async function startGame(gameId: string) {
-  const supabase = createClient();
+  const supabase = await createServerClient();
 
   const { error } = await supabase
     .from("game")

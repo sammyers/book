@@ -1,7 +1,6 @@
 import { z } from "zod";
-import { zfd } from "zod-form-data";
 
-export const registerFormSchema = zfd.formData({
+export const registerFormSchema = z.object({
   firstName: z.string().min(1, { message: "Required" }),
   lastName: z.string().min(1, { message: "Required" }),
   email: z.string().email("Must be a valid email address"),

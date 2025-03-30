@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { createClient } from "@/utils/supabase/server";
+import { createServerClient } from "@/utils/supabase/server";
 
 import type { ReactNode } from "react";
 
@@ -9,7 +9,7 @@ export default async function SetupIncompleteLayout({
 }: {
   children: ReactNode;
 }) {
-  const supabase = createClient();
+  const supabase = await createServerClient();
 
   const { data } = await supabase.auth.getUser();
 

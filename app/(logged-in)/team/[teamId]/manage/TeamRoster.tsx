@@ -1,17 +1,18 @@
 "use client";
 
 import {
-  AvatarIcon,
   Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
   TableRow,
-  User,
-} from "@nextui-org/react";
+} from "@heroui/table";
+import { User } from "@heroui/user";
 
-import { getPositions, Player } from "@/utils/display";
+import { getPositions } from "@/utils/display";
+
+import type { Player } from "@/utils/display";
 
 interface Props {
   players: Player[];

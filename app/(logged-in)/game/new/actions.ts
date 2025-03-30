@@ -2,13 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 
-import { createClient } from "@/utils/supabase/server";
+import { createServerClient } from "@/utils/supabase/server";
 
 export async function createSoloModeTeam(
   teamName: string,
   parentTeamId: string,
 ) {
-  const supabase = createClient();
+  const supabase = await createServerClient();
 
   const { data: newTeam, error } = await supabase
     .from("team")

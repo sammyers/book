@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 
-import { createClient } from "@/utils/supabase/server";
+import { createServerClient } from "@/utils/supabase/server";
 
 import { newGameFormSchema } from "./new/formSchema";
 
@@ -28,7 +28,7 @@ export async function createGame(
 
   const { name, teamId, opponentTeamId, role } = parsed.data;
 
-  const supabase = createClient();
+  const supabase = await createServerClient();
 
   const { data: newGame, error } = await supabase.rpc("create_game", {
     game_name: name,

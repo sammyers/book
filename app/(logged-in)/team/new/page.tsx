@@ -1,32 +1,35 @@
 "use client";
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { Button } from "@heroui/button";
+import { Input } from "@heroui/input";
+import { Spinner } from "@heroui/spinner";
 import {
-  Button,
-  Input,
   Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
   TableRow,
-  User,
-} from "@nextui-org/react";
+} from "@heroui/table";
+import { User } from "@heroui/user";
 import { map } from "lodash";
-import { useCallback, useMemo, useState } from "react";
-import { useFormState } from "react-dom";
+import { useActionState, useCallback, useMemo, useState } from "react";
 
 import { Alert } from "@/components/Alert";
 import { FormSubmitButton } from "@/components/FormSubmitButton";
-import { getPositions, Player } from "@/utils/display";
+import { getPositions } from "@/utils/display";
 import { useDebouncedState } from "@/utils/hooks/useDebouncedState";
 import { createClient } from "@/utils/supabase/browser";
 
 import { createTeam } from "../actions";
 
+import type { Player } from "@/utils/display";
+
 export default function NewTeamPage() {
   const [teamName, setTeamName] = useState("");
   const [searchResults, setSearchResults] = useState<Player[]>([]);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
 
   const fetchPlayers = useCallback(async (search: string) => {
     const supabase = createClient();
@@ -36,16 +39,21 @@ export default function NewTeamPage() {
       return;
     }
 
+    setIsSearchLoading(true);
+
     const { data, error } = await supabase
       .from("player")
       .select(
         `
-    id,
-    name,
-    primary_position,
-    secondary_position`,
+        id,
+        name,
+        jersey_number,
+        primary_position,
+        secondary_position`,
       )
       .ilike("name", `%${search}%`);
+
+    setIsSearchLoading(false);
 
     if (!error) {
       setSearchResults(data);
@@ -80,7 +88,7 @@ export default function NewTeamPage() {
     [searchResults, addedPlayerIds],
   );
 
-  const [formState, formAction] = useFormState(createTeam, null);
+  const [formState, formAction] = useActionState(createTeam, null);
 
   return (
     <div className="flex flex-col gap-4">
@@ -99,10 +107,11 @@ export default function NewTeamPage() {
           className="flex-1"
           topContent={
             <Input
-              label="Search Players"
+              placeholder="Search by name..."
               value={searchValue}
               onValueChange={setSearchValue}
               startContent={<MagnifyingGlassIcon className="size-4" />}
+              isClearable
             />
           }
         >
@@ -110,14 +119,19 @@ export default function NewTeamPage() {
             <TableColumn>RESULTS</TableColumn>
             <TableColumn align="end">{""}</TableColumn>
           </TableHeader>
-          <TableBody emptyContent="No players found" items={filteredResults}>
+          <TableBody
+            loadingState={isSearchLoading ? "loading" : "idle"}
+            loadingContent={<Spinner color="default" />}
+            emptyContent="No players found"
+            items={filteredResults}
+          >
             {(item) => (
               <TableRow key={item.id}>
                 <TableCell>
                   <User name={item.name} description={getPositions(item)} />
                 </TableCell>
                 <TableCell>
-                  <Button onClick={() => addPlayer(item)}>Add</Button>
+                  <Button onPress={() => addPlayer(item)}>Add</Button>
                 </TableCell>
               </TableRow>
             )}
@@ -135,7 +149,7 @@ export default function NewTeamPage() {
                   <User name={item.name} description={getPositions(item)} />
                 </TableCell>
                 <TableCell>
-                  <Button color="danger" onClick={() => removePlayer(item.id)}>
+                  <Button color="danger" onPress={() => removePlayer(item.id)}>
                     Remove
                   </Button>
                 </TableCell>
@@ -148,7 +162,7 @@ export default function NewTeamPage() {
       <FormSubmitButton
         color="success"
         isValid={teamName.length > 0 && addedPlayerIds.size > 0}
-        onClick={() =>
+        onPress={() =>
           formAction({ name: teamName, playerIds: Array.from(addedPlayerIds) })
         }
       >

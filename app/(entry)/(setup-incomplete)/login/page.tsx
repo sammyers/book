@@ -1,14 +1,14 @@
 "use client";
 
+import { Alert } from "@heroui/alert";
+import { Button } from "@heroui/button";
+import { CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { Divider } from "@heroui/divider";
+import { Link } from "@heroui/link";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@nextui-org/button";
-import { CardBody, CardFooter, CardHeader } from "@nextui-org/card";
-import { Divider } from "@nextui-org/divider";
-import { Link } from "@nextui-org/link";
-import { useFormState } from "react-dom";
+import { useActionState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Alert } from "@/components/Alert";
 import { FormInput } from "@/components/FormInput";
 import { FormSubmitButton } from "@/components/FormSubmitButton";
 import { PasswordInput } from "@/components/PasswordInput";
@@ -28,16 +28,17 @@ export default function LoginPage() {
     mode: "onTouched",
   });
 
-  const [state, formAction] = useFormState(login, null);
+  const [state, formAction] = useActionState(login, null);
 
   return (
     <>
       <CardHeader>
-        <h1>Log in</h1>
+        <h1>Log In</h1>
       </CardHeader>
       <form action={() => formAction(getValues())}>
         <CardBody className="gap-6">
           <FormInput
+            variant="bordered"
             autoFocus
             type="email"
             label="Email"
@@ -45,11 +46,14 @@ export default function LoginPage() {
             errorMessage={errors.email?.message}
           />
           <PasswordInput
+            variant="bordered"
             label="Password"
             {...register("password")}
             errorMessage={errors.password?.message}
           />
-          {state?.status === "error" && <Alert>{state.message}</Alert>}
+          {state?.status === "error" && (
+            <Alert color="danger">{state.message}</Alert>
+          )}
           <Link color="primary" size="sm" className="self-center">
             Forgot password?
           </Link>
@@ -61,7 +65,7 @@ export default function LoginPage() {
         <h3 className="text-small text-center">
           Don&apos;t have an account yet?
         </h3>
-        <Button as={Link} href="/register">
+        <Button as={Link} href="/register" variant="bordered">
           Sign Up
         </Button>
       </CardFooter>

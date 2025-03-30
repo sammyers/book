@@ -3,17 +3,18 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { createClient } from "@/utils/supabase/server";
+import { createServerClient } from "@/utils/supabase/server";
 
 import { loginFormSchema } from "./(setup-incomplete)/login/formSchema";
 import { registerFormSchema } from "./(setup-incomplete)/register/formSchema";
 
 import type { FormState } from "@/utils/types";
 import type { LoginFormSchema } from "./(setup-incomplete)/login/formSchema";
+import type { RegisterFormSchema } from "./(setup-incomplete)/register/formSchema";
 
 export async function registerUser(
   _prevState: FormState | null,
-  formData: FormData,
+  formData: RegisterFormSchema,
 ): Promise<FormState> {
   const parsed = registerFormSchema.safeParse(formData);
 
@@ -30,7 +31,7 @@ export async function registerUser(
 
   const { email, password, firstName, lastName } = parsed.data;
 
-  const supabase = createClient();
+  const supabase = await createServerClient();
 
   const {
     data: { user },
@@ -75,7 +76,7 @@ export async function login(
 
   const { email, password } = parsed.data;
 
-  const supabase = createClient();
+  const supabase = await createServerClient();
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 

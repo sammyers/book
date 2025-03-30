@@ -1,3 +1,7 @@
+import { cn } from "@heroui/react";
+
+import { bgGradient } from "../styles";
+
 import type { ReactNode } from "react";
 
 export default async function LoggedInLayout({
@@ -8,11 +12,9 @@ export default async function LoggedInLayout({
   navbar: ReactNode;
 }) {
   return (
-    <div className="h-full flex flex-col overflow-auto">
+    <div className={cn("h-full flex flex-col overflow-auto", bgGradient)}>
       {navbar}
-      <main className="flex-grow flex flex-col px-4 pt-4 pb-8 bg-background">
-        {children}
-      </main>
+      <main className="flex-grow flex flex-col px-4 pt-4 pb-8">{children}</main>
     </div>
   );
 }

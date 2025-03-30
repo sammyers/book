@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { createClient } from "@/utils/supabase/server";
+import { createServerClient } from "@/utils/supabase/server";
 
 import NewGameForm from "./NewGameForm";
 
@@ -9,26 +9,26 @@ import type { PageProps } from "@/utils/types";
 export default async function NewGamePage({
   searchParams,
 }: PageProps<never, { teamId?: string }>) {
-  const { teamId } = searchParams;
+  const { teamId } = await searchParams;
 
   if (!teamId) {
     redirect("/");
   }
 
-  const supabase = createClient();
+  const supabase = await createServerClient();
 
   const { data: team } = await supabase
     .from("team")
     .select(
       `
-    id,
-    name,
-    players:player (
       id,
       name,
-      primary_position,
-      secondary_position
-    )
+      players:player (
+        id,
+        name,
+        primary_position,
+        secondary_position
+      )
     `,
     )
     .eq("id", teamId)

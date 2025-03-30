@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 
-import { createClient } from "@/utils/supabase/server";
+import { createServerClient } from "@/utils/supabase/server";
 
 import type { FormState } from "@/utils/types";
 
@@ -15,7 +15,7 @@ export async function createTeam(
   _prevState: FormState | null,
   { name, playerIds }: NewTeamData,
 ): Promise<FormState> {
-  const supabase = createClient();
+  const supabase = await createServerClient();
 
   const { data: newTeam, error } = await supabase.rpc(
     "create_team_with_players",

@@ -1,4 +1,6 @@
-import { cn } from "@nextui-org/react";
+"use client";
+
+import { cn } from "@heroui/react";
 import { forwardRef } from "react";
 
 import type { ComponentPropsWithoutRef } from "react";
@@ -22,6 +24,7 @@ export const Scorebug = forwardRef<SVGSVGElement, ScorebugProps>(
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         {...props}
+        ref={ref}
       >
         <rect
           y="1.27892"

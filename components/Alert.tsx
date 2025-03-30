@@ -1,4 +1,6 @@
-import { cn } from "@nextui-org/react";
+"use client";
+
+import { cn } from "@heroui/react";
 import { forwardRef } from "react";
 
 import type { ComponentPropsWithoutRef } from "react";

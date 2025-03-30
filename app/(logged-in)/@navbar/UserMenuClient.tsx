@@ -1,20 +1,20 @@
 "use client";
 
-import { Avatar } from "@nextui-org/avatar";
+import { Avatar } from "@heroui/avatar";
 import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownSection,
   DropdownTrigger,
-} from "@nextui-org/dropdown";
-import { Link } from "@nextui-org/react";
+} from "@heroui/dropdown";
+import { Link } from "@heroui/link";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 import { createClient } from "@/utils/supabase/browser";
 
-import type { UserMenuData } from "./UserMenu";
+import type { UserMenuData } from "./userMenuQuery";
 
 const getInitials = (user: UserMenuData) => {
   return `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
@@ -34,9 +34,9 @@ export default function UserMenuClient({ user }: { user: UserMenuData }) {
   const teamsItems = user.teams.map((team) => (
     <DropdownItem
       key={`team_${team.id}`}
-      as={Link}
       href={`/team/${team.id}/manage`}
       className="text-foreground hover:opacity-100"
+      onPress={() => router.push(`/team/${team.id}/manage`)}
     >
       {team.name}
     </DropdownItem>
@@ -55,6 +55,7 @@ export default function UserMenuClient({ user }: { user: UserMenuData }) {
       className="text-success hover:opacity-100"
       as={Link}
       href="/team/new"
+      onPress={() => router.push("/team/new")}
     >
       Create a Team
     </DropdownItem>,
@@ -67,7 +68,7 @@ export default function UserMenuClient({ user }: { user: UserMenuData }) {
           isBordered
           as="button"
           className="transition-transform"
-          color="primary"
+          color="success"
           size="sm"
           name={getInitials(user)}
         />

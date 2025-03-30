@@ -1,11 +1,11 @@
 "use client";
 
+import { Button } from "@heroui/button";
+import { CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { Divider } from "@heroui/divider";
+import { Link } from "@heroui/link";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@nextui-org/button";
-import { CardBody, CardFooter, CardHeader } from "@nextui-org/card";
-import { Divider } from "@nextui-org/divider";
-import { Link } from "@nextui-org/link";
-import { useFormState } from "react-dom";
+import { useActionState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Alert } from "@/components/Alert";
@@ -23,40 +23,45 @@ export default function RegisterPage() {
     register,
     // TODO: handle server side errors
     formState: { isValid, errors },
+    getValues,
   } = useForm<RegisterFormSchema>({
     resolver: zodResolver(registerFormSchema),
     mode: "onTouched",
   });
 
-  const [state, formAction] = useFormState(registerUser, null);
+  const [state, formAction] = useActionState(registerUser, null);
 
   return (
     <>
       <CardHeader>
-        <h1>Sign up</h1>
+        <h1>Sign Up</h1>
       </CardHeader>
-      <form action={formAction}>
+      <form action={() => formAction(getValues())}>
         <CardBody className="gap-6">
           <div className="flex gap-4">
             <FormInput
+              variant="bordered"
               autoFocus
               label="First Name"
               {...register("firstName")}
               errorMessage={errors.firstName?.message}
             />
             <FormInput
+              variant="bordered"
               label="Last Name"
               {...register("lastName")}
               errorMessage={errors.lastName?.message}
             />
           </div>
           <FormInput
+            variant="bordered"
             type="email"
             label="Email"
             {...register("email")}
             errorMessage={errors.email?.message}
           />
           <PasswordInput
+            variant="bordered"
             label="Password"
             {...register("password")}
             errorMessage={errors.password?.message}
@@ -68,7 +73,7 @@ export default function RegisterPage() {
       <Divider className="mt-4 mb-2" />
       <CardFooter className="flex flex-col gap-4 items-stretch">
         <h3 className="text-small text-center">Already have an account?</h3>
-        <Button as={Link} href="/login">
+        <Button as={Link} href="/login" variant="bordered">
           Sign In
         </Button>
       </CardFooter>

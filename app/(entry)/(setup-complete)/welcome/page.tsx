@@ -1,11 +1,12 @@
-import { CardBody, CardHeader } from "@nextui-org/card";
-import { Button, Link } from "@nextui-org/react";
+import { Button } from "@heroui/button";
+import { CardBody, CardHeader } from "@heroui/card";
+import { Link } from "@heroui/link";
 import { redirect } from "next/navigation";
 
-import { createClient } from "@/utils/supabase/server";
+import { createServerClient } from "@/utils/supabase/server";
 
 export default async function WelcomePage() {
-  const supabase = createClient();
+  const supabase = await createServerClient();
 
   const { data, error } = await supabase.auth.getUser();
   if (error || !data?.user) {

@@ -1,7 +1,9 @@
-import { Input } from "@nextui-org/input";
+"use client";
+
+import { Input } from "@heroui/input";
 import { forwardRef } from "react";
 
-import type { InputProps } from "@nextui-org/input";
+import type { InputProps } from "@heroui/input";
 
 export const FormInput = forwardRef<HTMLInputElement, InputProps>(
   (props, ref) => {

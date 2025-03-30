@@ -6,7 +6,7 @@ import { FormInput } from "./FormInput";
 import { EyeFilledIcon } from "./icons/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "./icons/EyeSlashFilledIcon";
 
-import type { InputProps } from "@nextui-org/input";
+import type { InputProps } from "@heroui/input";
 
 export const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
   (props, ref) => {

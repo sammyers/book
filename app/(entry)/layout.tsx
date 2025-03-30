@@ -1,10 +1,18 @@
-import { Card } from "@nextui-org/card";
+import { Card } from "@heroui/card";
+import { cn } from "@heroui/react";
+
+import { bgGradient } from "../styles";
 
 import type { ReactNode } from "react";
 
 export default function EntryLayout({ children }: { children: ReactNode }) {
   return (
-    <main className="h-full text-foreground bg-background flex flex-col justify-center mx-4">
+    <main
+      className={cn(
+        "h-full text-foreground flex flex-col justify-center",
+        bgGradient,
+      )}
+    >
       <Card className="p-2 min-[400px]:w-[368px] min-[400px]:self-center">
         {children}
       </Card>

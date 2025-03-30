@@ -1,18 +1,18 @@
+import { Link } from "@heroui/link";
 import {
-  Link,
   Navbar,
   NavbarBrand,
   NavbarContent,
   NavbarMenu,
   NavbarMenuItem,
   NavbarMenuToggle,
-} from "@nextui-org/react";
+} from "@heroui/navbar";
 
 import UserMenu from "./UserMenu";
 
-export default async function DefaultNavbarContent() {
+export default function DefaultNavbarContent() {
   return (
-    <Navbar isBordered className="bg-content1">
+    <Navbar>
       <NavbarContent>
         <NavbarMenuToggle />
         <NavbarBrand>
@@ -22,7 +22,7 @@ export default async function DefaultNavbarContent() {
       <NavbarContent as="div" justify="end">
         <UserMenu />
       </NavbarContent>
-      <NavbarMenu className="bg-content1">
+      <NavbarMenu>
         <NavbarMenuItem key="games">
           <Link className="w-full" size="lg" color="foreground" href="/games">
             Games

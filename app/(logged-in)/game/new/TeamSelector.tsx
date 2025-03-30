@@ -1,13 +1,9 @@
 "use client";
 
-import {
-  Autocomplete,
-  AutocompleteItem,
-  Button,
-  ButtonGroup,
-  Input,
-  Spinner,
-} from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
+import { Button, ButtonGroup } from "@heroui/button";
+import { Input } from "@heroui/input";
+import { Spinner } from "@heroui/spinner";
 import { useEffect, useRef, useState } from "react";
 import { useController } from "react-hook-form";
 
@@ -39,7 +35,7 @@ export default function TeamSelector<T extends FieldValues>({
   const [newOpponentName, setNewOpponentName] = useState("");
   const [isLoading, setisLoading] = useState(false);
 
-  const lastAddedTeamId = useRef<Key | undefined>();
+  const lastAddedTeamId = useRef<Key | undefined>(undefined);
 
   useEffect(() => {
     if (
@@ -95,7 +91,7 @@ export default function TeamSelector<T extends FieldValues>({
               <Button
                 color="success"
                 isDisabled={newOpponentName.length === 0}
-                onClick={async () => {
+                onPress={async () => {
                   setisLoading(true);
                   const newTeamId = await onCreateTeam(newOpponentName);
                   if (newTeamId !== null) {
@@ -107,7 +103,7 @@ export default function TeamSelector<T extends FieldValues>({
               </Button>
               <Button
                 color="danger"
-                onClick={() => {
+                onPress={() => {
                   setShowCreateOpponent(false);
                   setNewOpponentName("");
                 }}
@@ -121,7 +117,7 @@ export default function TeamSelector<T extends FieldValues>({
             color="success"
             variant="flat"
             className="shrink-0"
-            onClick={() => setShowCreateOpponent(true)}
+            onPress={() => setShowCreateOpponent(true)}
           >
             Add New Opponent
           </Button>

@@ -1,8 +1,8 @@
 "use client";
 
+import { Input } from "@heroui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@nextui-org/react";
-import { useFormState } from "react-dom";
+import { useActionState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Alert } from "@/components/Alert";
@@ -25,7 +25,7 @@ export default function NewGameForm({ teams }: { teams: Tables<"team">[] }) {
     resolver: zodResolver(newGameFormSchema),
   });
 
-  const [state, formAction] = useFormState(createGame, null);
+  const [state, formAction] = useActionState(createGame, null);
 
   return (
     <form

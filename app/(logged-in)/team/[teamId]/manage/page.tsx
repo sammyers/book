@@ -1,16 +1,18 @@
-import { Button, Link } from "@nextui-org/react";
+import { Button } from "@heroui/button";
+import { Link } from "@heroui/link";
 import { redirect } from "next/navigation";
 
-import { createClient } from "@/utils/supabase/server";
+import { createServerClient } from "@/utils/supabase/server";
 
 import TeamRoster from "./TeamRoster";
 
 import type { PageProps } from "@/utils/types";
 
 export default async function TeamManagementPage({
-  params: { teamId },
+  params,
 }: PageProps<{ teamId: string }>) {
-  const supabase = createClient();
+  const { teamId } = await params;
+  const supabase = await createServerClient();
 
   const { data: team, error } = await supabase
     .from("team")
@@ -21,6 +23,7 @@ export default async function TeamManagementPage({
       players:player(
         id,
         name,
+        jersey_number,
         primary_position,
         secondary_position
       )

@@ -1,5 +1,7 @@
 import { HomeIcon } from "@heroicons/react/24/outline";
-import { Button, Link, Navbar } from "@nextui-org/react";
+import { Button } from "@heroui/button";
+import { Link } from "@heroui/link";
+import { Navbar } from "@heroui/navbar";
 
 import { Scorebug } from "@/components/Scorebug";
 
