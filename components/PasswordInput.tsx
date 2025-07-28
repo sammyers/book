@@ -18,7 +18,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
         isInvalid={!!props.errorMessage}
         endContent={
           <button
-            className="focus:outline-none"
+            className="focus:outline-hidden"
             type="button"
             onClick={() => setIsVisible((state) => !state)}
           >

@@ -14,7 +14,7 @@ export default async function LoggedInLayout({
   return (
     <div className={cn("h-full flex flex-col overflow-auto", bgGradient)}>
       {navbar}
-      <main className="flex-grow flex flex-col px-4 pt-4 pb-8">{children}</main>
+      <main className="grow flex flex-col px-4 pt-4 pb-8">{children}</main>
     </div>
   );
 }
