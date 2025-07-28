@@ -9,7 +9,7 @@ export default function EntryLayout({ children }: { children: ReactNode }) {
   return (
     <main
       className={cn(
-        "h-full text-foreground flex flex-col justify-center",
+        "h-full text-foreground flex flex-col justify-center px-4",
         bgGradient,
       )}
     >

@@ -54,6 +54,7 @@ export default function TeamSelector<T extends FieldValues>({
     <div className="flex gap-3 items-end flex-wrap sm:flex-nowrap">
       {!showCreateOpponent && (
         <Autocomplete
+          variant="bordered"
           ref={field.ref}
           name={field.name}
           onBlur={field.onBlur}
@@ -77,6 +78,7 @@ export default function TeamSelector<T extends FieldValues>({
         (showCreateOpponent ? (
           <>
             <Input
+              variant="bordered"
               autoFocus
               value={newOpponentName}
               onValueChange={setNewOpponentName}

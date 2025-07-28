@@ -1,3 +1,5 @@
+import { Card, CardBody, CardHeader } from "@heroui/card";
+import { Divider } from "@heroui/divider";
 import { redirect } from "next/navigation";
 
 import { createServerClient } from "@/utils/supabase/server";
@@ -48,9 +50,14 @@ export default async function NewGamePage({
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <h2 className="text-center">Set up a new game for {team.name}</h2>
-      <NewGameForm teams={teams} teamId={teamId} />
-    </div>
+    <Card>
+      <CardHeader>
+        <h2 className="text-center">New Game for {team.name}</h2>
+      </CardHeader>
+      <Divider />
+      <CardBody>
+        <NewGameForm teams={teams} teamId={teamId} />
+      </CardBody>
+    </Card>
   );
 }

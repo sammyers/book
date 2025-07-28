@@ -47,6 +47,7 @@ export default function NewGameForm({ teamId, teams }: Props) {
     >
       <div className="flex gap-3 items-end flex-wrap sm:flex-nowrap">
         <Input
+          variant="bordered"
           {...register("name")}
           label="Game Name"
           placeholder="Enter a name"
