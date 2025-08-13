@@ -49,7 +49,8 @@ export default function NewTeamPage() {
         name,
         jersey_number,
         primary_position,
-        secondary_position`,
+        secondary_position,
+        nickname`,
       )
       .ilike("name", `%${search}%`);
 

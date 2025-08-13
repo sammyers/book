@@ -9,16 +9,13 @@ import {
   TableRow,
 } from "@heroui/table";
 import { User } from "@heroui/user";
+import { UserIcon } from "@phosphor-icons/react/ssr";
 
 import { getPositions } from "@/utils/display";
 
 import type { Player } from "@/utils/display";
 
-interface Props {
-  players: Player[];
-}
-
-export default function TeamRoster({ players }: Props) {
+export default function TeamRosterTable({ players }: { players: Player[] }) {
   return (
     <Table className="flex-1">
       <TableHeader>
@@ -31,7 +28,10 @@ export default function TeamRoster({ players }: Props) {
               <User
                 name={item.name}
                 description={getPositions(item)}
-                avatarProps={{ name: undefined }}
+                avatarProps={{
+                  name: undefined,
+                  fallback: <UserIcon size={24} weight="duotone" />,
+                }}
               />
             </TableCell>
           </TableRow>

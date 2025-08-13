@@ -10,7 +10,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Alert } from "@/components/Alert";
 import { FormSubmitButton } from "@/components/FormSubmitButton";
 
-import { createGame } from "../actions";
+import { createGame } from "../../../game/actions";
 import { createSoloModeTeam } from "./actions";
 import { newGameFormSchema } from "./formSchema";
 import TeamSelector from "./TeamSelector";
@@ -47,23 +47,16 @@ export default function NewGameForm({ teamId, teams }: Props) {
     >
       <div className="flex gap-3 items-end flex-wrap sm:flex-nowrap">
         <Input
-          variant="bordered"
           {...register("name")}
           label="Game Name"
-          placeholder="Enter a name"
           isInvalid={!!errors.name}
           errorMessage={errors.name?.message}
-          labelPlacement="outside"
         />
         <Controller
           control={control}
           name="role"
           render={({ field: { onChange, value } }) => (
-            <Tabs
-              color="secondary"
-              selectedKey={value}
-              onSelectionChange={onChange}
-            >
+            <Tabs selectedKey={value} onSelectionChange={onChange}>
               <Tab key="away" title="Away" />
               <Tab key="home" title="Home" />
             </Tabs>

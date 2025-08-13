@@ -14,9 +14,9 @@ import { FormSubmitButton } from "@/components/FormSubmitButton";
 import { PasswordInput } from "@/components/PasswordInput";
 
 import { registerUser } from "../../actions";
-import { registerFormSchema } from "./formSchema";
+import { registerFormSchema } from "../../forms";
 
-import type { RegisterFormSchema } from "./formSchema";
+import type { RegisterFormSchema } from "../../forms";
 
 export default function RegisterPage() {
   const {

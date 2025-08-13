@@ -14,9 +14,9 @@ import { FormSubmitButton } from "@/components/FormSubmitButton";
 import { PasswordInput } from "@/components/PasswordInput";
 
 import { login } from "../../actions";
-import { loginFormSchema } from "./formSchema";
+import { loginFormSchema } from "../../forms";
 
-import type { LoginFormSchema } from "./formSchema";
+import type { LoginFormSchema } from "../../forms";
 
 export default function LoginPage() {
   const {

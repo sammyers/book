@@ -9,6 +9,7 @@ export const getQuery = (supabase: SupabaseClient<Database>, userId: string) =>
       email,
       first_name,
       last_name,
+      permission_level,
       teams:team(id, name)
     `,
     )

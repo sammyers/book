@@ -9,9 +9,9 @@ import NewGameForm from "./NewGameForm";
 import type { PageProps } from "@/utils/types";
 
 export default async function NewGamePage({
-  searchParams,
-}: PageProps<never, { teamId?: string }>) {
-  const { teamId } = await searchParams;
+  params,
+}: PageProps<{ teamId: string }>) {
+  const { teamId } = await params;
 
   if (!teamId) {
     redirect("/");

@@ -41,3 +41,12 @@ export function getPositions(player: Player) {
   }
   return `${getPositionAbbreviation(player.primary_position)}/${getPositionAbbreviation(player.secondary_position)}`;
 }
+
+export const getOpponentPrefix = (role: Enums<"team_role">) => {
+  switch (role) {
+    case "home":
+      return "vs.";
+    case "away":
+      return "@";
+  }
+};

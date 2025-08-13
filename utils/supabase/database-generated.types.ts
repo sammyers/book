@@ -7,61 +7,71 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "12.2.12 (cd3cf9e)"
-  }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          operationName?: string
-          query?: string
-          variables?: Json
-          extensions?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       game: {
         Row: {
           created_at: string
+          created_by_team_id: string | null
+          created_by_user_id: string
+          ended_at: string | null
           game_data: Json
           id: string
           name: string
+          scheduled_start_time: string | null
+          started_at: string | null
           status: Database["public"]["Enums"]["game_status"]
+          tournament_id: string | null
         }
         Insert: {
           created_at?: string
+          created_by_team_id?: string | null
+          created_by_user_id: string
+          ended_at?: string | null
           game_data?: Json
           id?: string
           name: string
+          scheduled_start_time?: string | null
+          started_at?: string | null
           status?: Database["public"]["Enums"]["game_status"]
+          tournament_id?: string | null
         }
         Update: {
           created_at?: string
+          created_by_team_id?: string | null
+          created_by_user_id?: string
+          ended_at?: string | null
           game_data?: Json
           id?: string
           name?: string
+          scheduled_start_time?: string | null
+          started_at?: string | null
           status?: Database["public"]["Enums"]["game_status"]
+          tournament_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "game_created_by_team_id_fkey"
+            columns: ["created_by_team_id"]
+            isOneToOne: false
+            referencedRelation: "team"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_created_by_user_id_fkey"
+            columns: ["created_by_user_id"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournament"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       game_action: {
         Row: {
@@ -182,17 +192,17 @@ export type Database = {
       }
       player_team: {
         Row: {
-          created_at: string
+          joined_at: string
           player_id: string
           team_id: string
         }
         Insert: {
-          created_at?: string
+          joined_at?: string
           player_id: string
           team_id: string
         }
         Update: {
-          created_at?: string
+          joined_at?: string
           player_id?: string
           team_id?: string
         }
@@ -213,24 +223,57 @@ export type Database = {
           },
         ]
       }
-      team: {
+      region: {
         Row: {
-          associated_team_id: string | null
           created_at: string
           id: string
           name: string
+          short_name: string | null
         }
         Insert: {
-          associated_team_id?: string | null
           created_at?: string
           id?: string
           name: string
+          short_name?: string | null
         }
         Update: {
-          associated_team_id?: string | null
           created_at?: string
           id?: string
           name?: string
+          short_name?: string | null
+        }
+        Relationships: []
+      }
+      team: {
+        Row: {
+          admin_note: string | null
+          associated_team_id: string | null
+          created_at: string
+          id: string
+          location_city: string | null
+          location_state: string | null
+          name: string
+          primary_region_id: string | null
+        }
+        Insert: {
+          admin_note?: string | null
+          associated_team_id?: string | null
+          created_at?: string
+          id?: string
+          location_city?: string | null
+          location_state?: string | null
+          name: string
+          primary_region_id?: string | null
+        }
+        Update: {
+          admin_note?: string | null
+          associated_team_id?: string | null
+          created_at?: string
+          id?: string
+          location_city?: string | null
+          location_state?: string | null
+          name?: string
+          primary_region_id?: string | null
         }
         Relationships: [
           {
@@ -240,30 +283,114 @@ export type Database = {
             referencedRelation: "team"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "team_primary_region_id_fkey"
+            columns: ["primary_region_id"]
+            isOneToOne: false
+            referencedRelation: "region"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournament: {
+        Row: {
+          created_at: string
+          end_date: string
+          id: string
+          name: string
+          region_id: string
+          start_date: string
+        }
+        Insert: {
+          created_at?: string
+          end_date: string
+          id?: string
+          name: string
+          region_id: string
+          start_date: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string
+          id?: string
+          name?: string
+          region_id?: string
+          start_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_region_id_fkey"
+            columns: ["region_id"]
+            isOneToOne: false
+            referencedRelation: "region"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournament_team: {
+        Row: {
+          joined_at: string
+          team_id: string
+          tournament_id: string
+        }
+        Insert: {
+          joined_at?: string
+          team_id: string
+          tournament_id: string
+        }
+        Update: {
+          joined_at?: string
+          team_id?: string
+          tournament_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_team_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "team"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_team_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournament"
+            referencedColumns: ["id"]
+          },
         ]
       }
       user: {
         Row: {
-          created_at: string
           email: string
           first_name: string
+          full_name: string
+          has_set_password: boolean
           id: string
+          is_confirmed: boolean
+          joined_at: string
           last_name: string
           permission_level: Database["public"]["Enums"]["user_permission_level"]
         }
         Insert: {
-          created_at?: string
           email?: string
           first_name?: string
+          full_name?: string
+          has_set_password?: boolean
           id: string
+          is_confirmed?: boolean
+          joined_at?: string
           last_name?: string
           permission_level?: Database["public"]["Enums"]["user_permission_level"]
         }
         Update: {
-          created_at?: string
           email?: string
           first_name?: string
+          full_name?: string
+          has_set_password?: boolean
           id?: string
+          is_confirmed?: boolean
+          joined_at?: string
           last_name?: string
           permission_level?: Database["public"]["Enums"]["user_permission_level"]
         }
@@ -272,16 +399,19 @@ export type Database = {
       user_team: {
         Row: {
           created_at: string
+          permission_level: Database["public"]["Enums"]["team_permission_level"]
           team_id: string
           user_id: string
         }
         Insert: {
           created_at?: string
+          permission_level?: Database["public"]["Enums"]["team_permission_level"]
           team_id: string
           user_id: string
         }
         Update: {
           created_at?: string
+          permission_level?: Database["public"]["Enums"]["team_permission_level"]
           team_id?: string
           user_id?: string
         }
@@ -314,28 +444,105 @@ export type Database = {
         }
         Returns: {
           created_at: string
+          created_by_team_id: string | null
+          created_by_user_id: string
+          ended_at: string | null
           game_data: Json
           id: string
           name: string
+          scheduled_start_time: string | null
+          started_at: string | null
           status: Database["public"]["Enums"]["game_status"]
+          tournament_id: string | null
         }
       }
       create_team_with_players: {
-        Args: { team_name: string; player_ids: string[] }
+        Args: { player_ids: string[]; team_name: string }
         Returns: {
+          admin_note: string | null
           associated_team_id: string | null
           created_at: string
           id: string
+          location_city: string | null
+          location_state: string | null
           name: string
+          primary_region_id: string | null
+        }
+      }
+      create_tournament_for_team: {
+        Args: {
+          end_date: string
+          region_id: string
+          start_date: string
+          team_id: string
+          tournament_name: string
+        }
+        Returns: {
+          created_at: string
+          end_date: string
+          id: string
+          name: string
+          region_id: string
+          start_date: string
+        }
+      }
+      create_tournament_game_for_team: {
+        Args: {
+          creator_team_id: string
+          creator_team_role: Database["public"]["Enums"]["team_role"]
+          game_name: string
+          opponent_team_id: string
+          scheduled_start_time: string
+          tournament_id: string
+        }
+        Returns: {
+          created_at: string
+          created_by_team_id: string | null
+          created_by_user_id: string
+          ended_at: string | null
+          game_data: Json
+          id: string
+          name: string
+          scheduled_start_time: string | null
+          started_at: string | null
+          status: Database["public"]["Enums"]["game_status"]
+          tournament_id: string | null
         }
       }
       delete_team: {
         Args: { target_team_id: string }
         Returns: undefined
       }
+      has_team_permission: {
+        Args: {
+          permission: Database["public"]["Enums"]["team_permission_level"]
+          team_id: string
+        }
+        Returns: boolean
+      }
+      is_super_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       is_user_admin: {
         Args: { target_user_id: string }
         Returns: boolean
+      }
+      is_user_super_admin: {
+        Args: { target_user_id: string }
+        Returns: boolean
+      }
+      is_valid_game_time_for_tournament: {
+        Args: {
+          grace_interval?: unknown
+          scheduled_start: string
+          tournament_id: string
+        }
+        Returns: boolean
+      }
+      opposite_team_role: {
+        Args: { role: Database["public"]["Enums"]["team_role"] }
+        Returns: Database["public"]["Enums"]["team_role"]
       }
     }
     Enums: {
@@ -360,6 +567,8 @@ export type Database = {
         | "triple"
         | "home_run"
         | "walk"
+        | "intentional_walk"
+        | "automatic_walk"
         | "strikeout"
         | "groundout"
         | "flyout"
@@ -372,13 +581,16 @@ export type Database = {
         | "caught_stealing"
         | "error"
         | "dead_ball_out"
+        | "pinch_runner"
         | "substitution"
         | "defensive_switch"
         | "batting_order_change"
         | "skip_at_bat"
         | "solo_mode_opponent_inning"
+        | "manual_override"
         | "end_game"
       game_status: "completed" | "in_progress" | "not_started"
+      team_permission_level: "member" | "scorekeeper" | "manager"
       team_role: "home" | "away"
       user_permission_level: "user" | "admin" | "super_admin"
     }
@@ -509,9 +721,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {
       fielding_position: [
@@ -536,6 +745,8 @@ export const Constants = {
         "triple",
         "home_run",
         "walk",
+        "intentional_walk",
+        "automatic_walk",
         "strikeout",
         "groundout",
         "flyout",
@@ -548,16 +759,20 @@ export const Constants = {
         "caught_stealing",
         "error",
         "dead_ball_out",
+        "pinch_runner",
         "substitution",
         "defensive_switch",
         "batting_order_change",
         "skip_at_bat",
         "solo_mode_opponent_inning",
+        "manual_override",
         "end_game",
       ],
       game_status: ["completed", "in_progress", "not_started"],
+      team_permission_level: ["member", "scorekeeper", "manager"],
       team_role: ["home", "away"],
       user_permission_level: ["user", "admin", "super_admin"],
     },
   },
 } as const
+

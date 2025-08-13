@@ -13,6 +13,7 @@ export default async function SetupIncompleteLayout({
 
   const { data } = await supabase.auth.getUser();
 
+  // Redirect to home if user is already logged in
   if (data.user) {
     redirect("/");
   }

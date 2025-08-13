@@ -1,0 +1,132 @@
+import { Card, CardBody, CardHeader } from "@heroui/card";
+import {
+  CalendarDotsIcon,
+  ClockCounterClockwiseIcon,
+} from "@phosphor-icons/react/ssr";
+import { startCase } from "lodash";
+
+import { List, ListItem } from "@/components/List";
+import { getOpponentPrefix } from "@/utils/display";
+import { createServerClient } from "@/utils/supabase/server";
+
+import type { Enums, Tables } from "@/utils/supabase/database.types";
+
+type TeamGame = {
+  role: Enums<"team_role">;
+  game: {
+    teams: Array<{
+      role: Enums<"team_role">;
+      team: Pick<Tables<"team">, "id" | "name">;
+    }>;
+  };
+};
+
+const getOpponentTeam = ({ role, game: { teams } }: TeamGame) => {
+  const opponentTeam = teams.find((t) => t.role !== role);
+  return opponentTeam ? opponentTeam.team : null;
+};
+
+export default async function TeamGames({ teamId }: { teamId: string }) {
+  const supabase = await createServerClient();
+  const [upcomingGamesResponse, pastGamesResponse] = await Promise.all([
+    supabase
+      .from("game_team")
+      .select(
+        `
+        role,
+        game (
+          id,
+          name,
+          status,
+          start_time:scheduled_start_time,
+          teams:game_team (
+            role,
+            team (
+              id,
+              name
+            )
+          )
+        )
+      `,
+      )
+      .eq("game.status", "not_started")
+      .eq("team_id", teamId),
+    supabase
+      .from("game_team")
+      .select(
+        `
+        role,
+        game (
+          id,
+          name,
+          status,
+          started_at,
+          ended_at,
+          teams:game_team (
+            role,
+            team (
+              id,
+              name
+            )
+          )
+        )
+      `,
+      )
+      .neq("game.status", "not_started")
+      .eq("team_id", teamId)
+      .limit(5),
+  ]);
+
+  if (upcomingGamesResponse.error || pastGamesResponse.error) {
+    return <div>Error loading games</div>;
+  }
+
+  const upcomingGames = upcomingGamesResponse.data;
+  const pastGames = pastGamesResponse.data;
+
+  return (
+    <div className="flex flex-col gap-4">
+      <Card>
+        <CardHeader className="flex-col items-stretch">
+          <div className="rounded-md bg-default-100 text-foreground-500 p-2 flex gap-2 items-center">
+            <CalendarDotsIcon size={24} weight="duotone" />
+            <span className="font-bold">Upcoming Games</span>
+          </div>
+        </CardHeader>
+        <CardBody className="pt-0">
+          {upcomingGames.length > 0 ? (
+            <List>
+              {upcomingGames.map((teamGame) => (
+                <ListItem
+                  key={teamGame.game.id}
+                  className="flex flex-col gap-1 items-start"
+                >
+                  <h3 className="font-bold">
+                    {getOpponentPrefix(teamGame.role)}{" "}
+                    {getOpponentTeam(teamGame)?.name}
+                  </h3>
+                  <h5 className="font-semibold uppercase text-small text-foreground-600">
+                    {teamGame.game.name}
+                  </h5>
+                  <p className="text-foreground-500 text-small">
+                    {startCase(teamGame.role)}
+                  </p>
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <p>No upcoming games</p>
+          )}
+        </CardBody>
+      </Card>
+      <Card>
+        <CardHeader className="flex-col items-stretch">
+          <div className="rounded-md bg-default-100 text-foreground-500 p-2 flex gap-2 items-center">
+            <ClockCounterClockwiseIcon size={24} weight="duotone" />
+            <span className="font-bold">Recent Games</span>
+          </div>
+        </CardHeader>
+      </Card>
+    </div>
+  );
+}

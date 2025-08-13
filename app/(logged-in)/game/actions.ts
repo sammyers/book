@@ -4,10 +4,10 @@ import { redirect } from "next/navigation";
 
 import { createServerClient } from "@/utils/supabase/server";
 
-import { newGameFormSchema } from "./new/formSchema";
+import { newGameFormSchema } from "../team/[teamId]/new-game/formSchema";
 
 import type { FormState } from "@/utils/types";
-import type { NewGameFormSchema } from "./new/formSchema";
+import type { NewGameFormSchema } from "../team/[teamId]/new-game/formSchema";
 
 export async function createGame(
   _prevState: FormState | null,

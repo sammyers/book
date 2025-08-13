@@ -7,6 +7,8 @@ const ENTRY_ROUTES = [
   "/login",
   "/register",
   "/awaiting-confirmation",
+  "/accept-invite",
+  "/request-invite",
   "/auth/confirm",
 ];
 
@@ -44,7 +46,6 @@ export async function updateSession(request: NextRequest) {
 
   const {
     data: { user },
-    error,
   } = await supabase.auth.getUser();
 
   if (

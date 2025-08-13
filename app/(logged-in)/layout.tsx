@@ -1,20 +1,25 @@
 import { cn } from "@heroui/react";
 
+import { HeaderProvider } from "@/components/HeaderProvider";
+
 import { bgGradient } from "../styles";
+import PageHeader from "./PageHeader";
 
 import type { ReactNode } from "react";
 
 export default async function LoggedInLayout({
   children,
-  navbar,
 }: {
   children: ReactNode;
-  navbar: ReactNode;
 }) {
   return (
     <div className={cn("h-full flex flex-col overflow-auto", bgGradient)}>
-      {navbar}
-      <main className="grow flex flex-col px-4 pt-4 pb-8">{children}</main>
+      <HeaderProvider>
+        <PageHeader />
+        <main className="grow flex flex-col px-4 pt-4 pb-8 bg-content1">
+          {children}
+        </main>
+      </HeaderProvider>
     </div>
   );
 }

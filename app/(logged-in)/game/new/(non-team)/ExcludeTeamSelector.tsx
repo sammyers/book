@@ -3,10 +3,10 @@
 import { useMemo } from "react";
 import { useWatch } from "react-hook-form";
 
-import TeamSelector from "../TeamSelector";
+import TeamSelector from "../../../team/[teamId]/new-game/TeamSelector";
 
-import type { NewGameFormSchema } from "../formSchema";
-import type { TeamSelectorProps } from "../TeamSelector";
+import type { NewGameFormSchema } from "../../../team/[teamId]/new-game/formSchema";
+import type { TeamSelectorProps } from "../../../team/[teamId]/new-game/TeamSelector";
 
 type ExcludeTeamSelectorProps = TeamSelectorProps<NewGameFormSchema>;
 
