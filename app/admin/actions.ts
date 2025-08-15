@@ -35,12 +35,16 @@ async function inviteUserByEmail(
     lastName,
   }: { email: string; firstName: string; lastName: string },
 ) {
+  const baseUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.NEXT_PUBLIC_APP_URL;
+
   return await supabase.auth.admin.inviteUserByEmail(email, {
     data: {
       firstName,
       lastName,
     },
-    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/accept-invite`,
+    redirectTo: `${baseUrl}/accept-invite`,
   });
 }
 
