@@ -1,4 +1,3 @@
-import { colors } from "@heroui/theme";
 import { Inter } from "next/font/google";
 
 import { Providers } from "./Providers";
@@ -19,16 +18,6 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: [
-    {
-      media: "(prefers-color-scheme: dark)",
-      color: colors.dark.background as string,
-    },
-    {
-      media: "(prefers-color-scheme: light)",
-      color: colors.light.background as string,
-    },
-  ],
 };
 
 export default function RootLayout({

@@ -175,6 +175,7 @@ export default function NewTeamModal() {
         isDismissable={false}
         hideCloseButton
         isKeyboardDismissDisabled
+        classNames={{ wrapper: "!h-[100dvh]" }}
       >
         <ModalContent>
           <ModalHeader>Create New Team</ModalHeader>

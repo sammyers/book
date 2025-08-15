@@ -76,7 +76,7 @@ export default function NewPlayerForm({
       </CardHeader>
       <CardBody className="p-4 pt-0">
         <form
-          className="space-y-4"
+          className="flex flex-col gap-6"
           onSubmit={(e) => {
             e.preventDefault();
             startTransition(() => {
