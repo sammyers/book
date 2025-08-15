@@ -162,6 +162,7 @@ export default function NewTeamModal() {
     <>
       <Button
         color="primary"
+        variant="flat"
         startContent={<PlusIcon size={16} />}
         className="shrink-0"
         onPress={onOpen}
@@ -175,6 +176,11 @@ export default function NewTeamModal() {
         isDismissable={false}
         hideCloseButton
         isKeyboardDismissDisabled
+        classNames={{
+          wrapper:
+            "overflow-y-auto flex-col justify-end sm:justify-center items-center",
+          base: "overflow-y-visible",
+        }}
       >
         <ModalContent>
           <ModalHeader>Create New Team</ModalHeader>
@@ -277,6 +283,7 @@ export default function NewTeamModal() {
                 Cancel
               </Button>
               <FormSubmitButton
+                variant="flat"
                 isValid={isValid && !isCheckingEmail}
                 startContent={
                   <FloppyDiskIcon

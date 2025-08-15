@@ -80,6 +80,7 @@ export default function InviteUserModal({ teams }: Props) {
     <>
       <Button
         color="primary"
+        variant="flat"
         startContent={<UserPlusIcon size={16} />}
         className="shrink-0"
         onPress={onOpen}
@@ -93,6 +94,10 @@ export default function InviteUserModal({ teams }: Props) {
         isDismissable={false}
         hideCloseButton
         isKeyboardDismissDisabled
+        classNames={{
+          wrapper: "overflow-y-auto flex-col",
+          base: "overflow-y-visible",
+        }}
       >
         <ModalContent>
           <ModalHeader>Invite New User</ModalHeader>
@@ -187,6 +192,7 @@ export default function InviteUserModal({ teams }: Props) {
                 Cancel
               </Button>
               <FormSubmitButton
+                variant="flat"
                 isValid={isValid}
                 startContent={
                   <EnvelopeSimpleIcon
