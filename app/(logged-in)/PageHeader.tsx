@@ -7,10 +7,10 @@ import UserMenu from "./UserMenu";
 export default function PageHeader() {
   return (
     <Navbar className="bg-default-100 border-b border-b-default-200">
-      <NavbarContent>
+      <NavbarContent className="grow">
         <PageHeaderContent />
       </NavbarContent>
-      <NavbarContent as="div" justify="end">
+      <NavbarContent as="div" justify="end" className="!flex-grow-0">
         <ThemeToggle />
         <UserMenu />
       </NavbarContent>

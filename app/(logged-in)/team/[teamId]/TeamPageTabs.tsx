@@ -6,55 +6,63 @@ import {
   BaseballIcon,
   ChartBarIcon,
 } from "@phosphor-icons/react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useMemo } from "react";
 
-import type { ReactNode } from "react";
+export default function TeamPageTabs({ teamId }: { teamId: string }) {
+  const pathname = usePathname();
 
-interface Props {
-  roster: ReactNode;
-  games: ReactNode;
-}
+  const selectedTab = useMemo(() => {
+    if (pathname.includes(`/team/${teamId}/games`)) {
+      return `/team/${teamId}/games`;
+    }
+    if (pathname.includes(`/team/${teamId}/roster`)) {
+      return `/team/${teamId}/roster`;
+    }
+    return pathname;
+  }, [pathname, teamId]);
 
-export default function TeamPageTabs({ roster, games }: Props) {
   return (
     <Tabs
       aria-label="Team management tabs"
-      classNames={{ base: "self-center" }}
-      defaultSelectedKey="/games"
+      classNames={{ tabList: "grow" }}
+      selectedKey={selectedTab}
     >
       <Tab
-        key="/games"
+        key={`/team/${teamId}/games`}
+        as={Link}
+        href={`/team/${teamId}/games`}
         title={
           <div className="flex items-center space-x-2">
             <BaseballIcon weight="duotone" size={20} />
             <span>Games</span>
           </div>
         }
-      >
-        {games}
-      </Tab>
+      />
       <Tab
-        key="/roster"
+        key={`/team/${teamId}/roster`}
+        as={Link}
+        href={`/team/${teamId}/roster`}
         title={
           <div className="flex items-center space-x-2">
             <BaseballCapIcon weight="duotone" size={20} />
             <span>Roster</span>
           </div>
         }
-      >
-        {roster}
-      </Tab>
+      />
       <Tab
-        key="/stats"
+        isDisabled
+        key={`/team/${teamId}/stats`}
+        as={Link}
+        href={`/team/${teamId}/stats`}
         title={
           <div className="flex items-center space-x-2">
             <ChartBarIcon weight="duotone" size={20} />
             <span>Stats</span>
           </div>
         }
-      >
-        {/* Placeholder for Stats tab content */}
-        <div className="p-4">Stats management will be implemented here.</div>
-      </Tab>
+      />
     </Tabs>
   );
 }

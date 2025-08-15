@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { setFlashMessage } from "@/utils/flash";
 import { createServerClient } from "@/utils/supabase/server";
 import { getCurrentUserPermissionLevel } from "@/utils/supabase/users";
 
@@ -113,6 +114,12 @@ export async function createTeamWithManager(
       errors: [],
     };
   }
+
+  await setFlashMessage({
+    title: `Team created`,
+    description: `New team ${newTeam.name} created`,
+    color: "success",
+  });
 
   revalidatePath("/admin/teams");
   redirect(`/admin/teams`);

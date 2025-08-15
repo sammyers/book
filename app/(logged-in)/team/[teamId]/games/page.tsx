@@ -1,13 +1,18 @@
+import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import {
+  BaseballHelmetIcon,
   CalendarDotsIcon,
   ClockCounterClockwiseIcon,
+  TrophyIcon,
 } from "@phosphor-icons/react/ssr";
 import { startCase } from "lodash";
+import Link from "next/link";
 
 import { List, ListItem } from "@/components/List";
 import { getOpponentPrefix } from "@/utils/display";
 import { createServerClient } from "@/utils/supabase/server";
+import { PageProps } from "@/utils/types";
 
 import type { Enums, Tables } from "@/utils/supabase/database.types";
 
@@ -26,7 +31,11 @@ const getOpponentTeam = ({ role, game: { teams } }: TeamGame) => {
   return opponentTeam ? opponentTeam.team : null;
 };
 
-export default async function TeamGames({ teamId }: { teamId: string }) {
+export default async function TeamGamesPage({
+  params,
+}: PageProps<{ teamId: string }>) {
+  const { teamId } = await params;
+
   const supabase = await createServerClient();
   const [upcomingGamesResponse, pastGamesResponse] = await Promise.all([
     supabase
@@ -86,6 +95,26 @@ export default async function TeamGames({ teamId }: { teamId: string }) {
 
   return (
     <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-center gap-2">
+        <Button
+          variant="flat"
+          color="success"
+          startContent={<BaseballHelmetIcon weight="duotone" size={20} />}
+          as={Link}
+          href={`/team/${teamId}/new-game`}
+        >
+          New Game
+        </Button>
+        <Button
+          variant="flat"
+          color="success"
+          startContent={<TrophyIcon weight="duotone" size={20} />}
+          as={Link}
+          href={`/tournament/new?teamId=${teamId}`}
+        >
+          New Tournament
+        </Button>
+      </div>
       <Card>
         <CardHeader className="flex-col items-stretch">
           <div className="rounded-md bg-default-100 text-foreground-500 p-2 flex gap-2 items-center">

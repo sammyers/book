@@ -181,7 +181,9 @@ export default function NewTeamModal() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              startTransition(() => formAction(getValues()));
+              startTransition(() => {
+                formAction(getValues());
+              });
             }}
           >
             <ModalBody>

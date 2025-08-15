@@ -18,6 +18,7 @@ import { DateTime } from "luxon";
 import { useCallback, useState } from "react";
 
 import { useDebouncedState } from "@/utils/hooks/useDebouncedState";
+import { useFlashToast } from "@/utils/hooks/useFlashToast";
 import { createClient } from "@/utils/supabase/browser";
 
 import { getTeamsQuery } from "../adminPageQueries";
@@ -44,6 +45,8 @@ const getTeamLocation = (
 };
 
 export default function TeamManagementView({ initialTeams }: Props) {
+  useFlashToast();
+
   const [teams, setTeams] = useState<Team[]>(initialTeams);
 
   const fetchTeams = useCallback(async (search: string) => {

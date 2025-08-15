@@ -144,3 +144,30 @@ INSERT INTO user_team (user_id, team_id, permission_level) VALUES
     (SELECT id FROM team WHERE name = 'Bad News Bears'),
     'member'
   );
+
+INSERT INTO player (name, primary_position) VALUES
+  ('Sleve McDichael', 'pitcher'),
+  ('Onson Sweemey', 'catcher'),
+  ('Darryl Archideld', 'first_base'),
+  ('Glenallen Mixon', 'second_base'),
+  ('Rey McScriff', 'third_base'),
+  ('Tony Smehrik', 'shortstop'),
+  ('Bobson Dugnutt', 'left_field'),
+  ('Willie Dustice', 'center_field'),
+  ('Mike Truk', 'right_field'),
+  ('Karl Dandleton', 'extra_hitter'),
+  ('Mike Sernandez', 'middle_infield'),
+  ('Todd Bonzalez', 'extra_hitter');
+
+DO $$
+DECLARE
+  player_id UUID;
+  team_id UUID;
+  jersey_number INT := 1;
+  BEGIN
+  SELECT id FROM team INTO team_id WHERE name = 'Louisiana Balloons';
+  FOR player_id IN SELECT id FROM player LOOP
+    INSERT INTO player_team (player_id, team_id, jersey_number) VALUES (player_id, team_id, jersey_number);
+    jersey_number := jersey_number + 1;
+  END LOOP;
+END $$;

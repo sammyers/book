@@ -35,7 +35,9 @@ export const getPositionAbbreviation = (position: FieldingPosition) => {
 
 export type Player = Omit<Tables<"player">, "created_at">;
 
-export function getPositions(player: Player) {
+export function getPositions(
+  player: Pick<Tables<"player">, "primary_position" | "secondary_position">,
+) {
   if (!player.secondary_position) {
     return getPositionAbbreviation(player.primary_position);
   }

@@ -158,7 +158,6 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          jersey_number: string | null
           name: string
           nickname: string | null
           primary_position: Database["public"]["Enums"]["fielding_position"]
@@ -169,7 +168,6 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
-          jersey_number?: string | null
           name: string
           nickname?: string | null
           primary_position?: Database["public"]["Enums"]["fielding_position"]
@@ -180,7 +178,6 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
-          jersey_number?: string | null
           name?: string
           nickname?: string | null
           primary_position?: Database["public"]["Enums"]["fielding_position"]
@@ -192,16 +189,19 @@ export type Database = {
       }
       player_team: {
         Row: {
+          jersey_number: string | null
           joined_at: string
           player_id: string
           team_id: string
         }
         Insert: {
+          jersey_number?: string | null
           joined_at?: string
           player_id: string
           team_id: string
         }
         Update: {
+          jersey_number?: string | null
           joined_at?: string
           player_id?: string
           team_id?: string

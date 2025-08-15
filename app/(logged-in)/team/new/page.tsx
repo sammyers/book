@@ -57,7 +57,7 @@ export default function NewTeamPage() {
     setIsSearchLoading(false);
 
     if (!error) {
-      setSearchResults(data);
+      setSearchResults(data as unknown as Player[]);
     } else {
     }
   }, []);

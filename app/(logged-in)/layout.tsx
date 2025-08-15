@@ -16,7 +16,7 @@ export default async function LoggedInLayout({
     <div className={cn("h-full flex flex-col overflow-auto", bgGradient)}>
       <HeaderProvider>
         <PageHeader />
-        <main className="grow flex flex-col px-4 pt-4 pb-8 bg-content1">
+        <main className="grow flex px-4 pt-4 pb-8 bg-content1 justify-center">
           {children}
         </main>
       </HeaderProvider>

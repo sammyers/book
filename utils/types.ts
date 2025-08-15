@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export type FormState =
   | {
       status: "success";
@@ -23,3 +25,8 @@ export type PageProps<
       params: Promise<Params>;
       searchParams: Promise<SearchParams>;
     };
+
+export type LayoutProps<Params extends Record<string, unknown>> =
+  PageProps<Params> & {
+    children: ReactNode;
+  };
