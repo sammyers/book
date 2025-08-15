@@ -3,11 +3,8 @@
 import { useParams } from "next/navigation";
 import { useCallback, useState } from "react";
 
-import { createPlayerForTeam } from "../../../actions";
 import NewPlayerForm from "./NewPlayerForm";
 import PlayerSearch from "./PlayerSearch";
-
-import type { FieldingPosition } from "@/utils/display";
 
 export default function AddToRosterPage() {
   const { teamId } = useParams<{ teamId: string }>();
@@ -32,30 +29,6 @@ export default function AddToRosterPage() {
     setShowNewPlayerForm(false);
     setDefaultNameValue("");
   }, []);
-
-  const handleCreatePlayerSubmit = useCallback(
-    (formData: FormData) => {
-      const name = formData.get("name") as string;
-      const primaryPosition = formData.get(
-        "primaryPosition",
-      ) as FieldingPosition;
-      const secondaryPosition =
-        (formData.get("secondaryPosition") as FieldingPosition) || undefined;
-      const jerseyNumber =
-        (formData.get("jerseyNumber") as string) || undefined;
-      const nickname = (formData.get("nickname") as string) || undefined;
-
-      return createPlayerForTeam(null, {
-        name,
-        primaryPosition,
-        secondaryPosition,
-        jerseyNumber,
-        nickname,
-        teamId,
-      });
-    },
-    [teamId],
-  );
 
   if (showNewPlayerForm) {
     return (

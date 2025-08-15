@@ -1,5 +1,3 @@
-import type { GamePageGame } from "./gamePageQuery";
-
-export default function InProgressGamePage({ game }: { game: GamePageGame }) {
+export default function InProgressGamePage() {
   return <div className="h-full"></div>;
 }

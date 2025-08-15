@@ -12,9 +12,9 @@ import Link from "next/link";
 import { List, ListItem } from "@/components/List";
 import { getOpponentPrefix } from "@/utils/display";
 import { createServerClient } from "@/utils/supabase/server";
-import { PageProps } from "@/utils/types";
 
 import type { Enums, Tables } from "@/utils/supabase/database.types";
+import type { PageProps } from "@/utils/types";
 
 type TeamGame = {
   role: Enums<"team_role">;
@@ -91,7 +91,7 @@ export default async function TeamGamesPage({
   }
 
   const upcomingGames = upcomingGamesResponse.data;
-  const pastGames = pastGamesResponse.data;
+  // const pastGames = pastGamesResponse.data;
 
   return (
     <div className="flex flex-col gap-4">

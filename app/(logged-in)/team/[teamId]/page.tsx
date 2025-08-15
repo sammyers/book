@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { PageProps } from "@/utils/types";
+import type { PageProps } from "@/utils/types";
 
 export default async function TeamPage({
   params,

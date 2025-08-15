@@ -1,10 +1,11 @@
 import { Alert } from "@heroui/alert";
 
 import { createServerClient } from "@/utils/supabase/server";
-import { PageProps } from "@/utils/types";
 
 import { getTeamRosterQuery } from "../../queries";
 import TeamRosterClient from "./TeamRosterClient";
+
+import type { PageProps } from "@/utils/types";
 
 export default async function TeamRosterPage({
   params,

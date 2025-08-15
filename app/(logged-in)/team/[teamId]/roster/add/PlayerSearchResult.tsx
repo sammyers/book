@@ -80,7 +80,7 @@ export default function PlayerSearchItem({
         color: "danger",
       });
     }
-  }, [addPlayerState]);
+  }, [addPlayerState, onPlayerAdded]);
 
   const makeAddButton = useCallback(
     ({ isMobile }: { isMobile: boolean }) => {
@@ -115,14 +115,7 @@ export default function PlayerSearchItem({
         </Button>
       );
     },
-    [
-      player.id,
-      currentTeamId,
-      wasJustAdded,
-      isAddingPlayer,
-      addPlayerAction,
-      onPlayerAdded,
-    ],
+    [player.id, currentTeamId, wasJustAdded, isAddingPlayer, addPlayerAction],
   );
 
   return (

@@ -3,11 +3,13 @@ import { redirect } from "next/navigation";
 
 import { createServerClient } from "@/utils/supabase/server";
 
+import type { PageProps } from "@/utils/types";
+
 export default async function AwaitingConfirmationPage({
   searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+}: PageProps<never, { email: string }>) {
+  const { email } = await searchParams;
+
   const supabase = await createServerClient();
 
   const {
@@ -18,7 +20,7 @@ export default async function AwaitingConfirmationPage({
     redirect("/welcome");
   }
 
-  if (!searchParams.email) {
+  if (!email) {
     redirect("/login");
   }
 
@@ -28,7 +30,7 @@ export default async function AwaitingConfirmationPage({
         <h1>You&apos;re almost done!</h1>
       </CardHeader>
       <CardBody>
-        <p>We sent a confirmation email to {searchParams.email}.</p>
+        <p>We sent a confirmation email to {email}.</p>
       </CardBody>
     </>
   );

@@ -15,7 +15,7 @@ export default async function GamePage({
   const { gameId } = await params;
   const supabase = await createServerClient();
 
-  const { data: game, error } = await getQuery(supabase, gameId);
+  const { data: game } = await getQuery(supabase, gameId);
 
   if (!game) {
     redirect("/game/new");
@@ -27,6 +27,6 @@ export default async function GamePage({
     case "not_started":
       return <NotStartedGamePage game={game} />;
     case "in_progress":
-      return <InProgressGamePage game={game} />;
+      return <InProgressGamePage />;
   }
 }

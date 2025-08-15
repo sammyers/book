@@ -49,7 +49,7 @@ export default function TeamRosterClient({
         Add Players
       </Button>
     );
-  }, []);
+  }, [teamId]);
 
   const renderPlayerCard = ({
     player,

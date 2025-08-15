@@ -1,10 +1,6 @@
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
-import {
-  BaseballHelmetIcon,
-  HouseIcon,
-  TrophyIcon,
-} from "@phosphor-icons/react/ssr";
+import { HouseIcon } from "@phosphor-icons/react/ssr";
 import { redirect } from "next/navigation";
 
 import { HeaderPortal } from "@/components/HeaderPortal";

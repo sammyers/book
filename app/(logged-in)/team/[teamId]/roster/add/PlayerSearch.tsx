@@ -123,7 +123,7 @@ export default function PlayerSearch({
               className="text-default-400"
             />
             <p className="text-default-400 text-center">
-              No players found matching "{debouncedSearchValue}"
+              No players found matching &quot;{debouncedSearchValue}&quot;
             </p>
           </div>
           {debouncedSearchValue.length >= 3 && createNewPlayerButton}

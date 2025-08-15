@@ -2,11 +2,7 @@ import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { addToast } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ArrowCircleLeftIcon,
-  ArrowLeftIcon,
-  UserCirclePlusIcon,
-} from "@phosphor-icons/react";
+import { ArrowLeftIcon, UserCirclePlusIcon } from "@phosphor-icons/react";
 import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
@@ -15,7 +11,9 @@ import { FormSubmitButton } from "@/components/FormSubmitButton";
 import { PositionSelect } from "@/components/PositionSelect";
 
 import { createPlayerForTeam } from "../../../actions";
-import { CreatePlayerFormSchema, createPlayerFormSchema } from "../../../forms";
+import { createPlayerFormSchema } from "../../../forms";
+
+import type { CreatePlayerFormSchema } from "../../../forms";
 
 interface NewPlayerFormProps {
   teamId: string;
@@ -32,7 +30,6 @@ export default function NewPlayerForm({
     register,
     getValues,
     formState: { isValid, errors },
-    reset,
   } = useForm<CreatePlayerFormSchema>({
     resolver: zodResolver(createPlayerFormSchema),
     defaultValues: {
