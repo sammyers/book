@@ -93,7 +93,6 @@ export default function InviteUserModal({ teams }: Props) {
         isDismissable={false}
         hideCloseButton
         isKeyboardDismissDisabled
-        classNames={{ wrapper: "!h-[100dvh]" }}
       >
         <ModalContent>
           <ModalHeader>Invite New User</ModalHeader>

@@ -1,0 +1,52 @@
+diff --git a/dist/chunk-YYUYJLIK.mjs b/dist/chunk-YYUYJLIK.mjs
+index 790bf0dc29889ea8283845a4b1f9b318dc857656..d99a8e7486b4ffe66f8f131ca1f3d26aa2585b23 100644
+--- a/dist/chunk-YYUYJLIK.mjs
++++ b/dist/chunk-YYUYJLIK.mjs
+@@ -17,7 +17,7 @@ var modal = tv({
+       "z-50",
+       "overflow-x-auto",
+       "justify-center",
+-      "h-[--visual-viewport-height]"
++      "h-(--visual-viewport-height)"
+     ],
+     base: [
+       "flex",
+diff --git a/dist/components/index.js b/dist/components/index.js
+index ddb199e866f21d709f6457b530ac950f7e66a7a8..6b1bf62e3c392dcb15a8c74fceba1621956019ee 100644
+--- a/dist/components/index.js
++++ b/dist/components/index.js
+@@ -6050,7 +6050,7 @@ var modal = tv({
+       "z-50",
+       "overflow-x-auto",
+       "justify-center",
+-      "h-[--visual-viewport-height]"
++      "h-(--visual-viewport-height)"
+     ],
+     base: [
+       "flex",
+diff --git a/dist/components/modal.js b/dist/components/modal.js
+index abd90d3944b73f0169eec3a3d8293ab7ad00030b..05552428099a836093272083bfdb3e9a2d2caa96 100644
+--- a/dist/components/modal.js
++++ b/dist/components/modal.js
+@@ -252,7 +252,7 @@ var modal = tv({
+       "z-50",
+       "overflow-x-auto",
+       "justify-center",
+-      "h-[--visual-viewport-height]"
++      "h-(--visual-viewport-height)"
+     ],
+     base: [
+       "flex",
+diff --git a/dist/index.js b/dist/index.js
+index 27f543df7a82182656a15ffab183127ba8191faf..14446070bb1cae6ad99a7bfad7adb83f0d005538 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -6115,7 +6115,7 @@ var modal = tv({
+       "z-50",
+       "overflow-x-auto",
+       "justify-center",
+-      "h-[--visual-viewport-height]"
++      "h-(--visual-viewport-height)"
+     ],
+     base: [
+       "flex",

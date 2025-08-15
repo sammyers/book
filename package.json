@@ -62,5 +62,9 @@
       "<TYPES>",
       "<TYPES>^[.]"
     ]
+  },
+  "packageManager": "yarn@4.9.2",
+  "resolutions": {
+    "@heroui/theme@npm:2.4.19": "patch:@heroui/theme@npm%3A2.4.19#~/.yarn/patches/@heroui-theme-npm-2.4.19-7d3535db4b.patch"
   }
 }
