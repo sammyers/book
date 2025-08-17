@@ -25,10 +25,7 @@ import InviteUserModal from "./InviteUserModal";
 import type { ChipProps } from "@heroui/chip";
 import type { Team, User } from "../adminPageQueries";
 
-const MembershipChip = ({
-  team,
-  permission_level,
-}: User["memberships"][number]) => {
+const MembershipChip = ({ team, permission_level }: User["memberships"][number]) => {
   const { color, icon } = useMemo(() => {
     let color: ChipProps["color"] = "secondary";
     let icon: React.ReactNode = null;
@@ -69,20 +66,14 @@ export default function UsersList({ initialUsers, teams }: Props) {
   const fetchUsers = useCallback(async (search: string) => {
     const supabase = createClient();
 
-    const { data } = await getUsersQuery(supabase).ilike(
-      "email",
-      `%${search}%`,
-    );
+    const { data } = await getUsersQuery(supabase).ilike("email", `%${search}%`);
 
     if (data) {
       setUsers(data);
     }
   }, []);
 
-  const [searchValue, setSearchValue] = useDebouncedState<string>(
-    "",
-    fetchUsers,
-  );
+  const [searchValue, setSearchValue] = useDebouncedState<string>("", fetchUsers);
 
   return (
     <Card classNames={{ header: "p-4", body: "p-4 pt-0" }}>
@@ -91,9 +82,7 @@ export default function UsersList({ initialUsers, teams }: Props) {
           aria-label="Search users"
           placeholder="Search users..."
           isClearable
-          startContent={
-            <MagnifyingGlassIcon size={20} className="text-foreground-500" />
-          }
+          startContent={<MagnifyingGlassIcon size={20} className="text-foreground-500" />}
           value={searchValue}
           onValueChange={setSearchValue}
         />
@@ -113,12 +102,7 @@ export default function UsersList({ initialUsers, teams }: Props) {
               is_confirmed,
               has_set_password,
             }) => (
-              <Card
-                key={id}
-                as="li"
-                className="list-none border border-divider"
-                shadow="none"
-              >
+              <Card key={id} as="li" className="list-none border border-divider" shadow="none">
                 <CardBody>
                   <div className="flex flex-col gap-2">
                     <div className="flex items-start justify-between gap-1">
@@ -134,9 +118,7 @@ export default function UsersList({ initialUsers, teams }: Props) {
                             size="sm"
                             color="warning"
                             variant="flat"
-                            startContent={
-                              <EnvelopeIcon size={16} weight="duotone" />
-                            }
+                            startContent={<EnvelopeIcon size={16} weight="duotone" />}
                             className="shrink-0 pl-2 [&>span]:font-medium"
                           >
                             Pending Invite
@@ -147,9 +129,7 @@ export default function UsersList({ initialUsers, teams }: Props) {
                             size="sm"
                             color="danger"
                             variant="flat"
-                            startContent={
-                              <WarningIcon size={16} weight="duotone" />
-                            }
+                            startContent={<WarningIcon size={16} weight="duotone" />}
                             className="shrink-0 pl-2 [&>span]:font-medium"
                           >
                             No Password Set
@@ -164,10 +144,7 @@ export default function UsersList({ initialUsers, teams }: Props) {
                     </div>
                     <div className="flex items-center gap-1 text-xs text-default-500">
                       <CalendarIcon size={14} weight="duotone" />
-                      Joined{" "}
-                      {DateTime.fromISO(joined_at).toLocaleString(
-                        DateTime.DATE_MED,
-                      )}
+                      Joined {DateTime.fromISO(joined_at).toLocaleString(DateTime.DATE_MED)}
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {permission_level === "super_admin" && (
@@ -175,19 +152,14 @@ export default function UsersList({ initialUsers, teams }: Props) {
                           size="sm"
                           color="secondary"
                           variant="flat"
-                          startContent={
-                            <WrenchIcon size={16} weight="duotone" />
-                          }
+                          startContent={<WrenchIcon size={16} weight="duotone" />}
                           className="shrink-0 pl-2 [&>span]:font-medium"
                         >
                           Platform Admin
                         </Chip>
                       )}
-                      {memberships.map((membership) => (
-                        <MembershipChip
-                          key={membership.team.name}
-                          {...membership}
-                        />
+                      {memberships.map(membership => (
+                        <MembershipChip key={membership.team.name} {...membership} />
                       ))}
                     </div>
                   </div>

@@ -4,14 +4,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Spinner } from "@heroui/spinner";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-} from "@heroui/table";
+import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/table";
 import { User } from "@heroui/user";
 import { map } from "lodash";
 import { useActionState, useCallback, useMemo, useState } from "react";
@@ -62,27 +55,20 @@ export default function NewTeamPage() {
     }
   }, []);
 
-  const [searchValue, setSearchValue] = useDebouncedState<string>(
-    "",
-    fetchPlayers,
-  );
+  const [searchValue, setSearchValue] = useDebouncedState<string>("", fetchPlayers);
 
   const [addedPlayers, setAddedPlayers] = useState<Player[]>([]);
 
   const addPlayer = useCallback(
-    (player: Player) => setAddedPlayers((players) => [...players, player]),
+    (player: Player) => setAddedPlayers(players => [...players, player]),
     [setAddedPlayers],
   );
   const removePlayer = useCallback(
-    (playerId: string) =>
-      setAddedPlayers((players) => players.filter(({ id }) => id !== playerId)),
+    (playerId: string) => setAddedPlayers(players => players.filter(({ id }) => id !== playerId)),
     [setAddedPlayers],
   );
 
-  const addedPlayerIds = useMemo(
-    () => new Set(map(addedPlayers, "id")),
-    [addedPlayers],
-  );
+  const addedPlayerIds = useMemo(() => new Set(map(addedPlayers, "id")), [addedPlayers]);
 
   const filteredResults = useMemo(
     () => searchResults.filter(({ id }) => !addedPlayerIds.has(id)),
@@ -126,7 +112,7 @@ export default function NewTeamPage() {
             emptyContent="No players found"
             items={filteredResults}
           >
-            {(item) => (
+            {item => (
               <TableRow key={item.id}>
                 <TableCell>
                   <User name={item.name} description={getPositions(item)} />
@@ -144,7 +130,7 @@ export default function NewTeamPage() {
             <TableColumn align="end">{""}</TableColumn>
           </TableHeader>
           <TableBody emptyContent="No players added" items={addedPlayers}>
-            {(item) => (
+            {item => (
               <TableRow key={item.id}>
                 <TableCell>
                   <User name={item.name} description={getPositions(item)} />
@@ -163,9 +149,7 @@ export default function NewTeamPage() {
       <FormSubmitButton
         color="success"
         isValid={teamName.length > 0 && addedPlayerIds.size > 0}
-        onPress={() =>
-          formAction({ name: teamName, playerIds: Array.from(addedPlayerIds) })
-        }
+        onPress={() => formAction({ name: teamName, playerIds: Array.from(addedPlayerIds) })}
       >
         Create Team
       </FormSubmitButton>

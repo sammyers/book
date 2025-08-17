@@ -4,10 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { createServerClient } from "@/utils/supabase/server";
 
-export async function createSoloModeTeam(
-  teamName: string,
-  parentTeamId: string,
-) {
+export async function createSoloModeTeam(teamName: string, parentTeamId: string) {
   const supabase = await createServerClient();
 
   const { data: newTeam, error } = await supabase

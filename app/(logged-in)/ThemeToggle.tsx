@@ -18,7 +18,7 @@ export default function ThemeToggle() {
   }
 
   return (
-    <div onClick={(e) => e.stopPropagation()}>
+    <div onClick={e => e.stopPropagation()}>
       <Switch
         size="sm"
         color="default"
@@ -31,7 +31,7 @@ export default function ThemeToggle() {
           )
         }
         isSelected={theme === "dark"}
-        onValueChange={(isSelected) => setTheme(isSelected ? "dark" : "light")}
+        onValueChange={isSelected => setTheme(isSelected ? "dark" : "light")}
       />
     </div>
   );

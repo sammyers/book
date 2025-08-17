@@ -12,8 +12,7 @@ interface HeaderContextType {
 const HeaderContext = createContext<HeaderContextType | null>(null);
 
 export function HeaderProvider({ children }: { children: ReactNode }) {
-  const [headerRef, setHeaderRefRaw] =
-    useState<RefObject<HTMLDivElement> | null>(null);
+  const [headerRef, setHeaderRefRaw] = useState<RefObject<HTMLDivElement> | null>(null);
 
   const setHeaderRef = useCallback((node: HTMLDivElement | null) => {
     if (node) {
@@ -24,9 +23,7 @@ export function HeaderProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <HeaderContext.Provider value={{ headerRef, setHeaderRef }}>
-      {children}
-    </HeaderContext.Provider>
+    <HeaderContext.Provider value={{ headerRef, setHeaderRef }}>{children}</HeaderContext.Provider>
   );
 }
 

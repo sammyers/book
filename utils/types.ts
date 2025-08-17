@@ -26,7 +26,6 @@ export type PageProps<
       searchParams: Promise<SearchParams>;
     };
 
-export type LayoutProps<Params extends Record<string, unknown>> =
-  PageProps<Params> & {
-    children: ReactNode;
-  };
+export type LayoutProps<Params extends Record<string, unknown>> = PageProps<Params> & {
+  children: ReactNode;
+};

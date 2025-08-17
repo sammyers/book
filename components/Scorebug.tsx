@@ -50,27 +50,9 @@ export const Scorebug = forwardRef<SVGSVGElement, ScorebugProps>(
           className={getClassNameForBase(baseRunners[1])}
           strokeWidth="3"
         />
-        <circle
-          cx="31"
-          cy="108"
-          r="9"
-          className={getClassNameForOut(outs >= 1)}
-          strokeWidth="3"
-        />
-        <circle
-          cx="64"
-          cy="108"
-          r="9"
-          className={getClassNameForOut(outs >= 2)}
-          strokeWidth="3"
-        />
-        <circle
-          cx="97"
-          cy="108"
-          r="9"
-          className={getClassNameForOut(outs === 3)}
-          strokeWidth="3"
-        />
+        <circle cx="31" cy="108" r="9" className={getClassNameForOut(outs >= 1)} strokeWidth="3" />
+        <circle cx="64" cy="108" r="9" className={getClassNameForOut(outs >= 2)} strokeWidth="3" />
+        <circle cx="97" cy="108" r="9" className={getClassNameForOut(outs === 3)} strokeWidth="3" />
       </svg>
     );
   },

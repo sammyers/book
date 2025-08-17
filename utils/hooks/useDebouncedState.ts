@@ -43,14 +43,12 @@ export const useDebouncedState = <T = string>(
   const debouncedOnChange = useMemo(
     () =>
       debounce(
-        (newValue) => {
+        newValue => {
           onChangeRef.current?.(newValue);
           setDebouncedValue(newValue);
         },
         wait,
-        maxWait !== undefined || leading || trailing
-          ? { maxWait, leading, trailing }
-          : undefined,
+        maxWait !== undefined || leading || trailing ? { maxWait, leading, trailing } : undefined,
       ),
     [setDebouncedValue, wait, maxWait, leading, trailing, onChangeRef],
   );

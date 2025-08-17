@@ -14,7 +14,7 @@ export default async function GamesPage() {
 
   return (
     <div className="flex flex-col gap-2">
-      {games.map((game) => (
+      {games.map(game => (
         <Card as={Link} key={game.id} isPressable href={`/game/${game.id}`}>
           <CardHeader>
             <h5>{game.name}</h5>

@@ -7,7 +7,5 @@ export function List({ className, ...props }: ComponentProps<"ul">) {
 }
 
 export function ListItem({ className, ...props }: ComponentProps<"li">) {
-  return (
-    <li className={cn("flex items-center py-2 px-3", className)} {...props} />
-  );
+  return <li className={cn("flex items-center py-2 px-3", className)} {...props} />;
 }

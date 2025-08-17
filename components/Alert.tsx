@@ -12,10 +12,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
     return (
       <div
         ref={ref}
-        className={cn(
-          "border-danger text-danger rounded-medium bg-danger/10 p-3",
-          className,
-        )}
+        className={cn("border-danger text-danger rounded-medium bg-danger/10 p-3", className)}
         {...props}
       >
         {children}

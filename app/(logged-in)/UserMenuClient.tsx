@@ -94,7 +94,7 @@ export default function UserMenuClient({ user }: { user: UserMenuData }) {
       });
     }
 
-    const teamsItems: MenuSectionItem[] = user.teams.map((team) => ({
+    const teamsItems: MenuSectionItem[] = user.teams.map(team => ({
       key: `team_${team.id}`,
       title: team.name,
       href: `/team/${team.id}`,
@@ -156,14 +156,14 @@ export default function UserMenuClient({ user }: { user: UserMenuData }) {
       <DropdownMenu
         variant="flat"
         disabledKeys={["user", "no_teams"]}
-        onAction={(key) => {
+        onAction={key => {
           if (key === "logout") {
             logOut();
           }
         }}
         items={menuItems}
       >
-        {(item) => {
+        {item => {
           if (item.type === "section") {
             const { key, items, ...rest } = item;
 

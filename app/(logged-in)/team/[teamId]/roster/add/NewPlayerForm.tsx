@@ -21,11 +21,7 @@ interface NewPlayerFormProps {
   onCancel: () => void;
 }
 
-export default function NewPlayerForm({
-  teamId,
-  defaultNameValue,
-  onCancel,
-}: NewPlayerFormProps) {
+export default function NewPlayerForm({ teamId, defaultNameValue, onCancel }: NewPlayerFormProps) {
   const {
     register,
     getValues,
@@ -77,7 +73,7 @@ export default function NewPlayerForm({
       <CardBody className="p-4 pt-0">
         <form
           className="flex flex-col gap-6"
-          onSubmit={(e) => {
+          onSubmit={e => {
             e.preventDefault();
             startTransition(() => {
               createPlayerAction(getValues());
@@ -97,14 +93,14 @@ export default function NewPlayerForm({
               isRequired
               errorMessage={errors.primaryPosition?.message}
               {...register("primaryPosition", {
-                setValueAs: (value) => value || undefined,
+                setValueAs: value => value || undefined,
               })}
             />
             <PositionSelect
               label="Backup Position"
               errorMessage={errors.secondaryPosition?.message}
               {...register("secondaryPosition", {
-                setValueAs: (value) => value || undefined,
+                setValueAs: value => value || undefined,
               })}
             />
           </div>

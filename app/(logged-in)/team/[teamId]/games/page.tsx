@@ -27,13 +27,11 @@ type TeamGame = {
 };
 
 const getOpponentTeam = ({ role, game: { teams } }: TeamGame) => {
-  const opponentTeam = teams.find((t) => t.role !== role);
+  const opponentTeam = teams.find(t => t.role !== role);
   return opponentTeam ? opponentTeam.team : null;
 };
 
-export default async function TeamGamesPage({
-  params,
-}: PageProps<{ teamId: string }>) {
+export default async function TeamGamesPage({ params }: PageProps<{ teamId: string }>) {
   const { teamId } = await params;
 
   const supabase = await createServerClient();
@@ -125,21 +123,15 @@ export default async function TeamGamesPage({
         <CardBody className="pt-0">
           {upcomingGames.length > 0 ? (
             <List>
-              {upcomingGames.map((teamGame) => (
-                <ListItem
-                  key={teamGame.game.id}
-                  className="flex flex-col gap-1 items-start"
-                >
+              {upcomingGames.map(teamGame => (
+                <ListItem key={teamGame.game.id} className="flex flex-col gap-1 items-start">
                   <h3 className="font-bold">
-                    {getOpponentPrefix(teamGame.role)}{" "}
-                    {getOpponentTeam(teamGame)?.name}
+                    {getOpponentPrefix(teamGame.role)} {getOpponentTeam(teamGame)?.name}
                   </h3>
                   <h5 className="font-semibold uppercase text-small text-foreground-600">
                     {teamGame.game.name}
                   </h5>
-                  <p className="text-foreground-500 text-small">
-                    {startCase(teamGame.role)}
-                  </p>
+                  <p className="text-foreground-500 text-small">{startCase(teamGame.role)}</p>
                 </ListItem>
               ))}
             </List>

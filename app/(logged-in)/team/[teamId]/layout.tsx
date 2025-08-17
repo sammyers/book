@@ -10,10 +10,7 @@ import TeamPageTabs from "./TeamPageTabs";
 
 import type { LayoutProps } from "@/utils/types";
 
-export default async function TeamLayout({
-  params,
-  children,
-}: LayoutProps<{ teamId: string }>) {
+export default async function TeamLayout({ params, children }: LayoutProps<{ teamId: string }>) {
   const { teamId } = await params;
   const supabase = await createServerClient();
 

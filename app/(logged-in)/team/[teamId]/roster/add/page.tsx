@@ -12,12 +12,10 @@ export default function AddToRosterPage() {
   const [showNewPlayerForm, setShowNewPlayerForm] = useState(false);
   const [defaultNameValue, setDefaultNameValue] = useState("");
 
-  const [recentlyAddedPlayerIds, setRecentlyAddedPlayerIds] = useState<
-    string[]
-  >([]);
+  const [recentlyAddedPlayerIds, setRecentlyAddedPlayerIds] = useState<string[]>([]);
 
   const handlePlayerAdded = useCallback((playerId: string) => {
-    setRecentlyAddedPlayerIds((prev) => [...prev, playerId]);
+    setRecentlyAddedPlayerIds(prev => [...prev, playerId]);
   }, []);
 
   const handleCreateNewPlayer = useCallback((searchValue: string) => {

@@ -4,11 +4,7 @@ import { createServerClient } from "@/utils/supabase/server";
 
 import type { ReactNode } from "react";
 
-export default async function SetupIncompleteLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default async function SetupIncompleteLayout({ children }: { children: ReactNode }) {
   const supabase = await createServerClient();
 
   const { data } = await supabase.auth.getUser();

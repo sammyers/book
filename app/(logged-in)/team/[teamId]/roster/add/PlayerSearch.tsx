@@ -2,12 +2,7 @@ import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Input } from "@heroui/input";
 import { Spinner } from "@heroui/spinner";
-import {
-  ArrowLeftIcon,
-  EmptyIcon,
-  MagnifyingGlassIcon,
-  PlusIcon,
-} from "@phosphor-icons/react";
+import { ArrowLeftIcon, EmptyIcon, MagnifyingGlassIcon, PlusIcon } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
 
@@ -45,9 +40,7 @@ export default function PlayerSearch({
 
     setIsSearchLoading(true);
 
-    const { data, error } = await getPlayerSearchQuery(supabase, search).limit(
-      3,
-    );
+    const { data, error } = await getPlayerSearchQuery(supabase, search).limit(3);
 
     setIsSearchLoading(false);
 
@@ -56,11 +49,8 @@ export default function PlayerSearch({
     }
   }, []);
 
-  const [
-    searchValue,
-    setSearchValue,
-    { debouncedValue: debouncedSearchValue },
-  ] = useDebouncedState<string>("", fetchPlayers);
+  const [searchValue, setSearchValue, { debouncedValue: debouncedSearchValue }] =
+    useDebouncedState<string>("", fetchPlayers);
 
   const content = useMemo(() => {
     const spinner = (
@@ -93,14 +83,8 @@ export default function PlayerSearch({
     if (searchValue.length === 0 || debouncedSearchValue.length === 0) {
       return (
         <div className="flex flex-col items-center gap-2 py-6">
-          <MagnifyingGlassIcon
-            size={48}
-            weight="duotone"
-            className="text-default-400"
-          />
-          <p className="text-default-400">
-            Start typing to search for a player
-          </p>
+          <MagnifyingGlassIcon size={48} weight="duotone" className="text-default-400" />
+          <p className="text-default-400">Start typing to search for a player</p>
           <p className="text-default-400 text-xs">or</p>
           {createNewPlayerButton}
         </div>
@@ -108,20 +92,14 @@ export default function PlayerSearch({
     }
 
     if (!searchResults.length && isSearchLoading) {
-      return (
-        <div className="flex flex-col items-center gap-2 py-6">{spinner}</div>
-      );
+      return <div className="flex flex-col items-center gap-2 py-6">{spinner}</div>;
     }
 
     if (!searchResults.length) {
       return (
         <div className="flex flex-col items-center gap-4 py-6">
           <div className="flex flex-col items-center gap-2">
-            <EmptyIcon
-              size={48}
-              weight="duotone"
-              className="text-default-400"
-            />
+            <EmptyIcon size={48} weight="duotone" className="text-default-400" />
             <p className="text-default-400 text-center">
               No players found matching &quot;{debouncedSearchValue}&quot;
             </p>
@@ -134,7 +112,7 @@ export default function PlayerSearch({
     return (
       <div className="flex flex-col gap-4 relative">
         <div className="flex flex-col gap-2">
-          {searchResults.map((player) => (
+          {searchResults.map(player => (
             <PlayerSearchItem
               key={player.id}
               player={player}
@@ -184,7 +162,7 @@ export default function PlayerSearch({
           className="flex-1"
           placeholder="Type a player name to search..."
           value={searchValue}
-          onValueChange={(value) => {
+          onValueChange={value => {
             setSearchValue(value);
             if (value.length === 0) {
               setSearchResults([]);

@@ -35,8 +35,8 @@ export default function SetPasswordForm({ userName }: SetPasswordFormProps) {
       <CardHeader className="flex flex-col gap-2">
         <h1 className="font-bold text-large">Set Your Password</h1>
         <p className="text-default-500 text-small text-center">
-          Welcome, <span className="font-bold">{userName}</span>! Please set a
-          password to finish setting up your account.
+          Welcome, <span className="font-bold">{userName}</span>! Please set a password to finish
+          setting up your account.
         </p>
       </CardHeader>
       <form action={() => formAction(getValues())}>
@@ -48,9 +48,7 @@ export default function SetPasswordForm({ userName }: SetPasswordFormProps) {
             {...register("password")}
             errorMessage={errors.password?.message}
           />
-          {state?.status === "error" && (
-            <Alert color="danger">{state.message}</Alert>
-          )}
+          {state?.status === "error" && <Alert color="danger">{state.message}</Alert>}
           <FormSubmitButton isValid={isValid}>Set Password</FormSubmitButton>
         </CardBody>
       </form>

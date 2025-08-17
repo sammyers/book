@@ -513,6 +513,12 @@ export type Database = {
         Args: { target_team_id: string }
         Returns: undefined
       }
+      has_permission_for_any_team: {
+        Args: {
+          min_level: Database["public"]["Enums"]["team_permission_level"]
+        }
+        Returns: boolean
+      }
       has_team_permission: {
         Args: {
           permission: Database["public"]["Enums"]["team_permission_level"]

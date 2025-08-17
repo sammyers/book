@@ -8,11 +8,7 @@ import type { Tables } from "@/utils/supabase/database.types";
 
 type Player = Tables<"player">;
 
-export default function RealtimePlayers({
-  initialPlayers,
-}: {
-  initialPlayers: Player[];
-}) {
+export default function RealtimePlayers({ initialPlayers }: { initialPlayers: Player[] }) {
   const [players, setPlayers] = useState(initialPlayers);
 
   useEffect(() => {
@@ -24,7 +20,7 @@ export default function RealtimePlayers({
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "player" },
         ({ new: newPlayer }) => {
-          setPlayers((players) => [...players, newPlayer]);
+          setPlayers(players => [...players, newPlayer]);
         },
       )
       .subscribe();

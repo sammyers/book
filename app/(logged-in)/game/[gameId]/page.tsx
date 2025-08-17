@@ -9,9 +9,7 @@ import NotStartedGamePage from "./NotStartedGamePage";
 
 import type { PageProps } from "@/utils/types";
 
-export default async function GamePage({
-  params,
-}: PageProps<{ gameId: string }>) {
+export default async function GamePage({ params }: PageProps<{ gameId: string }>) {
   const { gameId } = await params;
   const supabase = await createServerClient();
 

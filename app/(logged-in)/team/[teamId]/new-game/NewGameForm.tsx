@@ -41,10 +41,7 @@ export default function NewGameForm({ teamId, teams }: Props) {
   const [newTeamError, setNewTeamError] = useState<PostgrestError | null>(null);
 
   return (
-    <form
-      className="flex flex-col gap-4"
-      action={() => formAction(getValues())}
-    >
+    <form className="flex flex-col gap-4" action={() => formAction(getValues())}>
       <div className="flex gap-3 items-end flex-wrap sm:flex-nowrap">
         <Input
           {...register("name")}
@@ -68,7 +65,7 @@ export default function NewGameForm({ teamId, teams }: Props) {
         name="opponentTeamId"
         label="Choose Opponent"
         control={control}
-        onCreateTeam={async (name) => {
+        onCreateTeam={async name => {
           const [newTeamId, error] = await createSoloModeTeam(name, teamId);
           if (newTeamId) {
             return newTeamId;
@@ -79,15 +76,11 @@ export default function NewGameForm({ teamId, teams }: Props) {
         }}
       />
       <div className="flex flex-col gap-1">
-        <Checkbox
-          isSelected={trackOpponentAtBats}
-          onValueChange={setTrackOpponentAtBats}
-        >
+        <Checkbox isSelected={trackOpponentAtBats} onValueChange={setTrackOpponentAtBats}>
           Track opponent at-bats
         </Checkbox>
         <span className="text-tiny text-default-500">
-          If unselected, only runs per inning will be tracked for the opposing
-          team.
+          If unselected, only runs per inning will be tracked for the opposing team.
         </span>
       </div>
       {!!newTeamError && <Alert>{newTeamError.message}</Alert>}

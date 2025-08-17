@@ -29,11 +29,7 @@ export async function checkUserByEmail(email: string) {
 
 async function inviteUserByEmail(
   supabase: SupabaseClient,
-  {
-    email,
-    firstName,
-    lastName,
-  }: { email: string; firstName: string; lastName: string },
+  { email, firstName, lastName }: { email: string; firstName: string; lastName: string },
 ) {
   const baseUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
@@ -146,10 +142,7 @@ export async function inviteUser(
 
   const adminClient = await createServerClient({ admin: true });
 
-  const { data: userResponse, error: userError } = await inviteUserByEmail(
-    adminClient,
-    formData,
-  );
+  const { data: userResponse, error: userError } = await inviteUserByEmail(adminClient, formData);
 
   if (userError) {
     return {

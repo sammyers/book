@@ -19,7 +19,7 @@ export async function createGame(
     return {
       status: "error",
       message: "Invalid form data",
-      errors: parsed.error.issues.map((issue) => ({
+      errors: parsed.error.issues.map(issue => ({
         path: issue.path.join("."),
         message: `Server validation: ${issue.message}`,
       })),

@@ -14,7 +14,5 @@ export default function PageHeaderContent() {
     [setHeaderRef],
   );
 
-  return (
-    <div className="flex grow h-full items-center gap-2" ref={assignRef} />
-  );
+  return <div className="flex grow h-full items-center gap-2" ref={assignRef} />;
 }

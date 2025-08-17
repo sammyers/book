@@ -11,8 +11,7 @@ import type { ForwardedRef, ReactElement, Ref } from "react";
 
 export type CreateItemResult = { key: Key; label: string };
 
-interface CreatableAutocompleteProps<T extends object>
-  extends AutocompleteProps<T> {
+interface CreatableAutocompleteProps<T extends object> extends AutocompleteProps<T> {
   onCreate?: (textValue: string) => Promise<CreateItemResult | null>;
   defaultItems: NonNullable<AutocompleteProps<T>["defaultItems"]>;
   onSelectionChange: NonNullable<AutocompleteProps<T>["onSelectionChange"]>;
@@ -43,7 +42,7 @@ function CreatableAutocompleteImpl<T extends object>(
     if (
       supportsCreation &&
       inputValue.length > 0 &&
-      !some(defaultItemsProp, (team) => team.name === inputValue)
+      !some(defaultItemsProp, team => team.name === inputValue)
     ) {
       return [
         ...defaultItemsProp,
@@ -70,7 +69,7 @@ function CreatableAutocompleteImpl<T extends object>(
         setInputValue("");
         onSelectionChange(null);
       }}
-      onSelectionChange={async (key) => {
+      onSelectionChange={async key => {
         console.log("setting selected key", key);
         if (key === "new-item") {
           setIsLoading(true);
@@ -81,20 +80,16 @@ function CreatableAutocompleteImpl<T extends object>(
           }
           setIsLoading(false);
         } else {
-          const selectedItem = (defaultItems as T[]).find(
-            (item) => getKey(item) === key,
-          );
+          const selectedItem = (defaultItems as T[]).find(item => getKey(item) === key);
           setInputValue(selectedItem ? getLabel(selectedItem) : "");
           onSelectionChange(key);
         }
       }}
       defaultItems={defaultItems}
     >
-      {(item) => {
+      {item => {
         if ("isNewItemOption" in item) {
-          return (
-            <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>
-          );
+          return <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>;
         }
         return children(item);
       }}
@@ -102,8 +97,6 @@ function CreatableAutocompleteImpl<T extends object>(
   );
 }
 
-export const CreatableAutocomplete = forwardRef(CreatableAutocompleteImpl) as <
-  T extends object,
->(
+export const CreatableAutocomplete = forwardRef(CreatableAutocompleteImpl) as <T extends object>(
   props: CreatableAutocompleteProps<T> & { ref: Ref<HTMLElement> },
 ) => ReactElement;

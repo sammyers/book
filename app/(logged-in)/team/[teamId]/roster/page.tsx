@@ -7,14 +7,18 @@ import TeamRosterClient from "./TeamRosterClient";
 
 import type { PageProps } from "@/utils/types";
 
-export default async function TeamRosterPage({
-  params,
-}: PageProps<{ teamId: string }>) {
+export default async function TeamRosterPage({ params }: PageProps<{ teamId: string }>) {
   const { teamId } = await params;
 
   const supabase = await createServerClient();
 
   const { data: players, error } = await getTeamRosterQuery(supabase, teamId);
+  const { data: isManager } = await supabase.rpc("has_team_permission", {
+    team_id: teamId,
+    permission: "manager",
+  });
+
+  console.log({ isManager });
 
   if (error) {
     return (
@@ -24,5 +28,5 @@ export default async function TeamRosterPage({
     );
   }
 
-  return <TeamRosterClient players={players} teamId={teamId} />;
+  return <TeamRosterClient players={players} teamId={teamId} isManager={isManager ?? false} />;
 }

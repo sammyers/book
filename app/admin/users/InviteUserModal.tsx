@@ -102,7 +102,7 @@ export default function InviteUserModal({ teams }: Props) {
         <ModalContent>
           <ModalHeader>Invite New User</ModalHeader>
           <form
-            onSubmit={(e) => {
+            onSubmit={e => {
               e.preventDefault();
               startTransition(() => formAction(getValues()));
             }}
@@ -138,8 +138,8 @@ export default function InviteUserModal({ teams }: Props) {
                     />
                   </div>
                   <p className="text-sm text-default-500">
-                    An invitation email will be sent to the user with
-                    instructions to join the platform.
+                    An invitation email will be sent to the user with instructions to join the
+                    platform.
                   </p>
                 </CardBody>
               </Card>
@@ -157,7 +157,7 @@ export default function InviteUserModal({ teams }: Props) {
                     errorMessage={errors.teamId?.message}
                     {...register("teamId")}
                   >
-                    {(team) => (
+                    {team => (
                       <SelectItem key={team.id} description={team.admin_note}>
                         {team.name}
                       </SelectItem>
@@ -176,13 +176,11 @@ export default function InviteUserModal({ teams }: Props) {
                     errorMessage={errors.permissionLevel?.message}
                     {...register("permissionLevel")}
                   >
-                    {(item) => (
-                      <SelectItem key={item.key}>{item.label}</SelectItem>
-                    )}
+                    {item => <SelectItem key={item.key}>{item.label}</SelectItem>}
                   </Select>
                   <p className="text-sm text-default-500">
-                    The user will be automatically added to the selected team
-                    with the specified permission level.
+                    The user will be automatically added to the selected team with the specified
+                    permission level.
                   </p>
                 </CardBody>
               </Card>
@@ -195,11 +193,7 @@ export default function InviteUserModal({ teams }: Props) {
                 variant="flat"
                 isValid={isValid}
                 startContent={
-                  <EnvelopeSimpleIcon
-                    size={20}
-                    weight="duotone"
-                    className="shrink-0"
-                  />
+                  <EnvelopeSimpleIcon size={20} weight="duotone" className="shrink-0" />
                 }
               >
                 Send Invitation

@@ -15,13 +15,7 @@ import { addToast } from "@heroui/react";
 import { Select, SelectItem } from "@heroui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FloppyDiskIcon, PlusIcon } from "@phosphor-icons/react";
-import {
-  startTransition,
-  useActionState,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { startTransition, useActionState, useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { FormSubmitButton } from "@/components/FormSubmitButton";
@@ -177,15 +171,14 @@ export default function NewTeamModal() {
         hideCloseButton
         isKeyboardDismissDisabled
         classNames={{
-          wrapper:
-            "overflow-y-auto flex-col justify-end sm:justify-center items-center",
+          wrapper: "overflow-y-auto flex-col justify-end sm:justify-center items-center",
           base: "overflow-y-visible",
         }}
       >
         <ModalContent>
           <ModalHeader>Create New Team</ModalHeader>
           <form
-            onSubmit={(e) => {
+            onSubmit={e => {
               e.preventDefault();
               startTransition(() => {
                 formAction(getValues());
@@ -227,9 +220,7 @@ export default function NewTeamModal() {
                       isInvalid={!!errors.state}
                       errorMessage={errors.state?.message}
                     >
-                      {(item) => (
-                        <SelectItem key={item.value}>{item.label}</SelectItem>
-                      )}
+                      {item => <SelectItem key={item.value}>{item.label}</SelectItem>}
                     </Select>
                   </div>
                 </CardBody>
@@ -250,9 +241,7 @@ export default function NewTeamModal() {
                   />
 
                   {isCheckingEmail && (
-                    <p className="text-sm text-primary-500">
-                      Checking if user exists...
-                    </p>
+                    <p className="text-sm text-primary-500">Checking if user exists...</p>
                   )}
 
                   {foundUser && !isCheckingEmail && (
@@ -263,16 +252,8 @@ export default function NewTeamModal() {
 
                   {showAdditionalManagerInfo && (
                     <div className="flex gap-2">
-                      <Input
-                        label="First Name"
-                        isRequired
-                        {...register("manager.firstName")}
-                      />
-                      <Input
-                        label="Last Name"
-                        isRequired
-                        {...register("manager.lastName")}
-                      />
+                      <Input label="First Name" isRequired {...register("manager.firstName")} />
+                      <Input label="Last Name" isRequired {...register("manager.lastName")} />
                     </div>
                   )}
                 </CardBody>
@@ -285,13 +266,7 @@ export default function NewTeamModal() {
               <FormSubmitButton
                 variant="flat"
                 isValid={isValid && !isCheckingEmail}
-                startContent={
-                  <FloppyDiskIcon
-                    size={20}
-                    weight="duotone"
-                    className="shrink-0"
-                  />
-                }
+                startContent={<FloppyDiskIcon size={20} weight="duotone" className="shrink-0" />}
               >
                 Create Team
               </FormSubmitButton>

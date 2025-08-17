@@ -30,10 +30,7 @@ interface Props {
   initialTeams: Team[];
 }
 
-const getTeamLocation = (
-  location_city: string | null,
-  location_state: string | null,
-) => {
+const getTeamLocation = (location_city: string | null, location_state: string | null) => {
   if (location_city && location_state) {
     return `${location_city}, ${location_state}`;
   } else if (location_city) {
@@ -59,10 +56,7 @@ export default function TeamManagementView({ initialTeams }: Props) {
     }
   }, []);
 
-  const [searchValue, setSearchValue] = useDebouncedState<string>(
-    "",
-    fetchTeams,
-  );
+  const [searchValue, setSearchValue] = useDebouncedState<string>("", fetchTeams);
 
   return (
     <Card classNames={{ header: "p-4", body: "p-4 pt-0" }}>
@@ -71,9 +65,7 @@ export default function TeamManagementView({ initialTeams }: Props) {
           aria-label="Search teams"
           placeholder="Search teams..."
           isClearable
-          startContent={
-            <MagnifyingGlassIcon size={20} className="text-foreground-500" />
-          }
+          startContent={<MagnifyingGlassIcon size={20} className="text-foreground-500" />}
           value={searchValue}
           onValueChange={setSearchValue}
         />
@@ -92,21 +84,14 @@ export default function TeamManagementView({ initialTeams }: Props) {
                 location_city,
                 location_state,
               }) => (
-                <Card
-                  key={id}
-                  as="li"
-                  className="list-none border border-divider"
-                  shadow="none"
-                >
+                <Card key={id} as="li" className="list-none border border-divider" shadow="none">
                   <CardBody>
                     <div className="flex flex-col gap-2">
                       <div className="flex items-start justify-between gap-1">
                         <div className="flex-1">
                           <p className="text-lg font-medium">{name}</p>
                           {admin_note && (
-                            <p className="text-sm italic text-default-500">
-                              {admin_note}
-                            </p>
+                            <p className="text-sm italic text-default-500">{admin_note}</p>
                           )}
                         </div>
                         <div className="flex gap-1">
@@ -129,13 +114,7 @@ export default function TeamManagementView({ initialTeams }: Props) {
                           >
                             <NotePencilIcon size={20} weight="duotone" />
                           </Button>
-                          <Button
-                            isIconOnly
-                            size="sm"
-                            variant="light"
-                            color="danger"
-                            isDisabled
-                          >
+                          <Button isIconOnly size="sm" variant="light" color="danger" isDisabled>
                             <TrashIcon size={20} weight="duotone" />
                           </Button>
                         </div>
@@ -143,29 +122,18 @@ export default function TeamManagementView({ initialTeams }: Props) {
                       <div className="flex flex-wrap gap-4 text-sm text-default-600">
                         {getTeamLocation(location_city, location_state) && (
                           <span className="flex items-center gap-1">
-                            <MapPinIcon
-                              size={16}
-                              weight="fill"
-                              className="text-success"
-                            />
+                            <MapPinIcon size={16} weight="fill" className="text-success" />
                             {getTeamLocation(location_city, location_state)}
                           </span>
                         )}
                         <span className="flex items-center gap-1">
-                          <UsersIcon
-                            size={16}
-                            weight="fill"
-                            className="text-warning"
-                          />
+                          <UsersIcon size={16} weight="fill" className="text-warning" />
                           {numUsers} member{numUsers !== 1 ? "s" : ""}
                         </span>
                       </div>
                       <div className="flex items-center gap-1 text-xs text-default-500">
                         <CalendarIcon size={14} weight="duotone" />
-                        Created{" "}
-                        {DateTime.fromISO(created_at).toLocaleString(
-                          DateTime.DATE_MED,
-                        )}
+                        Created {DateTime.fromISO(created_at).toLocaleString(DateTime.DATE_MED)}
                       </div>
                     </div>
                   </CardBody>

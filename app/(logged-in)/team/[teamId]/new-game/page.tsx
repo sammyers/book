@@ -8,9 +8,7 @@ import NewGameForm from "./NewGameForm";
 
 import type { PageProps } from "@/utils/types";
 
-export default async function NewGamePage({
-  params,
-}: PageProps<{ teamId: string }>) {
+export default async function NewGamePage({ params }: PageProps<{ teamId: string }>) {
   const { teamId } = await params;
 
   if (!teamId) {

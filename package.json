@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "format": "prettier --write .",
     "gen_types": "supabase gen types --local --lang=typescript --schema public > utils/supabase/database-generated.types.ts"
   },
   "dependencies": {
@@ -51,6 +52,8 @@
     "plugins": [
       "@ianvs/prettier-plugin-sort-imports"
     ],
+    "printWidth": 100,
+    "arrowParens": "avoid",
     "importOrder": [
       "<BUILTIN_MODULES>",
       "<THIRD_PARTY_MODULES>",

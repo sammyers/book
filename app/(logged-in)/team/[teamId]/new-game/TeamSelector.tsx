@@ -38,10 +38,7 @@ export default function TeamSelector<T extends FieldValues>({
   const lastAddedTeamId = useRef<Key | undefined>(undefined);
 
   useEffect(() => {
-    if (
-      lastAddedTeamId.current &&
-      teams.find((team) => team.id === lastAddedTeamId.current)
-    ) {
+    if (lastAddedTeamId.current && teams.find(team => team.id === lastAddedTeamId.current)) {
       field.onChange(lastAddedTeamId.current);
       setNewOpponentName("");
       setShowCreateOpponent(false);
@@ -65,7 +62,7 @@ export default function TeamSelector<T extends FieldValues>({
           isInvalid={!!fieldState.error}
           errorMessage={fieldState.error?.message}
         >
-          {(item) => (
+          {item => (
             <AutocompleteItem key={item.id} textValue={item.name}>
               {item.name}
             </AutocompleteItem>
@@ -81,9 +78,7 @@ export default function TeamSelector<T extends FieldValues>({
               onValueChange={setNewOpponentName}
               label="New Opponent"
               placeholder="Enter a team name"
-              endContent={
-                isLoading ? <Spinner color="default" size="sm" /> : undefined
-              }
+              endContent={isLoading ? <Spinner color="default" size="sm" /> : undefined}
             />
             <ButtonGroup variant="flat">
               <Button

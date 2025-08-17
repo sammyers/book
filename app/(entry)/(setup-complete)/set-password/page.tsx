@@ -25,9 +25,7 @@ export default async function SetPasswordPage() {
     redirect("/");
   }
 
-  const userName =
-    `${userData?.first_name || ""} ${userData?.last_name || ""}`.trim() ||
-    "User";
+  const userName = `${userData?.first_name || ""} ${userData?.last_name || ""}`.trim() || "User";
 
   return <SetPasswordForm userName={userName} />;
 }

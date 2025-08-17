@@ -51,9 +51,7 @@ export default function LoginPage() {
             {...register("password")}
             errorMessage={errors.password?.message}
           />
-          {state?.status === "error" && (
-            <Alert color="danger">{state.message}</Alert>
-          )}
+          {state?.status === "error" && <Alert color="danger">{state.message}</Alert>}
           <Link color="primary" size="sm" className="self-center">
             Forgot password?
           </Link>
@@ -62,9 +60,7 @@ export default function LoginPage() {
       </form>
       <Divider className="mt-4 mb-2" />
       <CardFooter className="flex flex-col gap-4 items-stretch">
-        <h3 className="text-small text-center">
-          Don&apos;t have an account yet?
-        </h3>
+        <h3 className="text-small text-center">Don&apos;t have an account yet?</h3>
         <Button as={Link} href="/register" variant="bordered">
           Sign Up
         </Button>

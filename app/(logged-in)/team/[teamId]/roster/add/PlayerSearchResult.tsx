@@ -1,13 +1,7 @@
 import { Card, CardBody } from "@heroui/card";
 import { addToast, Button, cn } from "@heroui/react";
 import { CheckIcon, UserCirclePlusIcon } from "@phosphor-icons/react";
-import {
-  startTransition,
-  useActionState,
-  useCallback,
-  useEffect,
-  useMemo,
-} from "react";
+import { startTransition, useActionState, useCallback, useEffect, useMemo } from "react";
 import { tv } from "tailwind-variants";
 
 import { PlayerPositionChip } from "@/components/PlayerPositionChip";
@@ -42,9 +36,7 @@ export default function PlayerSearchItem({
   wasJustAdded,
   onPlayerAdded: onPlayerAddedProp,
 }: PlayerSearchItemProps) {
-  const isOnCurrentTeam = player.teams.some(
-    (team) => team.id === currentTeamId,
-  );
+  const isOnCurrentTeam = player.teams.some(team => team.id === currentTeamId);
 
   const classes = variants({
     wasJustAdded,
@@ -55,13 +47,10 @@ export default function PlayerSearchItem({
     if (isOnCurrentTeam) {
       return "Already on Roster";
     }
-    return `Current Team${player.teams.length > 1 ? "s" : ""}: ${player.teams.map((team) => team.name).join(", ")}`;
+    return `Current Team${player.teams.length > 1 ? "s" : ""}: ${player.teams.map(team => team.name).join(", ")}`;
   }, [player.teams, isOnCurrentTeam]);
 
-  const [addPlayerState, addPlayerAction, isAddingPlayer] = useActionState(
-    addPlayerToTeam,
-    null,
-  );
+  const [addPlayerState, addPlayerAction, isAddingPlayer] = useActionState(addPlayerToTeam, null);
 
   const { current: onPlayerAdded } = useSyncedRef(onPlayerAddedProp);
 
@@ -84,11 +73,7 @@ export default function PlayerSearchItem({
 
   const makeAddButton = useCallback(
     ({ isMobile }: { isMobile: boolean }) => {
-      const icon = wasJustAdded ? (
-        <CheckIcon size={16} />
-      ) : (
-        <UserCirclePlusIcon size={16} />
-      );
+      const icon = wasJustAdded ? <CheckIcon size={16} /> : <UserCirclePlusIcon size={16} />;
 
       return (
         <Button
@@ -106,10 +91,7 @@ export default function PlayerSearchItem({
           isDisabled={wasJustAdded}
           startContent={isMobile ? undefined : icon}
           isIconOnly={isMobile}
-          className={cn(
-            "shrink-0",
-            isMobile ? "sm:hidden inline-flex" : "hidden sm:inline-flex",
-          )}
+          className={cn("shrink-0", isMobile ? "sm:hidden inline-flex" : "hidden sm:inline-flex")}
         >
           {isMobile ? icon : "Add to Roster"}
         </Button>
@@ -124,7 +106,12 @@ export default function PlayerSearchItem({
         <div className="flex items-center justify-between gap-2">
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-3">
-              <p className="font-medium">{player.name}</p>
+              <div className="flex flex-col gap-1">
+                <p className="font-medium">{player.name}</p>
+                {player.nickname && (
+                  <p className="text-sm text-default-500">&quot;{player.nickname}&quot;</p>
+                )}
+              </div>
               <PlayerPositionChip {...player} />
             </div>
             <p className="text-xs text-default-400">{currentTeamText}</p>

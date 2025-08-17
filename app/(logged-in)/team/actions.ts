@@ -20,10 +20,10 @@ export async function createTeam(
 ): Promise<FormState> {
   const supabase = await createServerClient();
 
-  const { data: newTeam, error } = await supabase.rpc(
-    "create_team_with_players",
-    { team_name: name, player_ids: playerIds },
-  );
+  const { data: newTeam, error } = await supabase.rpc("create_team_with_players", {
+    team_name: name,
+    player_ids: playerIds,
+  });
 
   console.log(newTeam, error);
 

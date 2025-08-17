@@ -5,18 +5,10 @@ import { redirect } from "next/navigation";
 
 import { createServerClient } from "@/utils/supabase/server";
 
-import {
-  loginFormSchema,
-  registerFormSchema,
-  setPasswordFormSchema,
-} from "./forms";
+import { loginFormSchema, registerFormSchema, setPasswordFormSchema } from "./forms";
 
 import type { FormState } from "@/utils/types";
-import type {
-  LoginFormSchema,
-  RegisterFormSchema,
-  SetPasswordFormSchema,
-} from "./forms";
+import type { LoginFormSchema, RegisterFormSchema, SetPasswordFormSchema } from "./forms";
 
 export async function registerUser(
   _prevState: FormState | null,
@@ -28,7 +20,7 @@ export async function registerUser(
     return {
       status: "error",
       message: "Invalid form data",
-      errors: parsed.error.issues.map((issue) => ({
+      errors: parsed.error.issues.map(issue => ({
         path: issue.path.join("."),
         message: `Server validation: ${issue.message}`,
       })),
@@ -73,7 +65,7 @@ export async function login(
     return {
       status: "error",
       message: "Invalid form data",
-      errors: parsed.error.issues.map((issue) => ({
+      errors: parsed.error.issues.map(issue => ({
         path: issue.path.join("."),
         message: `Server validation: ${issue.message}`,
       })),
@@ -108,7 +100,7 @@ export async function setPassword(
     return {
       status: "error",
       message: "Invalid form data",
-      errors: parsed.error.issues.map((issue) => ({
+      errors: parsed.error.issues.map(issue => ({
         path: issue.path.join("."),
         message: `Server validation: ${issue.message}`,
       })),
@@ -153,10 +145,7 @@ export async function setPassword(
   redirect("/welcome");
 }
 
-export async function setSessionForInvitedUser(
-  accessToken: string,
-  refreshToken: string,
-) {
+export async function setSessionForInvitedUser(accessToken: string, refreshToken: string) {
   const supabase = await createServerClient();
 
   const { error } = await supabase.auth.setSession({

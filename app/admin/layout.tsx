@@ -12,11 +12,7 @@ import AdminPageTabs from "./AdminPageTabs";
 
 import type { ReactNode } from "react";
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default async function AdminLayout({ children }: { children: ReactNode }) {
   const supabase = await createServerClient();
 
   const permissionLevel = await getCurrentUserPermissionLevel(supabase);

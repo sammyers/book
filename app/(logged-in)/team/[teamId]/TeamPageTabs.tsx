@@ -1,11 +1,7 @@
 "use client";
 
 import { Tab, Tabs } from "@heroui/tabs";
-import {
-  BaseballCapIcon,
-  BaseballIcon,
-  ChartBarIcon,
-} from "@phosphor-icons/react";
+import { BaseballCapIcon, BaseballIcon, ChartBarIcon } from "@phosphor-icons/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
