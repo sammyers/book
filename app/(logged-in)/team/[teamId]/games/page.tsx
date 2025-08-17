@@ -31,10 +31,34 @@ const getOpponentTeam = ({ role, game: { teams } }: TeamGame) => {
   return opponentTeam ? opponentTeam.team : null;
 };
 
+const renderUpcomingGamesEmptyState = () => (
+  <div className="flex flex-col items-center gap-4 py-8">
+    <div className="flex flex-col items-center gap-2">
+      <CalendarDotsIcon size={48} weight="duotone" className="text-primary-300" />
+      <p className="text-default-600">No upcoming games</p>
+    </div>
+  </div>
+);
+
+const renderRecentGamesEmptyState = () => (
+  <div className="flex flex-col items-center gap-4 py-8">
+    <div className="flex flex-col items-center gap-2">
+      <ClockCounterClockwiseIcon size={48} weight="duotone" className="text-primary-300" />
+      <p className="text-default-600">No recent games</p>
+    </div>
+  </div>
+);
+
 export default async function TeamGamesPage({ params }: PageProps<{ teamId: string }>) {
   const { teamId } = await params;
 
   const supabase = await createServerClient();
+
+  const { data: isAtLeastScorekeeper } = await supabase.rpc("has_team_permission", {
+    permission: "scorekeeper",
+    team_id: teamId,
+  });
+
   const [upcomingGamesResponse, pastGamesResponse] = await Promise.all([
     supabase
       .from("game_team")
@@ -89,35 +113,37 @@ export default async function TeamGamesPage({ params }: PageProps<{ teamId: stri
   }
 
   const upcomingGames = upcomingGamesResponse.data;
-  // const pastGames = pastGamesResponse.data;
+  const pastGames = pastGamesResponse.data;
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-center gap-2">
-        <Button
-          variant="flat"
-          color="success"
-          startContent={<BaseballHelmetIcon weight="duotone" size={20} />}
-          as={Link}
-          href={`/team/${teamId}/new-game`}
-        >
-          New Game
-        </Button>
-        <Button
-          variant="flat"
-          color="success"
-          startContent={<TrophyIcon weight="duotone" size={20} />}
-          as={Link}
-          href={`/tournament/new?teamId=${teamId}`}
-        >
-          New Tournament
-        </Button>
-      </div>
+      {isAtLeastScorekeeper && (
+        <div className="flex items-center justify-center gap-2">
+          <Button
+            variant="flat"
+            color="success"
+            startContent={<BaseballHelmetIcon weight="duotone" size={20} />}
+            as={Link}
+            href={`/team/${teamId}/games/new`}
+          >
+            New Game
+          </Button>
+          <Button
+            variant="flat"
+            color="success"
+            startContent={<TrophyIcon weight="duotone" size={20} />}
+            as={Link}
+            href={`/team/${teamId}/games/new-tournament`}
+          >
+            New Tournament
+          </Button>
+        </div>
+      )}
       <Card>
         <CardHeader className="flex-col items-stretch">
           <div className="rounded-md bg-default-100 text-foreground-500 p-2 flex gap-2 items-center">
             <CalendarDotsIcon size={24} weight="duotone" />
-            <span className="font-bold">Upcoming Games</span>
+            <span className="font-medium">Upcoming Games</span>
           </div>
         </CardHeader>
         <CardBody className="pt-0">
@@ -136,7 +162,7 @@ export default async function TeamGamesPage({ params }: PageProps<{ teamId: stri
               ))}
             </List>
           ) : (
-            <p>No upcoming games</p>
+            renderUpcomingGamesEmptyState()
           )}
         </CardBody>
       </Card>
@@ -144,9 +170,28 @@ export default async function TeamGamesPage({ params }: PageProps<{ teamId: stri
         <CardHeader className="flex-col items-stretch">
           <div className="rounded-md bg-default-100 text-foreground-500 p-2 flex gap-2 items-center">
             <ClockCounterClockwiseIcon size={24} weight="duotone" />
-            <span className="font-bold">Recent Games</span>
+            <span className="font-medium">Recent Games</span>
           </div>
         </CardHeader>
+        <CardBody className="pt-0">
+          {pastGames.length > 0 ? (
+            <List>
+              {pastGames.map(teamGame => (
+                <ListItem key={teamGame.game.id} className="flex flex-col gap-1 items-start">
+                  <h3 className="font-bold">
+                    {getOpponentPrefix(teamGame.role)} {getOpponentTeam(teamGame)?.name}
+                  </h3>
+                  <h5 className="font-semibold uppercase text-small text-foreground-600">
+                    {teamGame.game.name}
+                  </h5>
+                  <p className="text-foreground-500 text-small">{startCase(teamGame.role)}</p>
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            renderRecentGamesEmptyState()
+          )}
+        </CardBody>
       </Card>
     </div>
   );

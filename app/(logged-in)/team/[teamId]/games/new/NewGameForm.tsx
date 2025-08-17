@@ -10,8 +10,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Alert } from "@/components/Alert";
 import { FormSubmitButton } from "@/components/FormSubmitButton";
 
-import { createGame } from "../../../game/actions";
-import { createSoloModeTeam } from "./actions";
+import { createGame, createSoloModeTeam } from "./actions";
 import { newGameFormSchema } from "./formSchema";
 import TeamSelector from "./TeamSelector";
 

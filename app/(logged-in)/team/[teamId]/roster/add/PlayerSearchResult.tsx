@@ -1,7 +1,7 @@
 import { Card, CardBody } from "@heroui/card";
 import { addToast, Button, cn } from "@heroui/react";
 import { CheckIcon, UserCirclePlusIcon } from "@phosphor-icons/react";
-import { startTransition, useActionState, useCallback, useEffect, useMemo } from "react";
+import { startTransition, useActionState, useCallback, useEffect, useMemo, useRef } from "react";
 import { tv } from "tailwind-variants";
 
 import { PlayerPositionChip } from "@/components/PlayerPositionChip";
@@ -53,9 +53,15 @@ export default function PlayerSearchItem({
   const [addPlayerState, addPlayerAction, isAddingPlayer] = useActionState(addPlayerToTeam, null);
 
   const { current: onPlayerAdded } = useSyncedRef(onPlayerAddedProp);
+  const toastShown = useRef(false);
 
   useEffect(() => {
+    console.log(addPlayerState);
+    if (toastShown.current) {
+      return;
+    }
     if (addPlayerState?.status === "success") {
+      toastShown.current = true;
       onPlayerAdded();
       addToast({
         title: "Player added to roster",
@@ -63,6 +69,7 @@ export default function PlayerSearchItem({
         color: "success",
       });
     } else if (addPlayerState?.status === "error") {
+      toastShown.current = true;
       addToast({
         title: "Error adding player to roster",
         description: addPlayerState.message,
