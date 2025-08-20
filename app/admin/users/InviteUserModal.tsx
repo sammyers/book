@@ -23,8 +23,8 @@ import { FormSubmitButton } from "@/components/FormSubmitButton";
 import { inviteUser } from "../actions";
 import { inviteUserSchema } from "../forms";
 
-import type { Team } from "../adminPageQueries";
 import type { InviteUserSchema } from "../forms";
+import type { Team } from "../queries";
 
 interface Props {
   teams: Team[];

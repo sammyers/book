@@ -1,7 +1,7 @@
 "use client";
 
 import { Tab, Tabs } from "@heroui/tabs";
-import { BaseballCapIcon, BaseballIcon, ChartBarIcon } from "@phosphor-icons/react";
+import { BaseballCapIcon, BaseballIcon, ChartBarIcon, TrophyIcon } from "@phosphor-icons/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
@@ -12,6 +12,9 @@ export default function TeamPageTabs({ teamId }: { teamId: string }) {
   const selectedTab = useMemo(() => {
     if (pathname.includes(`/team/${teamId}/games`)) {
       return `/team/${teamId}/games`;
+    }
+    if (pathname.includes(`/team/${teamId}/tournaments`)) {
+      return `/team/${teamId}/tournaments`;
     }
     if (pathname.includes(`/team/${teamId}/roster`)) {
       return `/team/${teamId}/roster`;
@@ -32,7 +35,18 @@ export default function TeamPageTabs({ teamId }: { teamId: string }) {
         title={
           <div className="flex items-center space-x-2">
             <BaseballIcon weight="duotone" size={20} />
-            <span>Games</span>
+            <span className="hidden sm:inline">Games</span>
+          </div>
+        }
+      />
+      <Tab
+        key={`/team/${teamId}/tournaments`}
+        as={Link}
+        href={`/team/${teamId}/tournaments`}
+        title={
+          <div className="flex items-center space-x-2">
+            <TrophyIcon weight="duotone" size={20} />
+            <span className="hidden sm:inline">Tournaments</span>
           </div>
         }
       />
@@ -43,7 +57,7 @@ export default function TeamPageTabs({ teamId }: { teamId: string }) {
         title={
           <div className="flex items-center space-x-2">
             <BaseballCapIcon weight="duotone" size={20} />
-            <span>Roster</span>
+            <span className="hidden sm:inline">Roster</span>
           </div>
         }
       />
@@ -55,7 +69,7 @@ export default function TeamPageTabs({ teamId }: { teamId: string }) {
         title={
           <div className="flex items-center space-x-2">
             <ChartBarIcon weight="duotone" size={20} />
-            <span>Stats</span>
+            <span className="hidden sm:inline">Stats</span>
           </div>
         }
       />

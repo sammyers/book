@@ -19,11 +19,11 @@ import { useCallback, useMemo, useState } from "react";
 import { useDebouncedState } from "@/utils/hooks/useDebouncedState";
 import { createClient } from "@/utils/supabase/browser";
 
-import { getUsersQuery } from "../adminPageQueries";
+import { getUsersQuery } from "../queries";
 import InviteUserModal from "./InviteUserModal";
 
 import type { ChipProps } from "@heroui/chip";
-import type { Team, User } from "../adminPageQueries";
+import type { Team, User } from "../queries";
 
 const MembershipChip = ({ team, permission_level }: User["memberships"][number]) => {
   const { color, icon } = useMemo(() => {

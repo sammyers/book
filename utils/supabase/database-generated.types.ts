@@ -15,8 +15,10 @@ export type Database = {
           created_by_team_id: string | null
           created_by_user_id: string
           ended_at: string | null
+          field: string | null
           game_data: Json
           id: string
+          location_id: string
           name: string
           scheduled_start_time: string | null
           started_at: string | null
@@ -28,8 +30,10 @@ export type Database = {
           created_by_team_id?: string | null
           created_by_user_id: string
           ended_at?: string | null
+          field?: string | null
           game_data?: Json
           id?: string
+          location_id: string
           name: string
           scheduled_start_time?: string | null
           started_at?: string | null
@@ -41,8 +45,10 @@ export type Database = {
           created_by_team_id?: string | null
           created_by_user_id?: string
           ended_at?: string | null
+          field?: string | null
           game_data?: Json
           id?: string
+          location_id?: string
           name?: string
           scheduled_start_time?: string | null
           started_at?: string | null
@@ -62,6 +68,13 @@ export type Database = {
             columns: ["created_by_user_id"]
             isOneToOne: false
             referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "location"
             referencedColumns: ["id"]
           },
           {
@@ -148,6 +161,44 @@ export type Database = {
           {
             foreignKeyName: "game_team_team_id_fkey"
             columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "team"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      location: {
+        Row: {
+          address: string | null
+          city: string
+          created_at: string
+          created_by_team_id: string | null
+          id: string
+          name: string
+          state: string | null
+        }
+        Insert: {
+          address?: string | null
+          city: string
+          created_at?: string
+          created_by_team_id?: string | null
+          id?: string
+          name: string
+          state?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string
+          created_at?: string
+          created_by_team_id?: string | null
+          id?: string
+          name?: string
+          state?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "location_created_by_team_id_fkey"
+            columns: ["created_by_team_id"]
             isOneToOne: false
             referencedRelation: "team"
             referencedColumns: ["id"]
@@ -294,30 +345,49 @@ export type Database = {
       }
       tournament: {
         Row: {
+          association: string | null
           created_at: string
           end_date: string
           id: string
+          location_city: string | null
+          location_id: string | null
+          location_state: string | null
           name: string
           region_id: string
           start_date: string
         }
         Insert: {
+          association?: string | null
           created_at?: string
           end_date: string
           id?: string
+          location_city?: string | null
+          location_id?: string | null
+          location_state?: string | null
           name: string
           region_id: string
           start_date: string
         }
         Update: {
+          association?: string | null
           created_at?: string
           end_date?: string
           id?: string
+          location_city?: string | null
+          location_id?: string | null
+          location_state?: string | null
           name?: string
           region_id?: string
           start_date?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "tournament_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "location"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "tournament_region_id_fkey"
             columns: ["region_id"]
@@ -447,8 +517,10 @@ export type Database = {
           created_by_team_id: string | null
           created_by_user_id: string
           ended_at: string | null
+          field: string | null
           game_data: Json
           id: string
+          location_id: string
           name: string
           scheduled_start_time: string | null
           started_at: string | null
@@ -472,15 +544,22 @@ export type Database = {
       create_tournament_for_team: {
         Args: {
           end_date: string
+          location_city?: string
+          location_id?: string
+          location_state?: string
           region_id: string
           start_date: string
           team_id: string
           tournament_name: string
         }
         Returns: {
+          association: string | null
           created_at: string
           end_date: string
           id: string
+          location_city: string | null
+          location_id: string | null
+          location_state: string | null
           name: string
           region_id: string
           start_date: string
@@ -490,7 +569,9 @@ export type Database = {
         Args: {
           creator_team_id: string
           creator_team_role: Database["public"]["Enums"]["team_role"]
+          field_name?: string
           game_name: string
+          location_id?: string
           opponent_team_id: string
           scheduled_start_time: string
           tournament_id: string
@@ -500,8 +581,10 @@ export type Database = {
           created_by_team_id: string | null
           created_by_user_id: string
           ended_at: string | null
+          field: string | null
           game_data: Json
           id: string
+          location_id: string
           name: string
           scheduled_start_time: string | null
           started_at: string | null

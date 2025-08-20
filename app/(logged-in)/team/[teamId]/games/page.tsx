@@ -133,7 +133,7 @@ export default async function TeamGamesPage({ params }: PageProps<{ teamId: stri
             color="success"
             startContent={<TrophyIcon weight="duotone" size={20} />}
             as={Link}
-            href={`/team/${teamId}/games/new-tournament`}
+            href={`/team/${teamId}/tournaments/new`}
           >
             New Tournament
           </Button>

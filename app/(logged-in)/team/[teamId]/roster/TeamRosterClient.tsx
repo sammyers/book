@@ -89,8 +89,8 @@ export default function TeamRosterClient({ players, teamId, isManager }: TeamRos
   const renderEmptyState = () => (
     <div className="flex flex-col items-center gap-4 py-8">
       <div className="flex flex-col items-center gap-2">
-        <UsersThreeIcon size={48} weight="duotone" className="text-default-400" />
-        <p className="text-default-400">No players on roster</p>
+        <UsersThreeIcon size={48} weight="duotone" className="text-primary-300" />
+        <p className="text-default-600">No players on roster</p>
       </div>
       {isManager && addPlayersButton}
     </div>
@@ -132,6 +132,7 @@ export default function TeamRosterClient({ players, teamId, isManager }: TeamRos
       <div className="hidden md:block">
         <Table
           aria-label="Team Roster"
+          isStriped
           className="flex-1"
           topContent={
             <div className="h-10 flex justify-between items-center">

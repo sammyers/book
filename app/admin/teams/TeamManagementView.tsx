@@ -21,13 +21,14 @@ import { useDebouncedState } from "@/utils/hooks/useDebouncedState";
 import { useFlashToast } from "@/utils/hooks/useFlashToast";
 import { createClient } from "@/utils/supabase/browser";
 
-import { getTeamsQuery } from "../adminPageQueries";
+import { getTeamsQuery } from "../queries";
 import NewTeamModal from "./NewTeamModal";
 
-import type { Team } from "../adminPageQueries";
+import type { Region, Team } from "../queries";
 
 interface Props {
   initialTeams: Team[];
+  regions: Region[];
 }
 
 const getTeamLocation = (location_city: string | null, location_state: string | null) => {
@@ -41,7 +42,7 @@ const getTeamLocation = (location_city: string | null, location_state: string | 
   return null;
 };
 
-export default function TeamManagementView({ initialTeams }: Props) {
+export default function TeamManagementView({ initialTeams, regions }: Props) {
   useFlashToast();
 
   const [teams, setTeams] = useState<Team[]>(initialTeams);
@@ -69,7 +70,7 @@ export default function TeamManagementView({ initialTeams }: Props) {
           value={searchValue}
           onValueChange={setSearchValue}
         />
-        <NewTeamModal />
+        <NewTeamModal regions={regions} />
       </CardHeader>
       <CardBody>
         <ScrollShadow>

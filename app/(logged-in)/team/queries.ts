@@ -40,3 +40,52 @@ export const getTeamRosterQuery = (supabase: SupabaseClient<Database>, teamId: s
 
 export type TeamRosterQueryData = QueryData<ReturnType<typeof getTeamRosterQuery>>;
 export type TeamRosterPlayer = TeamRosterQueryData[number];
+
+export const getNewGamePageQuery = (supabase: SupabaseClient<Database>, teamId: string) =>
+  supabase
+    .from("team")
+    .select(
+      `
+      id,
+      opponentTeams:team(
+        id,
+        name
+      ),
+      tournaments:tournament(
+        id,
+        name,
+        start_date,
+        end_date,
+        location (
+          name,
+          city,
+          state
+        ),
+        location_city,
+        location_state
+      )
+    `,
+    )
+    .eq("id", teamId)
+    .single();
+
+export type NewGamePageQuery = QueryData<ReturnType<typeof getNewGamePageQuery>>;
+export type NewGamePageOpponent = NewGamePageQuery["opponentTeams"][number];
+export type NewGamePageTournament = NewGamePageQuery["tournaments"][number];
+
+export const getLocationsQuery = (supabase: SupabaseClient<Database>, teamId: string) =>
+  supabase
+    .from("location")
+    .select(
+      `
+      id,
+      name,
+      city,
+      state,
+      address
+    `,
+    )
+    .eq("created_by_team_id", teamId);
+
+export type LocationsQuery = QueryData<ReturnType<typeof getLocationsQuery>>;
+export type Location = LocationsQuery[number];

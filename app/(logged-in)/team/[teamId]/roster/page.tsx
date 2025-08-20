@@ -18,8 +18,6 @@ export default async function TeamRosterPage({ params }: PageProps<{ teamId: str
     permission: "manager",
   });
 
-  console.log({ isManager });
-
   if (error) {
     return (
       <Alert color="danger" title="Error loading team roster">

@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "vitest",
     "format": "prettier --write .",
     "gen_types": "supabase gen types --local --lang=typescript --schema public > utils/supabase/database-generated.types.ts"
   },
@@ -31,6 +32,8 @@
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.3.0",
     "@tailwindcss/postcss": "^4.1.11",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.0",
     "@types/lodash": "^4.17.13",
     "@types/luxon": "^3.7.1",
     "@types/node": "^20",
@@ -38,15 +41,19 @@
     "@types/react-dom": "^19.0.4",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.14.1",
+    "@vitejs/plugin-react": "^5.0.1",
     "eslint": "^8",
     "eslint-config-next": "15.1.3",
     "eslint-config-prettier": "^9.1.0",
+    "jsdom": "^26.1.0",
     "postcss": "^8",
     "prettier": "3.4.2",
     "supabase": "^2.33.9",
     "tailwindcss": "4.1.11",
     "type-fest": "^4.26.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
   },
   "prettier": {
     "plugins": [

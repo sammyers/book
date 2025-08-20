@@ -6,17 +6,16 @@ import { redirect } from "next/navigation";
 
 import { createServerClient } from "@/utils/supabase/server";
 
-import { getNewGamePageQuery } from "../../../queries";
-import NewGameForm from "./NewGameForm";
+import { getLocationsQuery } from "../../../queries";
+import NewTournamentForm from "./NewTournamentForm";
 
 import type { PageProps } from "@/utils/types";
 
-export default async function NewGamePage({
+export default async function NewTournamentPage({
   params,
   searchParams,
-}: PageProps<{ teamId: string }, { tournamentId?: string }>) {
+}: PageProps<{ teamId: string }, { from: string | undefined }>) {
   const { teamId } = await params;
-  const { tournamentId } = await searchParams;
 
   if (!teamId) {
     redirect("/");
@@ -24,45 +23,42 @@ export default async function NewGamePage({
 
   const supabase = await createServerClient();
 
-  const { data: team } = await getNewGamePageQuery(supabase, teamId);
+  const { data: team } = await supabase
+    .from("team")
+    .select("primary_region_id")
+    .eq("id", teamId)
+    .single();
 
   if (!team) {
     redirect("/");
   }
 
-  let tournamentExists = false;
+  const { data: locations } = await getLocationsQuery(supabase, teamId);
 
-  if (tournamentId) {
-    const { data: tournament } = await supabase
-      .from("tournament")
-      .select("name")
-      .eq("id", tournamentId)
-      .single();
-
-    tournamentExists = !!tournament;
-  }
+  const fromNewGame = (await searchParams).from === "new-game";
 
   return (
     <Card shadow="sm">
       <CardHeader className="p-4 pb-0">
         <div className="w-full flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Create Game</h3>
+          <h3 className="text-lg font-semibold">Create Tournament</h3>
           <Button
             color="danger"
             variant="flat"
             as={Link}
-            href={`/team/${teamId}/games`}
+            href={fromNewGame ? `/team/${teamId}/games/new` : `/team/${teamId}/tournaments`}
             startContent={<ArrowLeftIcon size={16} weight="duotone" />}
           >
-            Back to Games
+            {fromNewGame ? "Back" : "Back to Games"}
           </Button>
         </div>
       </CardHeader>
       <CardBody className="p-4">
-        <NewGameForm
-          {...team}
+        <NewTournamentForm
           teamId={teamId}
-          tournamentId={tournamentExists ? tournamentId : undefined}
+          fromNewGame={fromNewGame}
+          regionId={team.primary_region_id ?? undefined}
+          locations={locations ?? []}
         />
       </CardBody>
     </Card>

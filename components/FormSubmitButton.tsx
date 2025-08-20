@@ -15,6 +15,7 @@ export const FormSubmitButton = forwardRef<HTMLButtonElement, ButtonProps & { is
         ref={ref}
         type="submit"
         color="primary"
+        variant="flat"
         isDisabled={!isValid}
         isLoading={pending}
         {...props}

@@ -5,6 +5,7 @@ export const newTeamSchema = z.object({
   description: z.string().optional(),
   city: z.string().min(1, { message: "Required" }),
   state: z.string().optional(),
+  regionId: z.string().uuid("Must select a region"),
   manager: z.discriminatedUnion("type", [
     z.object({
       type: z.literal("existing_user"),

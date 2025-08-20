@@ -19,19 +19,15 @@ import { startTransition, useActionState, useCallback, useEffect, useState } fro
 import { useForm } from "react-hook-form";
 
 import { FormSubmitButton } from "@/components/FormSubmitButton";
+import { states } from "@/utils/states";
 
 import { checkUserByEmail, createTeamWithManager } from "../actions";
 import { newTeamSchema } from "../forms";
 
 import type { NewTeamSchema } from "../forms";
+import type { Region } from "../queries";
 
-const states = [
-  { label: "California", value: "CA" },
-  { label: "Louisiana", value: "LA" },
-  { label: "Missouri", value: "MO" },
-];
-
-export default function NewTeamModal() {
+export default function NewTeamModal({ regions }: { regions: Region[] }) {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [foundUser, setFoundUser] = useState<{
@@ -55,6 +51,7 @@ export default function NewTeamModal() {
       description: "",
       city: "",
       state: "",
+      regionId: regions[0]?.id,
       manager: {
         email: "",
         type: "existing_user",
@@ -187,10 +184,10 @@ export default function NewTeamModal() {
           >
             <ModalBody>
               <Card shadow="none" className="border border-divider">
-                <CardHeader>
+                <CardHeader className="pb-0">
                   <h3 className="font-medium">Team Information</h3>
                 </CardHeader>
-                <CardBody className="flex flex-col gap-2 pt-0">
+                <CardBody className="flex flex-col gap-2">
                   <Input
                     label="Team Name"
                     isRequired
@@ -204,6 +201,15 @@ export default function NewTeamModal() {
                     isInvalid={!!errors.description}
                     errorMessage={errors.description?.message}
                   />
+                  <Select
+                    label="Region"
+                    items={regions}
+                    {...register("regionId")}
+                    isInvalid={!!errors.regionId}
+                    errorMessage={errors.regionId?.message}
+                  >
+                    {item => <SelectItem key={item.id}>{item.name}</SelectItem>}
+                  </Select>
                   <div className="flex gap-2">
                     <Input
                       label="Location"

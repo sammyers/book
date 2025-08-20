@@ -46,3 +46,9 @@ export const getUsersQuery = (supabase: SupabaseClient<Database>) =>
 
 export type UsersQueryData = QueryData<ReturnType<typeof getUsersQuery>>;
 export type User = UsersQueryData[number];
+
+export const getRegionsQuery = (supabase: SupabaseClient<Database>) =>
+  supabase.from("region").select("id, name");
+
+export type RegionsQueryData = QueryData<ReturnType<typeof getRegionsQuery>>;
+export type Region = RegionsQueryData[number];

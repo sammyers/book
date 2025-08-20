@@ -118,12 +118,14 @@ SET search_path TO public;
 
 UPDATE "user" SET permission_level = 'super_admin' WHERE email = 'admin@book.com';
 
-INSERT INTO region (name, short_name) VALUES ('Northern California', 'NorCal');
+INSERT INTO region (name, short_name) VALUES
+  ('Test Region', null),
+  ('Northern California', 'NorCal');
 
-INSERT INTO team (name, location_city, location_state, admin_note) VALUES
-  ('Louisiana Balloons', 'New Orleans', 'LA', 'Definitely not the Yankees'),
-  ('Bad News Bears', 'Los Angeles', 'CA', 'The least talented team in the Southern California league'),
-  ('Springfield Isotopes', 'Springfield', 'MO', 'Owners of the record for most consecutive losses');
+INSERT INTO team (name, location_city, location_state, admin_note, primary_region_id) VALUES
+  ('Louisiana Balloons', 'New Orleans', 'LA', 'Definitely not the Yankees', (SELECT id FROM region WHERE name = 'Test Region')),
+  ('Bad News Bears', 'Los Angeles', 'CA', 'The least talented team in the Southern California league', (SELECT id FROM region WHERE name = 'Test Region')),
+  ('Springfield Isotopes', 'Springfield', 'MO', 'Owners of the record for most consecutive losses', (SELECT id FROM region WHERE name = 'Test Region'));
 
 INSERT INTO team (name, associated_team_id) VALUES
   ('Shelbyville Shelbyvillians', (SELECT id from team WHERE name = 'Springfield Isotopes'));

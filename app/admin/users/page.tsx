@@ -2,7 +2,7 @@ import { Alert } from "@heroui/alert";
 
 import { createServerClient } from "@/utils/supabase/server";
 
-import { getTeamsQuery, getUsersQuery } from "../adminPageQueries";
+import { getTeamsQuery, getUsersQuery } from "../queries";
 import UsersList from "./UsersList";
 
 export default async function AdminUsersPage() {

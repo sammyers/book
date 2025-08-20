@@ -4,15 +4,16 @@ import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Button, ButtonGroup } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Spinner } from "@heroui/spinner";
+import { PlusIcon } from "@phosphor-icons/react";
 import { useEffect, useRef, useState } from "react";
 import { useController } from "react-hook-form";
 
-import type { Tables } from "@/utils/supabase/database.types";
 import type { Key } from "react";
 import type { Control, FieldValues, Path } from "react-hook-form";
+import type { NewGamePageOpponent } from "../../../queries";
 
 export interface TeamSelectorProps<T extends FieldValues> {
-  teams: Tables<"team">[];
+  teams: NewGamePageOpponent[];
   control: Control<T>;
   name: Path<T>;
   label: string;
@@ -48,7 +49,7 @@ export default function TeamSelector<T extends FieldValues>({
   }, [field, teams]);
 
   return (
-    <div className="flex gap-3 items-end flex-wrap sm:flex-nowrap">
+    <div className="flex gap-2 items-center justify-center flex-wrap sm:flex-nowrap">
       {!showCreateOpponent && (
         <Autocomplete
           ref={field.ref}
@@ -57,7 +58,7 @@ export default function TeamSelector<T extends FieldValues>({
           selectedKey={field.value ?? null}
           onSelectionChange={field.onChange}
           label={label}
-          placeholder="Search teams"
+          placeholder="Search teams..."
           defaultItems={teams}
           isInvalid={!!fieldState.error}
           errorMessage={fieldState.error?.message}
@@ -77,7 +78,7 @@ export default function TeamSelector<T extends FieldValues>({
               value={newOpponentName}
               onValueChange={setNewOpponentName}
               label="New Opponent"
-              placeholder="Enter a team name"
+              placeholder="Enter a team name..."
               endContent={isLoading ? <Spinner color="default" size="sm" /> : undefined}
             />
             <ButtonGroup variant="flat">
@@ -111,6 +112,7 @@ export default function TeamSelector<T extends FieldValues>({
             variant="flat"
             className="shrink-0"
             onPress={() => setShowCreateOpponent(true)}
+            startContent={<PlusIcon size={16} />}
           >
             Add New Opponent
           </Button>

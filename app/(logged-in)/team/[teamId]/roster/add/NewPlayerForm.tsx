@@ -55,7 +55,7 @@ export default function NewPlayerForm({ teamId, defaultNameValue, onCancel }: Ne
   }, [createPlayerState]);
 
   return (
-    <Card className="shadow-small">
+    <Card shadow="sm">
       <CardHeader className="p-4">
         <div className="w-full flex items-center justify-between">
           <h3 className="text-lg font-semibold">New Player</h3>

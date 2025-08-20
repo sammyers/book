@@ -5,10 +5,10 @@ import { redirect } from "next/navigation";
 
 import { createServerClient } from "@/utils/supabase/server";
 
-import { newGameFormSchema } from "./formSchema";
+import { newGameFormSchema } from "../../../forms";
 
 import type { FormState } from "@/utils/types";
-import type { NewGameFormSchema } from "./formSchema";
+import type { NewGameFormSchema } from "../../../forms";
 
 export async function createSoloModeTeam(teamName: string, parentTeamId: string) {
   const supabase = await createServerClient();
@@ -20,7 +20,7 @@ export async function createSoloModeTeam(teamName: string, parentTeamId: string)
     .single();
 
   if (newTeam) {
-    revalidatePath(`/game/new`);
+    revalidatePath(`/team/${parentTeamId}/games/new`);
     return [newTeam.id, error] as const;
   }
   return [null, error] as const;
