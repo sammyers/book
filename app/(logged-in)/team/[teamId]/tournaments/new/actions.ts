@@ -48,6 +48,7 @@ export async function createTournament(
   const { data: newTournament, error } = await supabase.rpc("create_tournament_for_team", {
     team_id: formData.teamId,
     tournament_name: formData.name,
+    association: formData.association,
     region_id: formData.regionId,
     start_date: formData.dateRange.start,
     end_date: formData.dateRange.end,

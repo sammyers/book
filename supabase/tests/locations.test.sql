@@ -22,8 +22,8 @@ insert into public.team (id, name) values
 
 -- Create test locations
 insert into public.location (id, name, city, state, address, created_by_team_id) values
-  ('00000000-0000-0000-0000-0000000000c1', 'Central Park', 'New York', 'NY', '123 Central Park West', '00000000-0000-0000-0000-0000000000b1'),
-  ('00000000-0000-0000-0000-0000000000c2', 'Fenway Park', 'Boston', 'MA', '4 Yawkey Way', '00000000-0000-0000-0000-0000000000b2');
+  ('00000000-0000-0000-0000-0000000000c1', 'Central Park', 'New York', 'Test State', '123 Central Park West', '00000000-0000-0000-0000-0000000000b1'),
+  ('00000000-0000-0000-0000-0000000000c2', 'Fenway Park', 'Boston', 'Test State', '4 Yawkey Way', '00000000-0000-0000-0000-0000000000b2');
 
 -- ### Location Tests ###
 
@@ -32,7 +32,7 @@ set local role authenticated;
 set local request.jwt.claim.sub = '00000000-0000-0000-0000-0000000000a0';
 
 select results_eq(
-  $$select count(*) from public.location$$,
+  $$select count(*) from public.location where state = 'Test State'$$,
   $$values (2::bigint)$$,
   'Super admin can view all locations'
 );

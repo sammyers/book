@@ -113,6 +113,7 @@ export default function TeamSelector<T extends FieldValues>({
             className="shrink-0"
             onPress={() => setShowCreateOpponent(true)}
             startContent={<PlusIcon size={16} />}
+            isDisabled={!!field.value}
           >
             Add New Opponent
           </Button>

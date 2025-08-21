@@ -18,13 +18,26 @@ export const newGameFormSchema = z.object({
   teamId: z.string().uuid(),
   opponentTeamId: z.string().uuid(),
   role: z.enum(["home", "away"]),
-  name: z.string().min(1, { message: "Required" }),
+  name: z.string().optional(),
   tournamentId: z.string().uuid(),
   locationId: z.string().uuid().optional(),
+  fieldName: z.string().optional(),
   scheduledStartTime: z.instanceof(ZonedDateTime),
+  createAnotherGame: z.boolean(),
+  trackOpponentAtBats: z.boolean(),
 });
 
 export type NewGameFormSchema = z.infer<typeof newGameFormSchema>;
+export type NewGameFormActionData = Omit<NewGameFormSchema, "scheduledStartTime"> & {
+  scheduledStartTime: string;
+};
+
+export const makeNewGameFormActionData = (formData: NewGameFormSchema): NewGameFormActionData => {
+  return {
+    ...formData,
+    scheduledStartTime: formData.scheduledStartTime.toAbsoluteString(),
+  };
+};
 
 export const newTournamentFormSchema = z.object({
   teamId: z.string().uuid(),

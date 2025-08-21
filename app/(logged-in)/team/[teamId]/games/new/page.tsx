@@ -31,19 +31,32 @@ export default async function NewGamePage({
   }
 
   let tournamentExists = false;
+  let latestGameTime: string | undefined;
 
   if (tournamentId) {
     const { data: tournament } = await supabase
       .from("tournament")
-      .select("name")
+      .select(
+        `
+        name,
+        games:game(
+          id,
+          name,
+          scheduled_start_time
+        )
+      `,
+      )
       .eq("id", tournamentId)
+      .order("scheduled_start_time", { ascending: false, referencedTable: "game" })
+      .limit(1, { referencedTable: "game" })
       .single();
 
     tournamentExists = !!tournament;
+    latestGameTime = tournament?.games[0]?.scheduled_start_time ?? undefined;
   }
 
   return (
-    <Card shadow="sm">
+    <Card shadow="sm" className="mb-32 sm:mb-20">
       <CardHeader className="p-4 pb-0">
         <div className="w-full flex items-center justify-between">
           <h3 className="text-lg font-semibold">Create Game</h3>
@@ -63,6 +76,7 @@ export default async function NewGamePage({
           {...team}
           teamId={teamId}
           tournamentId={tournamentExists ? tournamentId : undefined}
+          latestGameTime={latestGameTime}
         />
       </CardBody>
     </Card>

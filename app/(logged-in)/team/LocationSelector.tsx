@@ -3,6 +3,8 @@
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Button, ButtonGroup } from "@heroui/button";
 import { Input } from "@heroui/input";
+import { cn } from "@heroui/react";
+import { Select, SelectItem } from "@heroui/select";
 import { PlusIcon } from "@phosphor-icons/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useController } from "react-hook-form";
@@ -13,21 +15,41 @@ import type { NewLocationFormSchema } from "./forms";
 import type { Location } from "./queries";
 
 export interface LocationSelectorProps<T extends FieldValues> {
+  className?: string;
   locations: Location[];
   control: Control<T>;
   name: Path<T>;
   label: string;
   onCreateLocation?: (formData: NewLocationFormSchema) => Promise<Key | null>;
   showAddress?: boolean;
+  isPreselected?: boolean;
+}
+
+export function renderLocation(
+  { name, city, state, address }: Location,
+  { showAddress = false }: { showAddress?: boolean } = {},
+) {
+  return (
+    <div className="flex flex-col">
+      <span className="font-medium">{name}</span>
+      <span className="text-xs text-default-500">
+        {city}
+        {state ? `, ${state}` : ""}
+      </span>
+      {showAddress && address && <span className="text-tiny text-default-400">{address}</span>}
+    </div>
+  );
 }
 
 export default function LocationSelector<T extends FieldValues>({
+  className,
   locations,
   control,
   name,
   label,
   onCreateLocation,
   showAddress = false,
+  isPreselected = false,
 }: LocationSelectorProps<T>) {
   const { field, fieldState } = useController<T>({
     control,
@@ -63,7 +85,7 @@ export default function LocationSelector<T extends FieldValues>({
     }
   }, [field, locations, resetForm]);
 
-  const handleCreateLocation = async () => {
+  const handleCreateLocation = useCallback(async () => {
     if (!onCreateLocation) return;
 
     setIsLoading(true);
@@ -77,12 +99,32 @@ export default function LocationSelector<T extends FieldValues>({
     if (newLocationId !== null) {
       lastAddedLocationId.current = newLocationId;
     }
-  };
+  }, [onCreateLocation, newLocationName, newLocationCity, newLocationState, newLocationAddress]);
 
   const canSubmit = newLocationName.length > 0 && newLocationCity.length > 0;
 
+  if (isPreselected) {
+    return (
+      <Select
+        ref={field.ref}
+        name={field.name}
+        onBlur={field.onBlur}
+        selectedKeys={field.value ? [field.value] : []}
+        onChange={field.onChange}
+        label="Location"
+        isDisabled
+        items={locations}
+        className={className}
+      >
+        {item => <SelectItem key={item.id}>{item.name}</SelectItem>}
+      </Select>
+    );
+  }
+
   return (
-    <div className="flex gap-2 items-center justify-center flex-wrap sm:flex-nowrap">
+    <div
+      className={cn("flex gap-2 items-center justify-center flex-wrap sm:flex-nowrap", className)}
+    >
       {!showCreateLocation && (
         <Autocomplete
           ref={field.ref}
@@ -100,16 +142,9 @@ export default function LocationSelector<T extends FieldValues>({
           {item => (
             <AutocompleteItem
               key={item.id}
-              textValue={`${item.name} - ${item.city}${item.state ? `, ${item.state}` : ""}`}
+              textValue={`${item.name} (${item.city}${item.state ? `, ${item.state}` : ""})`}
             >
-              <div className="flex flex-col">
-                <span className="font-medium">{item.name}</span>
-                <span className="text-sm text-default-500">
-                  {item.city}
-                  {item.state ? `, ${item.state}` : ""}
-                </span>
-                {item.address && <span className="text-tiny text-default-400">{item.address}</span>}
-              </div>
+              {renderLocation(item, { showAddress })}
             </AutocompleteItem>
           )}
         </Autocomplete>

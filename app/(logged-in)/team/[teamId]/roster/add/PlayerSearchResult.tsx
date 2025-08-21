@@ -56,7 +56,6 @@ export default function PlayerSearchItem({
   const toastShown = useRef(false);
 
   useEffect(() => {
-    console.log(addPlayerState);
     if (toastShown.current) {
       return;
     }

@@ -1,14 +1,14 @@
 "use server";
 
+import { DateTime } from "luxon";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { setFlashMessage } from "@/utils/flash";
 import { createServerClient } from "@/utils/supabase/server";
 
-import { newGameFormSchema } from "../../../forms";
-
 import type { FormState } from "@/utils/types";
-import type { NewGameFormSchema } from "../../../forms";
+import type { NewGameFormActionData } from "../../../forms";
 
 export async function createSoloModeTeam(teamName: string, parentTeamId: string) {
   const supabase = await createServerClient();
@@ -26,48 +26,44 @@ export async function createSoloModeTeam(teamName: string, parentTeamId: string)
   return [null, error] as const;
 }
 
-export async function createGame(
+export async function createTournamentGame(
   _prevState: FormState | null,
-  formData: NewGameFormSchema,
+  formData: NewGameFormActionData,
 ): Promise<FormState> {
-  const parsed = newGameFormSchema.safeParse(formData);
+  const supabase = await createServerClient();
 
-  if (!parsed.success) {
+  const { data: newGame, error } = await supabase.rpc("create_tournament_game_for_team", {
+    game_name: formData.name ?? "",
+    tournament_id: formData.tournamentId,
+    creator_team_id: formData.teamId,
+    creator_team_role: formData.role,
+    opponent_team_id: formData.opponentTeamId,
+    scheduled_start_time: formData.scheduledStartTime,
+    location_id: formData.locationId,
+    field_name: formData.fieldName,
+    game_data: {
+      trackOpponentAtBats: formData.trackOpponentAtBats,
+    },
+  });
+
+  if (error) {
     return {
       status: "error",
-      message: "Invalid form data",
-      errors: parsed.error.issues.map(issue => ({
-        path: issue.path.join("."),
-        message: `Server validation: ${issue.message}`,
-      })),
+      message: error.message,
+      errors: [],
     };
   }
 
-  const { name, teamId, opponentTeamId, role } = parsed.data;
-
-  const supabase = await createServerClient();
-
-  const { data: newGame, error } = await supabase.rpc("create_game", {
-    game_name: name,
-    teams: [
-      {
-        team_id: teamId,
-        role,
-      },
-      {
-        team_id: opponentTeamId,
-        role: role === "away" ? "home" : "away",
-      },
-    ],
+  await setFlashMessage({
+    title: "Game created",
+    description: `Game created for ${DateTime.fromISO(newGame.scheduled_start_time!).toLocaleString(DateTime.TIME_SIMPLE)}`,
+    color: "success",
   });
 
-  if (!error) {
-    redirect(`/game/${newGame.id}`);
+  if (formData.createAnotherGame) {
+    revalidatePath(`/team/${formData.teamId}/games/new`);
+    redirect(`/team/${formData.teamId}/games/new?tournamentId=${formData.tournamentId}`);
   }
 
-  return {
-    status: "error",
-    message: error.message,
-    errors: [],
-  };
+  redirect(`/game/${newGame.id}?teamId=${formData.teamId}`);
 }

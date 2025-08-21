@@ -58,9 +58,8 @@ export const getOpponentPrefix = (role: Enums<"team_role">) => {
 export function formatDateRange(
   { start, end }: { start: DateTime; end: DateTime },
   now: DateTime = DateTime.now(),
-  options: { shortMonths?: boolean } = {},
+  { shortMonths = true }: { shortMonths?: boolean } = {},
 ) {
-  const { shortMonths = true } = options;
   const monthFormat = shortMonths ? "MMM" : "MMMM";
   const dateFormat = shortMonths ? "MMM d" : "MMMM d";
   const fullDateFormat = shortMonths ? "MMM d, yyyy" : "MMMM d, yyyy";
@@ -118,4 +117,29 @@ function formatSingleDate(
   }
 
   return date.toFormat(shortMonths ? "MMM d" : "MMMM d");
+}
+
+export function getReadableDateAndTime(dateTime: DateTime, now: DateTime = DateTime.now()) {
+  const time = dateTime.toLocaleString(DateTime.TIME_SIMPLE);
+
+  if (dateTime.hasSame(now, "day")) {
+    return { date: null, time };
+  }
+
+  if (dateTime.hasSame(now, "week")) {
+    return { date: dateTime.weekdayLong, time };
+  }
+
+  if (dateTime.hasSame(now, "month")) {
+    return {
+      date: dateTime.toLocaleString({ ...DateTime.DATE_MED_WITH_WEEKDAY, year: undefined }),
+      time,
+    };
+  }
+
+  if (dateTime.hasSame(now, "year")) {
+    return { date: dateTime.toLocaleString({ ...DateTime.DATE_MED, year: undefined }), time };
+  }
+
+  return { date: dateTime.toLocaleString(DateTime.DATE_MED), time };
 }

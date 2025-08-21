@@ -40,9 +40,9 @@ export default async function TeamLayout({ params, children }: LayoutProps<{ tea
           <p className="text-sm text-default-500">{team.name}</p>
         </div>
       </HeaderPortal>
-      <div className="flex flex-col gap-4 w-full max-w-[1024px]">
+      <div className="flex flex-col w-full max-w-[1024px] h-full">
         <TeamPageTabs teamId={teamId} />
-        {children}
+        <div className="flex-1 overflow-y-auto px-4 pt-12 pb-4 -mt-8">{children}</div>
       </div>
     </>
   );

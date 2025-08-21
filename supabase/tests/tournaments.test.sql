@@ -11,7 +11,7 @@ insert into auth.users (id, email, raw_user_meta_data) values
 
 -- Create test region
 insert into public.region (id, name, short_name) values
-  ('00000000-0000-0000-0000-0000000000d1', 'Test Region', 'TR');
+  ('00000000-0000-0000-0000-0000000000d1', 'Testing Region', 'TR');
 
 -- Create test team
 insert into public.team (id, "name") values
@@ -37,6 +37,7 @@ select lives_ok(
   select public.create_tournament_for_team(
     '00000000-0000-0000-0000-0000000000b1',
     'Fall Classic',
+    'USSSA',
     '00000000-0000-0000-0000-0000000000d1',
     '2025-09-01',
     '2025-09-03',
@@ -55,6 +56,7 @@ select lives_ok(
   select public.create_tournament_for_team(
     '00000000-0000-0000-0000-0000000000b1',
     'Winter Bash',
+    'USSSA',
     '00000000-0000-0000-0000-0000000000d1',
     '2025-12-01',
     '2025-12-03',
@@ -82,6 +84,7 @@ select throws_ok(
   select public.create_tournament_for_team(
     '00000000-0000-0000-0000-0000000000b1',
     'Spring Classic',
+    'USSSA',
     '00000000-0000-0000-0000-0000000000d1',
     '2026-03-01',
     '2026-03-03'
@@ -100,6 +103,7 @@ select lives_ok(
   select public.create_tournament_for_team(
     '00000000-0000-0000-0000-0000000000b1',
     'Summer Classic',
+    'USSSA',
     '00000000-0000-0000-0000-0000000000d1',
     '2026-06-01',
     '2026-06-03',
@@ -132,6 +136,7 @@ select throws_ok(
   select public.create_tournament_for_team(
     '00000000-0000-0000-0000-0000000000b1',
     'Fall Classic',
+    'USSSA',
     '00000000-0000-0000-0000-0000000000d1',
     '2026-09-01',
     '2026-09-03',

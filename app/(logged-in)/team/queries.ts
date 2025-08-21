@@ -1,3 +1,5 @@
+import { getLocalTimeZone, today } from "@internationalized/date";
+
 import type { Database } from "@/utils/supabase/database.types";
 import type { QueryData, SupabaseClient } from "@supabase/supabase-js";
 
@@ -54,24 +56,35 @@ export const getNewGamePageQuery = (supabase: SupabaseClient<Database>, teamId: 
       tournaments:tournament(
         id,
         name,
+        association,
         start_date,
         end_date,
         location (
+          id,
           name,
           city,
           state
         ),
         location_city,
         location_state
+      ),
+      locations:location (
+        id,
+        name,
+        city,
+        state,
+        address
       )
     `,
     )
     .eq("id", teamId)
+    .gte("tournament.start_date", today(getLocalTimeZone()).toString())
     .single();
 
 export type NewGamePageQuery = QueryData<ReturnType<typeof getNewGamePageQuery>>;
 export type NewGamePageOpponent = NewGamePageQuery["opponentTeams"][number];
 export type NewGamePageTournament = NewGamePageQuery["tournaments"][number];
+export type NewGamePageLocation = NewGamePageQuery["locations"][number];
 
 export const getLocationsQuery = (supabase: SupabaseClient<Database>, teamId: string) =>
   supabase
@@ -89,3 +102,96 @@ export const getLocationsQuery = (supabase: SupabaseClient<Database>, teamId: st
 
 export type LocationsQuery = QueryData<ReturnType<typeof getLocationsQuery>>;
 export type Location = LocationsQuery[number];
+
+export const getActiveGamesQuery = (supabase: SupabaseClient<Database>, teamId: string) =>
+  supabase
+    .from("game_team")
+    .select(
+      `
+        role,
+        game!inner (
+          id,
+          name,
+          status,
+          start_time:scheduled_start_time,
+          teams:game_team (
+            role,
+            team (
+              id,
+              name
+            )
+          )
+        )
+      `,
+    )
+    .eq("game.status", "in_progress")
+    .eq("team_id", teamId);
+
+export type ActiveGamesQuery = QueryData<ReturnType<typeof getActiveGamesQuery>>;
+export type ActiveGame = ActiveGamesQuery[number];
+
+export const getUpcomingGamesQuery = (supabase: SupabaseClient<Database>, teamId: string) =>
+  supabase
+    .from("game_team")
+    .select(
+      `
+      role,
+      game!inner (
+        id,
+        name,
+        status,
+        start_time:scheduled_start_time,
+        tournament (
+          name
+        ),
+        location (
+          name,
+          city,
+          state
+        ),
+        field,
+        teams:game_team (
+          role,
+          team (
+            id,
+            name
+          )
+        )
+      )
+    `,
+    )
+    .eq("game.status", "not_started")
+    .eq("team_id", teamId)
+    .order("game(start_time)", { ascending: true });
+
+export type UpcomingGamesQuery = QueryData<ReturnType<typeof getUpcomingGamesQuery>>;
+export type UpcomingGame = UpcomingGamesQuery[number];
+
+export const getPastGamesQuery = (supabase: SupabaseClient<Database>, teamId: string) =>
+  supabase
+    .from("game_team")
+    .select(
+      `
+      role,
+      game!inner (
+        id,
+        name,
+        status,
+        started_at,
+        ended_at,
+        teams:game_team (
+          role,
+          team (
+            id,
+            name
+          )
+        )
+      )
+    `,
+    )
+    .eq("game.status", "completed")
+    .eq("team_id", teamId)
+    .order("scheduled_start_time", { ascending: false, referencedTable: "game" });
+
+export type PastGamesQuery = QueryData<ReturnType<typeof getPastGamesQuery>>;
+export type PastGame = PastGamesQuery[number];

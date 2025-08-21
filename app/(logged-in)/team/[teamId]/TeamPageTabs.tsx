@@ -25,7 +25,10 @@ export default function TeamPageTabs({ teamId }: { teamId: string }) {
   return (
     <Tabs
       aria-label="Team management tabs"
-      classNames={{ tabList: "grow" }}
+      classNames={{
+        base: "w-full sticky top-0 z-20 px-3 pt-4",
+        tabList: "grow shadow-small",
+      }}
       selectedKey={selectedTab}
     >
       <Tab

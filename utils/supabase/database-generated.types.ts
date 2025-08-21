@@ -355,6 +355,7 @@ export type Database = {
           name: string
           region_id: string
           start_date: string
+          tournament_data: Json
         }
         Insert: {
           association?: string | null
@@ -367,6 +368,7 @@ export type Database = {
           name: string
           region_id: string
           start_date: string
+          tournament_data?: Json
         }
         Update: {
           association?: string | null
@@ -379,6 +381,7 @@ export type Database = {
           name?: string
           region_id?: string
           start_date?: string
+          tournament_data?: Json
         }
         Relationships: [
           {
@@ -543,6 +546,7 @@ export type Database = {
       }
       create_tournament_for_team: {
         Args: {
+          association: string
           end_date: string
           location_city?: string
           location_id?: string
@@ -550,6 +554,7 @@ export type Database = {
           region_id: string
           start_date: string
           team_id: string
+          tournament_data?: Json
           tournament_name: string
         }
         Returns: {
@@ -563,6 +568,7 @@ export type Database = {
           name: string
           region_id: string
           start_date: string
+          tournament_data: Json
         }
       }
       create_tournament_game_for_team: {
@@ -570,6 +576,7 @@ export type Database = {
           creator_team_id: string
           creator_team_role: Database["public"]["Enums"]["team_role"]
           field_name?: string
+          game_data?: Json
           game_name: string
           location_id?: string
           opponent_team_id: string

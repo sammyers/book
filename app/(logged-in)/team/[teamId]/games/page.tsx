@@ -1,35 +1,18 @@
+import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
-import {
-  BaseballHelmetIcon,
-  CalendarDotsIcon,
-  ClockCounterClockwiseIcon,
-  TrophyIcon,
-} from "@phosphor-icons/react/ssr";
-import { startCase } from "lodash";
+import { Tooltip } from "@heroui/tooltip";
+import { CalendarDotsIcon, ClockCounterClockwiseIcon, PlusIcon } from "@phosphor-icons/react/ssr";
 import Link from "next/link";
 
-import { List, ListItem } from "@/components/List";
-import { getOpponentPrefix } from "@/utils/display";
+import { List } from "@/components/List";
 import { createServerClient } from "@/utils/supabase/server";
 
-import type { Enums, Tables } from "@/utils/supabase/database.types";
+import { getActiveGamesQuery, getPastGamesQuery, getUpcomingGamesQuery } from "../../queries";
+import PastGame from "./PastGame";
+import UpcomingGame from "./UpcomingGame";
+
 import type { PageProps } from "@/utils/types";
-
-type TeamGame = {
-  role: Enums<"team_role">;
-  game: {
-    teams: Array<{
-      role: Enums<"team_role">;
-      team: Pick<Tables<"team">, "id" | "name">;
-    }>;
-  };
-};
-
-const getOpponentTeam = ({ role, game: { teams } }: TeamGame) => {
-  const opponentTeam = teams.find(t => t.role !== role);
-  return opponentTeam ? opponentTeam.team : null;
-};
 
 const renderUpcomingGamesEmptyState = () => (
   <div className="flex flex-col items-center gap-4 py-8">
@@ -59,140 +42,87 @@ export default async function TeamGamesPage({ params }: PageProps<{ teamId: stri
     team_id: teamId,
   });
 
-  const [upcomingGamesResponse, pastGamesResponse] = await Promise.all([
-    supabase
-      .from("game_team")
-      .select(
-        `
-        role,
-        game (
-          id,
-          name,
-          status,
-          start_time:scheduled_start_time,
-          teams:game_team (
-            role,
-            team (
-              id,
-              name
-            )
-          )
-        )
-      `,
-      )
-      .eq("game.status", "not_started")
-      .eq("team_id", teamId),
-    supabase
-      .from("game_team")
-      .select(
-        `
-        role,
-        game (
-          id,
-          name,
-          status,
-          started_at,
-          ended_at,
-          teams:game_team (
-            role,
-            team (
-              id,
-              name
-            )
-          )
-        )
-      `,
-      )
-      .neq("game.status", "not_started")
-      .eq("team_id", teamId)
-      .limit(5),
+  const [activeGamesResponse, upcomingGamesResponse, pastGamesResponse] = await Promise.all([
+    getActiveGamesQuery(supabase, teamId),
+    getUpcomingGamesQuery(supabase, teamId),
+    getPastGamesQuery(supabase, teamId).limit(5),
   ]);
 
-  if (upcomingGamesResponse.error || pastGamesResponse.error) {
-    return <div>Error loading games</div>;
+  if (activeGamesResponse.error || upcomingGamesResponse.error || pastGamesResponse.error) {
+    return (
+      <Alert color="danger" title="Error loading games" className="grow-0">
+        <p>
+          {activeGamesResponse.error?.message ??
+            upcomingGamesResponse.error?.message ??
+            pastGamesResponse.error?.message}
+        </p>
+      </Alert>
+    );
   }
 
+  // const activeGames = activeGamesResponse.data;
   const upcomingGames = upcomingGamesResponse.data;
   const pastGames = pastGamesResponse.data;
 
   return (
-    <div className="flex flex-col gap-4">
+    <>
+      <div className="flex flex-col gap-6 pb-20">
+        <Card>
+          <CardHeader className="flex-col items-stretch">
+            <div className="rounded-md bg-default-100 text-foreground-500 p-2 flex gap-2 items-center">
+              <CalendarDotsIcon size={24} weight="duotone" />
+              <span className="font-medium">Upcoming Games</span>
+            </div>
+          </CardHeader>
+          <CardBody className="pt-0">
+            {upcomingGames.length > 0 ? (
+              <List>
+                {upcomingGames.map(game => (
+                  <UpcomingGame key={game.game.id} {...game} />
+                ))}
+              </List>
+            ) : (
+              renderUpcomingGamesEmptyState()
+            )}
+          </CardBody>
+        </Card>
+        <Card>
+          <CardHeader className="flex-col items-stretch">
+            <div className="rounded-md bg-default-100 text-foreground-500 p-2 flex gap-2 items-center">
+              <ClockCounterClockwiseIcon size={24} weight="duotone" />
+              <span className="font-medium">Recent Games</span>
+            </div>
+          </CardHeader>
+          <CardBody className="pt-0">
+            {pastGames.length > 0 ? (
+              <List>
+                {pastGames.map(game => (
+                  <PastGame key={game.game.id} {...game} />
+                ))}
+              </List>
+            ) : (
+              renderRecentGamesEmptyState()
+            )}
+          </CardBody>
+        </Card>
+      </div>
       {isAtLeastScorekeeper && (
-        <div className="flex items-center justify-center gap-2">
+        <Tooltip content="New Game" placement="left" color="foreground">
           <Button
-            variant="flat"
+            className="fixed size-16 text-xl bottom-6 right-6 z-50 shadow-lg bg-success-300/70 dark:bg-success/40 dark:text-success-600"
+            isIconOnly
+            radius="full"
             color="success"
-            startContent={<BaseballHelmetIcon weight="duotone" size={20} />}
+            variant="flat"
+            size="lg"
             as={Link}
+            scroll={false}
             href={`/team/${teamId}/games/new`}
-          >
-            New Game
-          </Button>
-          <Button
-            variant="flat"
-            color="success"
-            startContent={<TrophyIcon weight="duotone" size={20} />}
-            as={Link}
-            href={`/team/${teamId}/tournaments/new`}
-          >
-            New Tournament
-          </Button>
-        </div>
+            startContent={<PlusIcon size={24} />}
+            aria-label="Create New Game"
+          />
+        </Tooltip>
       )}
-      <Card>
-        <CardHeader className="flex-col items-stretch">
-          <div className="rounded-md bg-default-100 text-foreground-500 p-2 flex gap-2 items-center">
-            <CalendarDotsIcon size={24} weight="duotone" />
-            <span className="font-medium">Upcoming Games</span>
-          </div>
-        </CardHeader>
-        <CardBody className="pt-0">
-          {upcomingGames.length > 0 ? (
-            <List>
-              {upcomingGames.map(teamGame => (
-                <ListItem key={teamGame.game.id} className="flex flex-col gap-1 items-start">
-                  <h3 className="font-bold">
-                    {getOpponentPrefix(teamGame.role)} {getOpponentTeam(teamGame)?.name}
-                  </h3>
-                  <h5 className="font-semibold uppercase text-small text-foreground-600">
-                    {teamGame.game.name}
-                  </h5>
-                  <p className="text-foreground-500 text-small">{startCase(teamGame.role)}</p>
-                </ListItem>
-              ))}
-            </List>
-          ) : (
-            renderUpcomingGamesEmptyState()
-          )}
-        </CardBody>
-      </Card>
-      <Card>
-        <CardHeader className="flex-col items-stretch">
-          <div className="rounded-md bg-default-100 text-foreground-500 p-2 flex gap-2 items-center">
-            <ClockCounterClockwiseIcon size={24} weight="duotone" />
-            <span className="font-medium">Recent Games</span>
-          </div>
-        </CardHeader>
-        <CardBody className="pt-0">
-          {pastGames.length > 0 ? (
-            <List>
-              {pastGames.map(teamGame => (
-                <ListItem key={teamGame.game.id} className="flex flex-col gap-1 items-start">
-                  <h3 className="font-bold">
-                    {getOpponentPrefix(teamGame.role)} {getOpponentTeam(teamGame)?.name}
-                  </h3>
-                  <h5 className="font-semibold uppercase text-small text-foreground-600">
-                    {teamGame.game.name}
-                  </h5>
-                  <p className="text-foreground-500 text-small">{startCase(teamGame.role)}</p>
-                </ListItem>
-              ))}
-            </List>
-          ) : (
-            renderRecentGamesEmptyState()
-          )}
-        </CardBody>
-      </Card>
-    </div>
+    </>
   );
 }

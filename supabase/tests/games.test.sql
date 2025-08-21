@@ -2,7 +2,7 @@ BEGIN;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(20);
+select plan(24);
 
 -- Create test users
 insert into auth.users (id, email, raw_user_meta_data) values
@@ -23,17 +23,17 @@ update public.team set associated_team_id = '00000000-0000-0000-0000-0000000000b
 update public.team set associated_team_id = '00000000-0000-0000-0000-0000000000b3' where id = '00000000-0000-0000-0000-0000000000b4';
 
 -- Create test region
-insert into public.region (id, name, short_name) values
-  ('00000000-0000-0000-0000-0000000000d1', 'Test Region', 'TR');
+insert into public.region (id, name, short_name, time_zone) values
+  ('00000000-0000-0000-0000-0000000000d1', 'Testing Region', 'TR', 'America/New_York');
 
 -- Create test location
 insert into public.location (id, name, city, state, address, created_by_team_id) values
   ('00000000-0000-0000-0000-0000000000c1', 'Central Park', 'New York', 'NY', '123 Central Park West', '00000000-0000-0000-0000-0000000000b1');
 
--- Create tournaments
+-- Create tournaments with fixed dates
 insert into public.tournament (id, name, start_date, end_date, region_id, location_id, location_city, location_state) values
-  ('00000000-0000-0000-0000-0000000000e1', 'Test Tournament', current_date, current_date + 1, '00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-0000000000c1', null, null),
-  ('00000000-0000-0000-0000-0000000000e2', 'Another Tournament', current_date + 7, current_date + 8, '00000000-0000-0000-0000-0000000000d1', null, 'Chicago', 'IL');
+  ('00000000-0000-0000-0000-0000000000e1', 'Test Tournament', '2024-01-15', '2024-01-16', '00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-0000000000c1', null, null),
+  ('00000000-0000-0000-0000-0000000000e2', 'Another Tournament', '2024-01-22', '2024-01-23', '00000000-0000-0000-0000-0000000000d1', null, 'Chicago', 'IL');
 
 -- Register teams in tournaments
 insert into public.tournament_team (team_id, tournament_id) values
@@ -57,7 +57,7 @@ select throws_ok($$
     '00000000-0000-0000-0000-0000000000b1',
     'home',
     '00000000-0000-0000-0000-0000000000b2',
-    current_timestamp,
+    '2024-01-15 14:00:00-05',
     '00000000-0000-0000-0000-0000000000c1',
     'Field 1'
   )
@@ -80,7 +80,7 @@ select throws_ok($$
     '00000000-0000-0000-0000-0000000000b1',
     'home',
     '00000000-0000-0000-0000-0000000000b1',
-    current_timestamp,
+    '2024-01-15 15:00:00-05',
     '00000000-0000-0000-0000-0000000000c1',
     'Field 1'
   )
@@ -96,7 +96,7 @@ select throws_ok($$
     'home',
     -- Team 3 is not associated with Team 1
     '00000000-0000-0000-0000-0000000000b3',
-    current_timestamp,
+    '2024-01-15 16:00:00-05',
     '00000000-0000-0000-0000-0000000000c1',
     'Field 1'
   )
@@ -112,7 +112,7 @@ select throws_ok($$
     '00000000-0000-0000-0000-0000000000b1',
     'home',
     '00000000-0000-0000-0000-0000000000b2',
-    current_timestamp,
+    '2024-01-22 14:00:00-05',
     '00000000-0000-0000-0000-0000000000c1',
     'Field 1'
   )
@@ -126,7 +126,7 @@ select throws_ok($$
     '00000000-0000-0000-0000-0000000000b1',
     'home',
     '00000000-0000-0000-0000-0000000000b2',
-    current_date - interval '1 day',
+    '2024-01-14 14:00:00-05',
     '00000000-0000-0000-0000-0000000000c1',
     'Field 1'
   )
@@ -141,7 +141,7 @@ select lives_ok(
     '00000000-0000-0000-0000-0000000000b1',
     'home',
     '00000000-0000-0000-0000-0000000000b2',
-    current_timestamp,
+    '2024-01-15 14:00:00-05',
     '00000000-0000-0000-0000-0000000000c1',
     'Field 1'
   )
@@ -200,7 +200,7 @@ select lives_ok(
     '00000000-0000-0000-0000-0000000000b1',
     'home',
     '00000000-0000-0000-0000-0000000000b2',
-    current_timestamp
+    '2024-01-15 15:00:00-05'
   )
   $$,
   'Creates game without location when tournament has location_id (uses tournament location)'
@@ -237,7 +237,7 @@ select throws_ok(
     '00000000-0000-0000-0000-0000000000b3',
     'home',
     '00000000-0000-0000-0000-0000000000b4',
-    current_date + interval '7 days 12 hours'
+    '2024-01-22 14:00:00-05'
   )
   $$,
   'Game location must be specified',
@@ -254,7 +254,7 @@ select lives_ok(
     '00000000-0000-0000-0000-0000000000b3',
     'home',
     '00000000-0000-0000-0000-0000000000b4',
-    current_date + interval '7 days 12 hours',
+    '2024-01-22 15:00:00-05',
     '00000000-0000-0000-0000-0000000000c1',
     'Field 2'
   )
@@ -276,20 +276,67 @@ select results_eq(
   'Game 9 has the correct location_id'
 );
 
+-- TEST 10: Game creation succeeds within grace period after tournament ends
+-- This tests the 2-hour grace period that allows games to start after midnight
+-- Tournament ends on 2024-01-16 in America/New_York timezone
+-- 1 AM Eastern on 2024-01-17 is within the 2-hour grace period
+select lives_ok(
+  $$
+  select * from public.create_tournament_game_for_team(
+    'Game 10',
+    '00000000-0000-0000-0000-0000000000e1',
+    '00000000-0000-0000-0000-0000000000b1',
+    'home',
+    '00000000-0000-0000-0000-0000000000b2',
+    '2024-01-17 01:00:00-05',
+    '00000000-0000-0000-0000-0000000000c1',
+    'Field 3'
+  )
+  $$,
+  'Creates game within grace period after tournament ends (1am Eastern next day)'
+);
 
+-- 10a. Check that Game 10 was created successfully
+select results_eq(
+  $$select count(*) from public.game where name = 'Game 10'$$,
+  ARRAY[1::bigint],
+  'Game 10 was inserted into game table within grace period'
+);
 
--- TEST 10: Members can read games for their own team
+-- 10b. Check that Game 10 has the correct scheduled start time
+select results_eq(
+  $$select scheduled_start_time from public.game where name = 'Game 10'$$,
+  ARRAY['2024-01-17 01:00:00-05'::timestamp with time zone],
+  'Game 10 has the correct scheduled start time within grace period'
+);
+
+-- TEST 11: Game creation fails outside grace period after tournament ends
+-- 3 AM Eastern on 2024-01-17 is outside the 2-hour grace period
+select throws_ok($$
+  select * from public.create_tournament_game_for_team(
+    'Game 11',
+    '00000000-0000-0000-0000-0000000000e1',
+    '00000000-0000-0000-0000-0000000000b1',
+    'home',
+    '00000000-0000-0000-0000-0000000000b2',
+    '2024-01-17 03:00:00-05',
+    '00000000-0000-0000-0000-0000000000c1',
+    'Field 4'
+  )
+$$, 'Scheduled start time must fall within tournament dates', 'Fails if scheduled time is outside tournament dates and grace period');
+
+-- TEST 12: Members can read games for their own team
 -- User 1 should already be authenticated from previous tests, but let's be explicit
 set local role authenticated;
 set local request.jwt.claim.sub = '00000000-0000-0000-0000-0000000000a1';
 
 select results_eq(
   $$select count(*) from public.game where created_by_team_id = '00000000-0000-0000-0000-0000000000b1'$$,
-  ARRAY[2::bigint],
+  ARRAY[3::bigint],
   'Team member can read games for their team'
 );
 
--- TEST 11: Members cannot read games for other teams
+-- TEST 13: Members cannot read games for other teams
 -- User 2 needs to be a member of Team 2 to test RLS properly
 reset role;
 insert into public.user_team (user_id, team_id, permission_level) values

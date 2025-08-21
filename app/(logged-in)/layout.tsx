@@ -12,7 +12,7 @@ export default async function LoggedInLayout({ children }: { children: ReactNode
     <div className={cn("h-full flex flex-col overflow-auto", bgGradient)}>
       <HeaderProvider>
         <PageHeader />
-        <main className="grow flex px-4 pt-4 pb-8 bg-content1 justify-center">{children}</main>
+        <main className="grow flex bg-content1 justify-center overflow-y-hidden">{children}</main>
       </HeaderProvider>
     </div>
   );
