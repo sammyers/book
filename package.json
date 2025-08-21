@@ -9,7 +9,8 @@
     "lint": "next lint",
     "test": "vitest",
     "format": "prettier --write .",
-    "gen_types": "supabase gen types --local --lang=typescript --schema public > utils/supabase/database-generated.types.ts"
+    "gen_types": "supabase gen types --local --lang=typescript --schema public > utils/supabase/database-generated.types.ts",
+    "prepare": "husky"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.4",
@@ -45,6 +46,7 @@
     "eslint": "^8",
     "eslint-config-next": "15.1.3",
     "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.1.7",
     "jsdom": "^26.1.0",
     "postcss": "^8",
     "prettier": "3.4.2",
