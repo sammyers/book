@@ -6,7 +6,7 @@ import UserMenu from "./UserMenu";
 
 export default function PageHeader() {
   return (
-    <Navbar className="bg-default-100 border-b border-b-default-200">
+    <Navbar className="fixed bg-default-100 border-b border-b-default-200">
       <NavbarContent className="grow">
         <PageHeaderContent />
       </NavbarContent>

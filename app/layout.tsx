@@ -1,3 +1,4 @@
+import { cn } from "@heroui/react";
 import { Inter } from "next/font/google";
 
 import { Providers } from "./Providers";
@@ -26,8 +27,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+    <html lang="en" suppressHydrationWarning className="h-full">
+      <body className={cn(inter.className, "h-full flex flex-col overflow-hidden")}>
         <Providers>{children}</Providers>
       </body>
     </html>

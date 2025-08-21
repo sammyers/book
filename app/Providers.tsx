@@ -8,7 +8,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   return (
-    <HeroUIProvider navigate={router.push} className="h-screen flex flex-col">
+    <HeroUIProvider navigate={router.push} className="h-full flex flex-col">
       <ToastProvider placement="top-center" />
       <ThemeProvider attribute="class" defaultTheme="light">
         {children}
