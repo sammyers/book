@@ -15,7 +15,10 @@ export default function AdminPageTabs() {
   const pathname = usePathname();
 
   return (
-    <Tabs selectedKey={pathname} classNames={{ tabList: "grow" }}>
+    <Tabs
+      selectedKey={pathname}
+      classNames={{ base: "w-full sticky top-0 z-20 px-3 pt-4", tabList: "grow shadow-small" }}
+    >
       <Tab
         key="/admin/teams"
         as={Link}

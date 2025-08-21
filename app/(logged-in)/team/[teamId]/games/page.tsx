@@ -1,8 +1,9 @@
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
+import { cn } from "@heroui/react";
 import { Tooltip } from "@heroui/tooltip";
-import { CalendarDotsIcon, ClockCounterClockwiseIcon, PlusIcon } from "@phosphor-icons/react/ssr";
+import { CalendarDotsIcon, ClockCounterClockwiseIcon, PlayIcon } from "@phosphor-icons/react/ssr";
 import Link from "next/link";
 
 import { List } from "@/components/List";
@@ -109,7 +110,19 @@ export default async function TeamGamesPage({ params }: PageProps<{ teamId: stri
       {isAtLeastScorekeeper && (
         <Tooltip content="New Game" placement="left" color="foreground">
           <Button
-            className="fixed size-16 text-xl bottom-6 right-6 z-50 shadow-lg bg-success-300/70 dark:bg-success/40 dark:text-success-600"
+            className={cn([
+              "fixed",
+              "size-16",
+              "text-xl",
+              "bottom-6",
+              "right-6",
+              "z-50",
+              "shadow-lg",
+              "bg-success-300/70",
+              "dark:bg-success/40",
+              "text-success",
+              "dark:text-success-600",
+            ])}
             isIconOnly
             radius="full"
             color="success"
@@ -118,7 +131,7 @@ export default async function TeamGamesPage({ params }: PageProps<{ teamId: stri
             as={Link}
             scroll={false}
             href={`/team/${teamId}/games/new`}
-            startContent={<PlusIcon size={24} />}
+            startContent={<PlayIcon size={24} weight="duotone" />}
             aria-label="Create New Game"
           />
         </Tooltip>

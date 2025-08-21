@@ -95,7 +95,7 @@ export default function InviteUserModal({ teams }: Props) {
         hideCloseButton
         isKeyboardDismissDisabled
         classNames={{
-          wrapper: "overflow-y-auto flex-col",
+          wrapper: "overflow-y-auto flex-col justify-end sm:justify-center items-center",
           base: "overflow-y-visible",
         }}
       >

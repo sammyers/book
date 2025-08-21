@@ -22,8 +22,8 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   }
 
   return (
-    <div className="h-full flex flex-col">
-      <Navbar className="bg-secondary-50 border-b border-b-secondary-100">
+    <div className="h-full flex flex-col pt-16">
+      <Navbar className="fixed bg-secondary-50 border-b border-b-secondary-100">
         <NavbarBrand className="text-secondary-700 gap-2">
           <WrenchIcon size={32} weight="duotone" />
           <p className="font-bold">Admin</p>
@@ -37,9 +37,11 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           </NavbarItem>
         </NavbarContent>
       </Navbar>
-      <main className="grow flex flex-col px-4 pt-4 pb-8 bg-content1 gap-4">
-        <AdminPageTabs />
-        {children}
+      <main className="grow flex bg-content1 justify-center overflow-y-auto">
+        <div className="flex flex-col w-full max-w-[1024px] h-full">
+          <AdminPageTabs />
+          <div className="flex-1 px-4 pt-12 pb-4 -mt-8 overflow-y-auto">{children}</div>
+        </div>
       </main>
     </div>
   );
