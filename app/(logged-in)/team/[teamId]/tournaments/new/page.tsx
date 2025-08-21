@@ -38,7 +38,7 @@ export default async function NewTournamentPage({
   const fromNewGame = (await searchParams).from === "new-game";
 
   return (
-    <Card shadow="sm">
+    <Card shadow="sm" className="mb-19">
       <CardHeader className="p-4 pb-0">
         <div className="w-full flex items-center justify-between">
           <h3 className="text-lg font-semibold">Create Tournament</h3>
@@ -46,6 +46,7 @@ export default async function NewTournamentPage({
             color="danger"
             variant="flat"
             as={Link}
+            scroll={false}
             href={fromNewGame ? `/team/${teamId}/games/new` : `/team/${teamId}/tournaments`}
             startContent={<ArrowLeftIcon size={16} weight="duotone" />}
           >

@@ -12,6 +12,7 @@ import { startTransition, useActionState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { FormSubmitButton } from "@/components/FormSubmitButton";
+import { StickyFooter, StickyFooterContent } from "@/components/StickyFooter";
 import { states } from "@/utils/states";
 
 import { makeNewTournamentActionData, newTournamentFormSchema } from "../../../forms";
@@ -174,13 +175,18 @@ export default function NewTournamentForm({ teamId, regionId, locations, fromNew
           )}
         </CardBody>
       </Card>
-      <FormSubmitButton
-        isValid={isValid}
-        isLoading={isLoading}
-        startContent={<TrophyIcon size={20} weight="duotone" />}
-      >
-        Create Tournament
-      </FormSubmitButton>
+      <StickyFooter>
+        <StickyFooterContent>
+          <FormSubmitButton
+            isValid={isValid}
+            isLoading={isLoading}
+            startContent={<TrophyIcon size={20} weight="duotone" />}
+            className="shrink-0 grow"
+          >
+            Create Tournament
+          </FormSubmitButton>
+        </StickyFooterContent>
+      </StickyFooter>
     </form>
   );
 }
