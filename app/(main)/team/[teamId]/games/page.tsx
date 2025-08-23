@@ -2,7 +2,6 @@ import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { cn } from "@heroui/react";
-import { Tooltip } from "@heroui/tooltip";
 import { CalendarDotsIcon, ClockCounterClockwiseIcon, PlayIcon } from "@phosphor-icons/react/ssr";
 import Link from "next/link";
 
@@ -68,7 +67,7 @@ export default async function TeamGamesPage({ params }: PageProps<{ teamId: stri
   return (
     <>
       <div className="flex flex-col gap-6 pb-20">
-        <Card>
+        <Card shadow="sm">
           <CardHeader className="flex-col items-stretch">
             <div className="rounded-md bg-default-100 text-foreground-500 p-2 flex gap-2 items-center">
               <CalendarDotsIcon size={24} weight="duotone" />
@@ -79,7 +78,7 @@ export default async function TeamGamesPage({ params }: PageProps<{ teamId: stri
             {upcomingGames.length > 0 ? (
               <List>
                 {upcomingGames.map(game => (
-                  <UpcomingGame key={game.game.id} {...game} />
+                  <UpcomingGame key={game.game.id} {...game} teamId={teamId} />
                 ))}
               </List>
             ) : (
@@ -87,7 +86,7 @@ export default async function TeamGamesPage({ params }: PageProps<{ teamId: stri
             )}
           </CardBody>
         </Card>
-        <Card>
+        <Card shadow="sm">
           <CardHeader className="flex-col items-stretch">
             <div className="rounded-md bg-default-100 text-foreground-500 p-2 flex gap-2 items-center">
               <ClockCounterClockwiseIcon size={24} weight="duotone" />
@@ -108,33 +107,29 @@ export default async function TeamGamesPage({ params }: PageProps<{ teamId: stri
         </Card>
       </div>
       {isAtLeastScorekeeper && (
-        <Tooltip content="New Game" placement="left" color="foreground">
-          <Button
-            className={cn([
-              "fixed",
-              "size-16",
-              "text-xl",
-              "bottom-6",
-              "right-6",
-              "z-50",
-              "shadow-lg",
-              "bg-success-300/70",
-              "dark:bg-success/40",
-              "text-success",
-              "dark:text-success-600",
-            ])}
-            isIconOnly
-            radius="full"
-            color="success"
-            variant="flat"
-            size="lg"
-            as={Link}
-            scroll={false}
-            href={`/team/${teamId}/games/new`}
-            startContent={<PlayIcon size={24} weight="duotone" />}
-            aria-label="Create New Game"
-          />
-        </Tooltip>
+        <Button
+          size="lg"
+          radius="full"
+          color="success"
+          variant="flat"
+          startContent={<PlayIcon size={24} weight="duotone" />}
+          as={Link}
+          scroll={false}
+          href={`/team/${teamId}/games/new`}
+          className={cn([
+            "fixed",
+            "text-xl",
+            "bottom-6",
+            "right-6",
+            "z-50",
+            "shadow-lg",
+            "text-medium",
+            "bg-success/40",
+            "dark:text-success-600",
+          ])}
+        >
+          New Game
+        </Button>
       )}
     </>
   );

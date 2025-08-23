@@ -1,6 +1,6 @@
 import { Navbar, NavbarBrand, NavbarContent } from "@heroui/navbar";
 
-import ThemeToggle from "../ThemeToggle";
+import ThemeToggle from "../../../components/ThemeToggle";
 import UserMenu from "../UserMenu";
 
 export default function DefaultNavbarContent() {

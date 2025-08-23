@@ -2,7 +2,7 @@ BEGIN;
 
 create extension if not exists pgtap with schema extensions;
 
-SELECT plan(7);
+SELECT plan(8);
 
 -- Create test users
 insert into auth.users (id, email, raw_user_meta_data) values
@@ -118,6 +118,30 @@ select throws_ok(
   $$,
   'new row violates row-level security policy for table "player_team"',
   'Non-manager cannot add players'
+);
+
+-- TEST 8: Users can read their team's child teams
+reset role;
+-- Create a parent team
+insert into public.team (id, name) values
+  ('00000000-0000-0000-0000-0000000000b3', 'Parent Team');
+
+-- Create a child team that is associated with the parent team
+insert into public.team (id, name, associated_team_id) values
+  ('00000000-0000-0000-0000-0000000000b4', 'Child Team', '00000000-0000-0000-0000-0000000000b3');
+
+-- Add user 1 to the parent team as a member
+insert into public.user_team (user_id, team_id, permission_level) values
+  ('00000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-0000000000b3', 'member');
+
+-- Test that user 1 can read the child team (team associated with their own team) due to being a member of the parent team
+set local role authenticated;
+set local request.jwt.claim.sub = '00000000-0000-0000-0000-0000000000a1';
+
+select results_eq(
+  $$select id, name from public.team where id = '00000000-0000-0000-0000-0000000000b4'$$,
+  $$VALUES ('00000000-0000-0000-0000-0000000000b4'::uuid, 'Child Team')$$,
+  'User can read their team''s child teams'
 );
 
 SELECT * FROM finish();

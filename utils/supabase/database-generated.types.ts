@@ -131,6 +131,49 @@ export type Database = {
           },
         ]
       }
+      game_roster_player: {
+        Row: {
+          created_at: string
+          game_id: string
+          player_id: string
+          team_id: string
+        }
+        Insert: {
+          created_at?: string
+          game_id: string
+          player_id: string
+          team_id: string
+        }
+        Update: {
+          created_at?: string
+          game_id?: string
+          player_id?: string
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_roster_player_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "game"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_roster_player_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "player"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_roster_player_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "team"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       game_team: {
         Row: {
           created_at: string
@@ -160,6 +203,42 @@ export type Database = {
           },
           {
             foreignKeyName: "game_team_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "team"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lineup: {
+        Row: {
+          created_at: string
+          game_id: string
+          lineup_data: Json
+          team_id: string
+        }
+        Insert: {
+          created_at?: string
+          game_id: string
+          lineup_data?: Json
+          team_id: string
+        }
+        Update: {
+          created_at?: string
+          game_id?: string
+          lineup_data?: Json
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lineup_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "game"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lineup_team_id_fkey"
             columns: ["team_id"]
             isOneToOne: false
             referencedRelation: "team"
@@ -280,18 +359,21 @@ export type Database = {
           id: string
           name: string
           short_name: string | null
+          time_zone: string
         }
         Insert: {
           created_at?: string
           id?: string
           name: string
           short_name?: string | null
+          time_zone?: string
         }
         Update: {
           created_at?: string
           id?: string
           name?: string
           short_name?: string | null
+          time_zone?: string
         }
         Relationships: []
       }
@@ -510,26 +592,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      create_game: {
-        Args: {
-          game_name: string
-          teams: Database["public"]["CompositeTypes"]["new_game_team"][]
-        }
-        Returns: {
-          created_at: string
-          created_by_team_id: string | null
-          created_by_user_id: string
-          ended_at: string | null
-          field: string | null
-          game_data: Json
-          id: string
-          location_id: string
-          name: string
-          scheduled_start_time: string | null
-          started_at: string | null
-          status: Database["public"]["Enums"]["game_status"]
-          tournament_id: string | null
-        }
+      can_scorekeep_game: {
+        Args: { game_id: string }
+        Returns: boolean
+      }
+      can_view_game: {
+        Args: { game_id: string }
+        Returns: boolean
       }
       create_team_with_players: {
         Args: { player_ids: string[]; team_name: string }
@@ -685,7 +754,7 @@ export type Database = {
         | "solo_mode_opponent_inning"
         | "manual_override"
         | "end_game"
-      game_status: "completed" | "in_progress" | "not_started"
+      game_status: "completed" | "in_progress" | "not_started" | "canceled"
       team_permission_level: "member" | "scorekeeper" | "manager"
       team_role: "home" | "away"
       user_permission_level: "user" | "admin" | "super_admin"
@@ -864,7 +933,7 @@ export const Constants = {
         "manual_override",
         "end_game",
       ],
-      game_status: ["completed", "in_progress", "not_started"],
+      game_status: ["completed", "in_progress", "not_started", "canceled"],
       team_permission_level: ["member", "scorekeeper", "manager"],
       team_role: ["home", "away"],
       user_permission_level: ["user", "admin", "super_admin"],

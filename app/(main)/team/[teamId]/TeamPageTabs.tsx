@@ -43,6 +43,7 @@ export default function TeamPageTabs({ teamId }: { teamId: string }) {
         }
       />
       <Tab
+        isDisabled
         key={`/team/${teamId}/tournaments`}
         as={Link}
         href={`/team/${teamId}/tournaments`}

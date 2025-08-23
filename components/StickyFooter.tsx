@@ -25,7 +25,7 @@ export function StickyFooterContent({
   return (
     <div
       className={cn(
-        "w-full max-w-[1024px] px-6 py-4 mx-auto flex gap-x-2 gap-y-3 items-center flex-wrap sm:flex-nowrap",
+        "w-full max-w-[1024px] px-6 py-4 mx-auto flex gap-3 items-center flex-wrap sm:flex-nowrap",
         className,
       )}
     >

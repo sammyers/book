@@ -18,13 +18,6 @@ export type Database = MergeDeep<
       CompositeTypes: {
         new_game_team: NewGameTeam;
       };
-      Functions: {
-        create_game: {
-          Args: {
-            teams: NewGameTeam[];
-          };
-        };
-      };
     };
   }
 >;

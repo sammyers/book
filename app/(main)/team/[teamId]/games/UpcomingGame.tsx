@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import {
@@ -42,11 +44,13 @@ function GameTime({ startTime }: { startTime: string }) {
   );
 }
 
-export default function UpcomingGame(props: UpcomingGame) {
+export default function UpcomingGame(props: UpcomingGame & { teamId: string }) {
   const {
     role,
     game: { id, name, tournament, location, field, start_time },
+    teamId,
   } = props;
+
   return (
     <ListItem>
       <ListItem.Content className="gap-2">
@@ -89,7 +93,7 @@ export default function UpcomingGame(props: UpcomingGame) {
             color="primary"
             variant="flat"
             as={Link}
-            href={`/game/${id}`}
+            href={`/game/${id}?teamId=${teamId}`}
             isIconOnly
             startContent={<ArrowRightIcon size={16} weight="duotone" />}
           />

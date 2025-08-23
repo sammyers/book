@@ -1,7 +1,7 @@
 import { Navbar, NavbarContent } from "@heroui/navbar";
 
+import ThemeToggle from "../../components/ThemeToggle";
 import PageHeaderContent from "./PageHeaderContent";
-import ThemeToggle from "./ThemeToggle";
 import UserMenu from "./UserMenu";
 
 export default function PageHeader() {

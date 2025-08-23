@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 import { createServerClient } from "@/utils/supabase/server";
 import { getCurrentUserPermissionLevel } from "@/utils/supabase/users";
 
-import ThemeToggle from "../(logged-in)/ThemeToggle";
+import ThemeToggle from "../../components/ThemeToggle";
 import AdminPageTabs from "./AdminPageTabs";
 
 import type { ReactNode } from "react";
