@@ -57,7 +57,8 @@ export default function UpcomingGame(props: UpcomingGame & { teamId: string }) {
         <div className="flex items-start justify-between">
           <div className="flex flex-col">
             <h3 className="font-bold">
-              {getOpponentPrefix(role)} {getOpponentTeam(props)?.name}
+              <span className="text-primary-700">{getOpponentPrefix(role)}</span>{" "}
+              {getOpponentTeam(props)?.name}
             </h3>
             {name ? <h5 className="italic text-tiny text-foreground-400">{name}</h5> : null}
           </div>

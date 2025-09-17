@@ -5,6 +5,7 @@ import { cn } from "@heroui/react";
 import { CalendarDotsIcon, ClockCounterClockwiseIcon, PlayIcon } from "@phosphor-icons/react/ssr";
 import Link from "next/link";
 
+import { CardTitle } from "@/components/CardTitle";
 import { List } from "@/components/List";
 import { createServerClient } from "@/utils/supabase/server";
 
@@ -68,13 +69,13 @@ export default async function TeamGamesPage({ params }: PageProps<{ teamId: stri
     <>
       <div className="flex flex-col gap-6 pb-20">
         <Card shadow="sm">
-          <CardHeader className="flex-col items-stretch">
-            <div className="rounded-md bg-default-100 text-foreground-500 p-2 flex gap-2 items-center">
+          <CardHeader className="flex-col items-stretch pb-0">
+            <CardTitle>
               <CalendarDotsIcon size={24} weight="duotone" />
-              <span className="font-medium">Upcoming Games</span>
-            </div>
+              <p>Upcoming Games</p>
+            </CardTitle>
           </CardHeader>
-          <CardBody className="pt-0">
+          <CardBody>
             {upcomingGames.length > 0 ? (
               <List>
                 {upcomingGames.map(game => (
@@ -87,13 +88,13 @@ export default async function TeamGamesPage({ params }: PageProps<{ teamId: stri
           </CardBody>
         </Card>
         <Card shadow="sm">
-          <CardHeader className="flex-col items-stretch">
-            <div className="rounded-md bg-default-100 text-foreground-500 p-2 flex gap-2 items-center">
+          <CardHeader className="flex-col items-stretch pb-0">
+            <CardTitle>
               <ClockCounterClockwiseIcon size={24} weight="duotone" />
-              <span className="font-medium">Recent Games</span>
-            </div>
+              <p>Recent Games</p>
+            </CardTitle>
           </CardHeader>
-          <CardBody className="pt-0">
+          <CardBody>
             {pastGames.length > 0 ? (
               <List>
                 {pastGames.map(game => (

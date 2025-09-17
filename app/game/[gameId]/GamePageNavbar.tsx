@@ -54,7 +54,7 @@ export default function GamePageNavbar({ gameStatus }: Props) {
   }, [joinedPath, gameStatus, changeTab]);
 
   return (
-    <StickyFooter className="items-center">
+    <StickyFooter className="items-center shadow-small">
       <Tabs
         aria-label="Game page tabs"
         variant="light"

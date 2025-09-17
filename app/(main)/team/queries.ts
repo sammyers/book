@@ -13,7 +13,7 @@ export const getPlayerSearchQuery = (supabase: SupabaseClient<Database>, search:
       primary_position,
       secondary_position,
       nickname,
-      teams:team(id, name)
+      teams:team!player_team(id, name)
       `,
     )
     .or(`name.ilike.%${search}%,nickname.ilike.%${search}%`);
