@@ -1,15 +1,18 @@
-import { useDraggable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@heroui/button";
 import { cn, Spinner } from "@heroui/react";
 import { Select, SelectItem } from "@heroui/select";
 import { BaseballHelmetIcon, ChairIcon, UserMinusIcon } from "@phosphor-icons/react";
+import { useCallback } from "react";
 
 import { PlayerNameplate } from "@/components/PlayerNameplate";
 import { PlayerPositionChip } from "@/components/PlayerPositionChip";
 
 import { useFieldingPositionOptions, usePlayer, usePlayerActions } from "./context";
 
+import type { FieldingPosition } from "@/utils/supabase/database.types";
+import type { Selection } from "@heroui/react";
 import type { ComponentProps } from "react";
 import type { LineupViewPlayer } from "../_store/selectors";
 
@@ -30,6 +33,8 @@ export function PlayerItem({ playerId, className, ...props }: PlayerItemProps) {
     <RosterPlayerContent player={player} />
   );
 
+  const isPending = player.isInGame ? player.isPending : player.isRemovalPending;
+
   return (
     <div
       className={cn(
@@ -42,6 +47,7 @@ export function PlayerItem({ playerId, className, ...props }: PlayerItemProps) {
         "rounded-lg",
         "p-2",
         "cursor-grab",
+        isPending && "opacity-75",
         className,
       )}
       {...props}
@@ -51,19 +57,19 @@ export function PlayerItem({ playerId, className, ...props }: PlayerItemProps) {
   );
 }
 
-export function DraggablePlayerItem({
+export function SortablePlayerItem({
   playerId,
   containerId,
 }: {
   playerId: string;
   containerId: string;
 }) {
-  const { attributes, listeners, transform, setNodeRef, isDragging } = useDraggable({
+  const { attributes, listeners, transform, transition, setNodeRef, isDragging } = useSortable({
     id: playerId,
     data: { containerId },
   });
 
-  const style = { transform: CSS.Translate.toString(transform) };
+  const style = { transform: CSS.Translate.toString(transform), transition };
 
   return (
     <PlayerItem
@@ -89,6 +95,7 @@ function RosterPlayerContent({ player }: { player: RosterPlayer }) {
       <div className="flex justify-between items-center gap-2">
         <div className="flex items-center gap-2">
           <PlayerNameplate {...player} />
+          {player.isRemovalPending && <Spinner size="sm" color="default" />}
         </div>
         <div className="flex items-center gap-3">
           <PlayerPositionChip {...player.player} />
@@ -123,21 +130,49 @@ function LineupPlayerContent({ player }: { player: LineupPlayer }) {
 
   const fieldingPositions = useFieldingPositionOptions();
 
-  const { moveToBench, removeFromGame } = usePlayerActions(player.player.id);
+  const { moveToBench, removeFromGame, changePosition } = usePlayerActions(player.player.id);
+
+  const handleSelectionChange = useCallback(
+    (value: Selection) => {
+      changePosition([...value].at(0) as FieldingPosition);
+    },
+    [changePosition],
+  );
 
   return (
     <div className={cn("flex justify-between items-center gap-2", isPending && "opacity-70")}>
-      <PlayerNameplate {...player} />
-      {isPending && <Spinner size="sm" color="default" />}
+      <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center shrink-0 size-8 rounded-full bg-secondary-500/20 text-secondary-500 font-medium">
+          {player.lineupEntry.battingOrder}
+        </div>
+        <div className="flex items-center gap-2">
+          <PlayerNameplate {...player} />
+          {isPending && <Spinner size="sm" color="default" />}
+        </div>
+      </div>
       <div className="flex items-center gap-3">
         <Select
           aria-label="Position selector"
           size="sm"
           variant="faded"
           selectedKeys={[lineupEntry.position]}
+          onSelectionChange={handleSelectionChange}
           items={fieldingPositions}
           fullWidth={false}
-          className="min-w-20"
+          classNames={{
+            base: "min-w-16",
+            trigger: "pr-0",
+            selectorIcon: "end-1",
+          }}
+          listboxProps={{
+            classNames: {
+              base: "p-0",
+            },
+            itemClasses: {
+              base: "p-1",
+              selectedIcon: "text-secondary",
+            },
+          }}
         >
           {({ value, label }) => <SelectItem key={value}>{label}</SelectItem>}
         </Select>
@@ -160,7 +195,10 @@ function BenchPlayerContent({ player }: { player: BenchPlayer }) {
   return (
     <>
       <div className="flex justify-between items-center gap-2">
-        <PlayerNameplate {...player} />
+        <div className="flex items-center gap-2">
+          <PlayerNameplate {...player} />
+          {player.isPending && <Spinner size="sm" color="default" />}
+        </div>
         <div className="flex items-center gap-2">
           <Button size="sm" variant="flat" color="success" onPress={moveToLineup} isIconOnly>
             <BaseballHelmetIcon size={20} weight="duotone" />

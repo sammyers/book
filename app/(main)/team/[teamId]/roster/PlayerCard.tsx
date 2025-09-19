@@ -16,7 +16,7 @@ export default function PlayerCard({ isManager, joined_at, ...props }: PlayerCar
   return (
     <div
       key={player.id}
-      className="flex flex-col gap-2 bg-content1 border border-divider rounded-lg p-3"
+      className="flex flex-col gap-2 bg-content1 border border-divider rounded-lg p-2"
     >
       <div className="flex justify-between items-center">
         <PlayerNameplate {...props} />

@@ -39,6 +39,7 @@ function makeTeamState({ team }: GamePageTeam): TeamState {
     lineup: {
       current: lineup,
       saved: null,
+      saving: null,
       isDirty: false,
       isSaving: false,
       preventSaving: false,
@@ -57,6 +58,12 @@ function makeInitialState(teams: GamePageTeam[]): GameStoreState {
     teams: {
       home: makeTeamState(homeTeam),
       away: makeTeamState(awayTeam),
+    },
+    dragging: {
+      activePlayerId: null,
+      originContainer: null,
+      overContainer: null,
+      overLineupIndex: null,
     },
   };
 }

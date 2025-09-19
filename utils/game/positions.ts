@@ -1,6 +1,6 @@
 import { fieldingPositions } from "../supabase/database.types";
 
-import type { Player } from "../supabase/database.types";
+import type { FieldingPosition, Player } from "../supabase/database.types";
 import type { FieldingConfiguration, Lineup } from "./lineups";
 
 export function getPossiblePositions({ numInfielders, numOutfielders }: FieldingConfiguration) {
@@ -23,6 +23,7 @@ export function getPossiblePositions({ numInfielders, numOutfielders }: Fielding
 export function getInitialPositionForPlayer(
   player: Player<"primary_position" | "secondary_position">,
   lineup: Lineup,
+  positionToSwap?: FieldingPosition,
 ) {
   const possiblePositions = new Set(getPossiblePositions(lineup.fieldingConfiguration));
   const occupiedPositions = new Set(lineup.players.map(p => p.position));
@@ -38,6 +39,10 @@ export function getInitialPositionForPlayer(
     possiblePositions.has(player.secondary_position)
   ) {
     return player.secondary_position;
+  }
+
+  if (positionToSwap) {
+    return positionToSwap;
   }
 
   const nextPosition = [...possiblePositions].find(p => !occupiedPositions.has(p));

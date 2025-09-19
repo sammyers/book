@@ -8,7 +8,7 @@ export function PlayerPositionChip(
   props: Pick<Tables<"player">, "primary_position" | "secondary_position">,
 ) {
   return (
-    <Chip variant="dot" color="success" radius="sm" size="sm">
+    <Chip variant="dot" color="secondary" radius="sm" size="sm">
       <span>{getPositions(props)}</span>
     </Chip>
   );
