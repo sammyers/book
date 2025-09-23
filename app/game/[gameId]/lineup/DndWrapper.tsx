@@ -12,7 +12,6 @@ import {
   getActiveDraggingPlayer,
   getDraggingOriginContainer,
   getDraggingOverContainer,
-  getPlayerOriginContainer,
   getVisiblePlayerIds,
 } from "../_store/selectors";
 import {
@@ -84,7 +83,6 @@ export function DndWrapper({ children }: { children: ReactNode }) {
 
   const onDragEnd = useCallback(
     ({ active, over }: DragEndEvent) => {
-      console.log("onDragEnd", active, over);
       if (over) {
         const draggingPlayerId = active.id as string;
         const originContainerId = getDraggingOriginContainer(store.getState());
@@ -92,49 +90,36 @@ export function DndWrapper({ children }: { children: ReactNode }) {
         const targetId = over.id as string;
         const targetContainerId = getDraggingOverContainer(store.getState());
 
-        // Dragging from lineup
-        if (originContainerId === TEAM_LINEUP_CONTAINER_ID) {
-          console.log("dragging from lineup", { draggingPlayerId, targetId, targetContainerId });
-          if (targetId === draggingPlayerId || targetId === TEAM_LINEUP_CONTAINER_ID) {
-            return;
-          }
-          if (targetContainerId === TEAM_LINEUP_CONTAINER_ID) {
-            const targetLineupIndex = getPlayerLineupIndex(targetId);
-            changePlayerBattingOrder(draggingPlayerId, targetLineupIndex);
-          }
-          if (targetId === BENCH_CONTAINER_ID) {
+        if (targetId === BENCH_CONTAINER_ID) {
+          if (originContainerId === TEAM_LINEUP_CONTAINER_ID) {
             movePlayerFromLineupToBench(draggingPlayerId);
           }
-          if (targetId === TEAM_ROSTER_CONTAINER_ID) {
-            removePlayerFromGameOptimistically(draggingPlayerId);
-          }
-        }
-
-        // Dragging from roster
-        if (originContainerId === TEAM_ROSTER_CONTAINER_ID) {
-          if (targetContainerId === TEAM_LINEUP_CONTAINER_ID) {
-            const targetLineupIndex = getPlayerLineupIndex(targetId);
-            addPlayerToGameOptimistically(draggingPlayerId, false, targetLineupIndex);
-          }
-          if (targetId === TEAM_LINEUP_CONTAINER_ID) {
-            addPlayerToGameOptimistically(draggingPlayerId, false);
-          }
-          if (targetId === BENCH_CONTAINER_ID) {
+          if (originContainerId === TEAM_ROSTER_CONTAINER_ID) {
             addPlayerToGameOptimistically(draggingPlayerId, true);
           }
         }
 
-        // Dragging from bench
-        if (originContainerId === BENCH_CONTAINER_ID) {
-          if (targetContainerId === TEAM_LINEUP_CONTAINER_ID) {
-            const targetLineupIndex = getPlayerLineupIndex(targetId);
+        if (targetId === TEAM_ROSTER_CONTAINER_ID) {
+          if (originContainerId !== TEAM_ROSTER_CONTAINER_ID) {
+            removePlayerFromGameOptimistically(draggingPlayerId);
+          }
+        }
+
+        if (
+          targetId === TEAM_LINEUP_CONTAINER_ID ||
+          targetContainerId === TEAM_LINEUP_CONTAINER_ID
+        ) {
+          // Target id should only be the lineup container if the lineup is currently empty
+          const targetLineupIndex =
+            targetId === TEAM_LINEUP_CONTAINER_ID ? -1 : getPlayerLineupIndex(targetId);
+          if (originContainerId === TEAM_ROSTER_CONTAINER_ID) {
+            addPlayerToGameOptimistically(draggingPlayerId, false, targetLineupIndex);
+          }
+          if (originContainerId === BENCH_CONTAINER_ID) {
             movePlayerFromBenchToLineup(draggingPlayerId, targetLineupIndex);
           }
-          if (targetId === TEAM_LINEUP_CONTAINER_ID) {
-            movePlayerFromBenchToLineup(draggingPlayerId);
-          }
-          if (targetId === TEAM_ROSTER_CONTAINER_ID) {
-            removePlayerFromGameOptimistically(draggingPlayerId);
+          if (originContainerId === TEAM_LINEUP_CONTAINER_ID) {
+            changePlayerBattingOrder(draggingPlayerId, targetLineupIndex);
           }
         }
       }
@@ -152,6 +137,14 @@ export function DndWrapper({ children }: { children: ReactNode }) {
     ],
   );
 
+  /**
+   * The collision detector should work as follows:
+   * - If dragging over the lineup, return the lineup container only if there are no players
+   *   already in the lineup. Otherwise, return the closest player
+   * - If already dragging over the roster or bench container, return that container
+   * - If dragging over a player in the roster or bench container, return that container so that
+   *   the dragging player doesn't reorder itself
+   */
   const collisionDetection: CollisionDetection = useCallback(
     args => {
       const pointerIntersections = pointerWithin(args);
@@ -163,45 +156,44 @@ export function DndWrapper({ children }: { children: ReactNode }) {
       const collision = getFirstCollision(intersections);
       let overId = collision?.id ?? null;
 
-      if (overId !== null) {
-        if (overId === TEAM_LINEUP_CONTAINER_ID) {
-          const containerItems = getVisiblePlayerIds(
-            store.getState(),
-            teamRole,
-            overId as ContainerId,
-          );
+      if (overId === null) {
+        return [];
+      }
 
-          if (containerItems.length > 0) {
-            // Return the closest droppable within the lineup container
-            overId = closestCenter({
-              ...args,
-              droppableContainers: args.droppableContainers.filter(
-                container =>
-                  container.id !== overId && containerItems.includes(container.id as string),
-              ),
-            })[0]?.id;
-          }
-        } else {
-          const overData = collision?.data?.droppableContainer.data.current;
-          const originContainerId = getPlayerOriginContainer(
-            store.getState(),
-            teamRole,
-            overId as string,
-          );
-          // Don't allow re-ordering items within the roster or bench
-          if (
-            originContainerId === overData?.containerId &&
-            (originContainerId === TEAM_ROSTER_CONTAINER_ID ||
-              originContainerId === BENCH_CONTAINER_ID)
-          ) {
-            return [];
-          }
-        }
-
+      // Dropping over roster or bench container itself is fine
+      if (overId === TEAM_ROSTER_CONTAINER_ID || overId === BENCH_CONTAINER_ID) {
         return [{ id: overId }];
       }
 
-      return [];
+      if (overId === TEAM_LINEUP_CONTAINER_ID) {
+        const containerItems = getVisiblePlayerIds(
+          store.getState(),
+          teamRole,
+          overId as ContainerId,
+        );
+
+        if (containerItems.length > 0) {
+          // Return the closest droppable within the lineup container
+          overId = closestCenter({
+            ...args,
+            droppableContainers: args.droppableContainers.filter(
+              container =>
+                container.id !== overId && containerItems.includes(container.id as string),
+            ),
+          })[0]?.id;
+        }
+      } else {
+        const overData = collision?.data?.droppableContainer.data.current;
+        // If dropping over an item in the roster or bench, return the container itself instead of the item
+        if (
+          overData.containerId === TEAM_ROSTER_CONTAINER_ID ||
+          overData.containerId === BENCH_CONTAINER_ID
+        ) {
+          overId = overData.containerId;
+        }
+      }
+
+      return overId ? [{ id: overId }] : [];
     },
     [teamRole, store],
   );

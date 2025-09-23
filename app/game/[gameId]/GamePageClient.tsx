@@ -34,7 +34,7 @@ export function GamePageClient() {
 
   return (
     <>
-      <div className="pt-14 h-full w-full flex flex-col overflow-hidden">{currentView}</div>
+      <div className="relative h-full w-full flex flex-col overflow-hidden">{currentView}</div>
     </>
   );
 }

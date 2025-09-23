@@ -10,16 +10,17 @@ export default function BackButton() {
   const teamId = params.get("teamId");
 
   return (
-    <Button
-      color="primary"
-      variant="flat"
-      className="absolute top-2 left-2"
-      isIconOnly
-      radius="full"
-      as={Link}
-      href={teamId ? `/team/${teamId}/games` : "/"}
-    >
-      <ArrowLeftIcon size={24} weight="duotone" />
-    </Button>
+    <div className="absolute top-2 left-2 z-20 bg-content1 rounded-full">
+      <Button
+        color="primary"
+        variant="flat"
+        isIconOnly
+        radius="full"
+        as={Link}
+        href={teamId ? `/team/${teamId}/games` : "/"}
+      >
+        <ArrowLeftIcon size={24} weight="duotone" />
+      </Button>
+    </div>
   );
 }

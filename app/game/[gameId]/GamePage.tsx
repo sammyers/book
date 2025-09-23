@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { ThemeToggleButton } from "@/components/ThemeToggleButton";
 import { buildInitialLineup, getLineup } from "@/utils/game/lineups";
+import { getGameSettings } from "@/utils/game/settings";
 import { createServerClient } from "@/utils/supabase/server";
 
 import BackButton from "./BackButton";
@@ -12,7 +13,7 @@ import { GameStoreProvider } from "./GameStoreProvider";
 import { getGameQuery, getTeamsQuery } from "./queries";
 
 import type { GameStoreState, TeamState } from "./_store/store";
-import type { GamePageTeam, TeamRosterPlayer } from "./queries";
+import type { GamePageGame, GamePageTeam, TeamRosterPlayer } from "./queries";
 
 function makeTeamState({ team }: GamePageTeam): TeamState {
   const gamePlayers = new Set(team.game_players.map(player => player.player_id));
@@ -47,7 +48,7 @@ function makeTeamState({ team }: GamePageTeam): TeamState {
   };
 }
 
-function makeInitialState(teams: GamePageTeam[]): GameStoreState {
+function makeInitialState(game: GamePageGame, teams: GamePageTeam[]): GameStoreState {
   const homeTeam = teams.find(team => team.role === "home");
   const awayTeam = teams.find(team => team.role === "away");
   if (!homeTeam || !awayTeam) {
@@ -63,8 +64,8 @@ function makeInitialState(teams: GamePageTeam[]): GameStoreState {
       activePlayerId: null,
       originContainer: null,
       overContainer: null,
-      overLineupIndex: null,
     },
+    settings: getGameSettings(game.game_data),
   };
 }
 
@@ -89,10 +90,11 @@ export default async function GamePage({ gameId }: { gameId: string }) {
 
   let initialState: GameStoreState;
   try {
-    initialState = makeInitialState(rosters);
+    initialState = makeInitialState(game, rosters);
+    console.log("initialState", initialState);
   } catch (error) {
     return (
-      <Alert color="danger" title="Error parsing roster data">
+      <Alert color="danger" title="Error parsing game data">
         {error instanceof Error ? error.message : "Unknown error"}
       </Alert>
     );
@@ -102,7 +104,7 @@ export default async function GamePage({ gameId }: { gameId: string }) {
     <>
       <div className="relative flex flex-col w-full h-full max-w-[1024px] mx-auto">
         <BackButton />
-        <ThemeToggleButton className="absolute top-2 right-2" />
+        <ThemeToggleButton className="absolute top-2 right-2 z-20 bg-content1" />
         <GameStoreProvider initialState={initialState}>
           <GamePageClient />
         </GameStoreProvider>

@@ -155,6 +155,8 @@ function LineupPlayerContent({ player }: { player: LineupPlayer }) {
           aria-label="Position selector"
           size="sm"
           variant="faded"
+          selectionMode="single"
+          disallowEmptySelection
           selectedKeys={[lineupEntry.position]}
           onSelectionChange={handleSelectionChange}
           items={fieldingPositions}

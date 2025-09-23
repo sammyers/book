@@ -8,6 +8,7 @@ import { getInitialPositionForPlayer } from "@/utils/game/positions";
 import { createAsyncAction } from "@/utils/stores";
 
 import type { Lineup, LineupEntry } from "@/utils/game/lineups";
+import type { GameSettings } from "@/utils/game/settings";
 import type { ActionWrapper } from "@/utils/stores";
 import type { FieldingPosition, Player, TeamRole } from "@/utils/supabase/database.types";
 import type { WritableDraft } from "immer";
@@ -46,11 +47,11 @@ type DraggingState = {
   activePlayerId: string | null;
   originContainer: ContainerId | null;
   overContainer: ContainerId | null;
-  overLineupIndex: number | null;
 };
 
 export type GameStoreState = {
   teams: Record<TeamRole, TeamState>;
+  settings: GameSettings;
   dragging: DraggingState;
 };
 
@@ -84,10 +85,7 @@ export type GameStoreActions = {
   changePlayerBattingOrder: (args: ChangePlayerBattingOrderFields) => void;
   saveLineup: ActionWrapper<{ teamRole: TeamRole }>;
   startDraggingPlayer: (args: { playerId: string; containerId: ContainerId }) => void;
-  updateDraggingPlayer: (args: {
-    overContainer: ContainerId | null;
-    overLineupIndex?: number | null;
-  }) => void;
+  updateDraggingPlayer: (args: { overContainer: ContainerId | null }) => void;
   stopDraggingPlayer: () => void;
 };
 
@@ -115,10 +113,10 @@ function fixLineupOrder(lineup: WritableDraft<Lineup>) {
 function addPlayerToLineup(
   lineup: WritableDraft<Lineup>,
   player: Player<"id" | "primary_position" | "secondary_position">,
-  lineupIndex?: number,
+  lineupIndex: number = -1,
 ) {
   const position = getInitialPositionForPlayer(player, lineup);
-  if (lineupIndex === undefined) {
+  if (lineupIndex === -1) {
     lineup.players.push({ playerId: player.id, battingOrder: lineup.players.length + 1, position });
   } else {
     lineup.players.splice(lineupIndex, 0, {
@@ -345,11 +343,11 @@ export const createGameStore = (initialState: GameStoreState) =>
         },
       }));
     },
-    updateDraggingPlayer: args => {
+    updateDraggingPlayer: ({ overContainer }) => {
       set(({ dragging }) => ({
         dragging: {
           ...dragging,
-          ...args,
+          overContainer,
         },
       }));
     },
@@ -359,7 +357,6 @@ export const createGameStore = (initialState: GameStoreState) =>
           activePlayerId: null,
           originContainer: null,
           overContainer: null,
-          overLineupIndex: null,
         },
       });
     },

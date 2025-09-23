@@ -22,10 +22,6 @@ export const getDraggingOriginContainer = createSelector(
   getDraggingState,
   ({ originContainer }) => originContainer,
 );
-export const getDraggingOverLineupIndex = createSelector(
-  getDraggingState,
-  ({ overLineupIndex }) => overLineupIndex,
-);
 
 const getTeam = (state: GameStoreState, teamRole: TeamRole) => state.teams[teamRole];
 export const getLineup = createSelector(getTeam, ({ lineup }) => lineup.current);
@@ -177,9 +173,8 @@ export const getVisibleLineupPlayers = createSelector(
   getActiveDraggingPlayer,
   getDraggingOverContainer,
   getDraggingOriginContainer,
-  getDraggingOverLineupIndex,
   getPlayerIdsInLineup,
-  (draggingPlayerId, overContainer, originContainer, overLineupIndex, lineupPlayers) => {
+  (draggingPlayerId, overContainer, originContainer, lineupPlayers) => {
     if (!draggingPlayerId || !overContainer || overContainer === originContainer) {
       return lineupPlayers;
     }
@@ -188,14 +183,7 @@ export const getVisibleLineupPlayers = createSelector(
       return lineupPlayers.filter(id => id !== draggingPlayerId);
     }
 
-    if (overLineupIndex === null) {
-      return [...lineupPlayers, draggingPlayerId];
-    }
-    return [
-      ...lineupPlayers.slice(0, overLineupIndex),
-      draggingPlayerId,
-      ...lineupPlayers.slice(overLineupIndex),
-    ];
+    return [...lineupPlayers, draggingPlayerId];
   },
 );
 
