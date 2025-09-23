@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 import { BoxScoreView } from "./box/BoxScoreView";
 import { GameView } from "./game/GameView";
@@ -12,10 +12,6 @@ export function GamePageClient() {
   const { path } = useParams<{ path?: string[]; gameId: string }>();
 
   const joinedPath = path?.join("/") ?? "";
-
-  useEffect(() => {
-    console.log("game page client mounted");
-  }, []);
 
   const currentView = useMemo(() => {
     switch (joinedPath) {

@@ -62,8 +62,11 @@ export function DndWrapper({ children }: { children: ReactNode }) {
   );
 
   const onDragOver = useCallback(
-    ({ over }: DragOverEvent) => {
+    ({ active, over }: DragOverEvent) => {
       if (!over) {
+        return;
+      }
+      if (active.id === over.id) {
         return;
       }
       const targetId = over.id as string;

@@ -91,7 +91,6 @@ export default async function GamePage({ gameId }: { gameId: string }) {
   let initialState: GameStoreState;
   try {
     initialState = makeInitialState(game, rosters);
-    console.log("initialState", initialState);
   } catch (error) {
     return (
       <Alert color="danger" title="Error parsing game data">
