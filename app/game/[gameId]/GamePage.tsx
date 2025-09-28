@@ -3,16 +3,18 @@ import { redirect } from "next/navigation";
 
 import { ThemeToggleButton } from "@/components/ThemeToggleButton";
 import { buildInitialLineup, getLineup } from "@/utils/game/lineups";
-import { getGameSettings } from "@/utils/game/settings";
+import { parseGameData } from "@/utils/game/metadata";
 import { createServerClient } from "@/utils/supabase/server";
 
+import { createSaveableState } from "./_store/types";
 import BackButton from "./BackButton";
 import { GamePageClient } from "./GamePageClient";
 import GamePageNavbar from "./GamePageNavbar";
 import { GameStoreProvider } from "./GameStoreProvider";
 import { getGameQuery, getTeamsQuery } from "./queries";
 
-import type { GameStoreState, TeamState } from "./_store/store";
+import type { TeamState } from "./_store/types";
+import type { InitialState } from "./GameStoreProvider";
 import type { GamePageGame, GamePageTeam, TeamRosterPlayer } from "./queries";
 
 function makeTeamState({ team }: GamePageTeam): TeamState {
@@ -38,22 +40,20 @@ function makeTeamState({ team }: GamePageTeam): TeamState {
     gamePlayers,
     pendingPlayerAdditions: new Set(),
     lineup: {
-      current: lineup,
-      saved: null,
-      saving: null,
-      isDirty: false,
-      isSaving: false,
+      ...createSaveableState(lineup),
       preventSaving: false,
     },
   };
 }
 
-function makeInitialState(game: GamePageGame, teams: GamePageTeam[]): GameStoreState {
+function makeInitialState(game: GamePageGame, teams: GamePageTeam[]): InitialState {
   const homeTeam = teams.find(team => team.role === "home");
   const awayTeam = teams.find(team => team.role === "away");
   if (!homeTeam || !awayTeam) {
     throw new Error("Game must have both home and away teams");
   }
+
+  const gameData = parseGameData(game.game_data);
 
   return {
     teams: {
@@ -65,7 +65,7 @@ function makeInitialState(game: GamePageGame, teams: GamePageTeam[]): GameStoreS
       originContainer: null,
       overContainer: null,
     },
-    settings: getGameSettings(game.game_data),
+    gameData: createSaveableState(gameData),
   };
 }
 
@@ -88,14 +88,16 @@ export default async function GamePage({ gameId }: { gameId: string }) {
     );
   }
 
-  let initialState: GameStoreState;
+  let initialState: InitialState;
   try {
     initialState = makeInitialState(game, rosters);
   } catch (error) {
     return (
-      <Alert color="danger" title="Error parsing game data">
-        {error instanceof Error ? error.message : "Unknown error"}
-      </Alert>
+      <div className="p-6">
+        <Alert color="danger" title="Error parsing game data">
+          {error instanceof Error ? error.message : "Unknown error"}
+        </Alert>
+      </div>
     );
   }
 

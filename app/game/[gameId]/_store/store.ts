@@ -4,92 +4,19 @@ import { isEqual, size } from "lodash";
 import { createContext, use } from "react";
 import { createStore, useStore } from "zustand";
 
-import { getInitialPositionForPlayer } from "@/utils/game/positions";
+import { getInitialPositionForPlayer, getPossiblePositions } from "@/utils/game/positions";
 import { createAsyncAction } from "@/utils/stores";
 
-import type { Lineup, LineupEntry } from "@/utils/game/lineups";
-import type { GameSettings } from "@/utils/game/settings";
-import type { ActionWrapper } from "@/utils/stores";
-import type { FieldingPosition, Player, TeamRole } from "@/utils/supabase/database.types";
+import type { Lineup } from "@/utils/game/lineups";
+import type { Player, TeamRole } from "@/utils/supabase/database.types";
 import type { WritableDraft } from "immer";
-import type { TeamRosterPlayer } from "../queries";
-
-export const TEAM_ROSTER_CONTAINER_ID = "team-roster";
-export const TEAM_LINEUP_CONTAINER_ID = "team-lineup";
-export const BENCH_CONTAINER_ID = "bench";
-
-export type ContainerId =
-  | typeof TEAM_ROSTER_CONTAINER_ID
-  | typeof TEAM_LINEUP_CONTAINER_ID
-  | typeof BENCH_CONTAINER_ID;
-
-export type TeamState = {
-  id: string;
-  name: string;
-  rosterPlayers: Record<string, TeamRosterPlayer>;
-  gamePlayers: Set<string>;
-  // Players added by optimistic changes, will also appear in the gamePlayers set
-  pendingPlayerAdditions: Set<string>;
-  // Players deleted by optimistic changes
-  pendingPlayerDeletions: Record<string, { lineupEntry: LineupEntry | undefined }>;
-  lineup: {
-    current: Lineup;
-    saved: Lineup | null;
-    saving: Lineup | null;
-    isDirty: boolean;
-    isSaving: boolean;
-    // Flag to prevent saving the lineup while optimistic changes to the roster are pending
-    preventSaving: boolean;
-  };
-};
-
-type DraggingState = {
-  activePlayerId: string | null;
-  originContainer: ContainerId | null;
-  overContainer: ContainerId | null;
-};
-
-export type GameStoreState = {
-  teams: Record<TeamRole, TeamState>;
-  settings: GameSettings;
-  dragging: DraggingState;
-};
-
-type RosterChangeFields = {
-  playerId: string;
-  teamRole: TeamRole;
-};
-
-type MovePlayerToLineupFields = RosterChangeFields & {
-  lineupIndex?: number;
-};
-
-type AddPlayerToGameFields = MovePlayerToLineupFields & {
-  isBenchPlayer: boolean;
-};
-
-type ChangePlayerPositionFields = RosterChangeFields & {
-  position: FieldingPosition;
-};
-
-type ChangePlayerBattingOrderFields = RosterChangeFields & {
-  lineupIndex: number;
-};
-
-export type GameStoreActions = {
-  addPlayerToGame: ActionWrapper<AddPlayerToGameFields>;
-  removePlayerFromGame: ActionWrapper<RosterChangeFields>;
-  movePlayerToBench: (args: RosterChangeFields) => void;
-  movePlayerToLineup: (args: MovePlayerToLineupFields) => void;
-  changePlayerPosition: (args: ChangePlayerPositionFields) => void;
-  changePlayerBattingOrder: (args: ChangePlayerBattingOrderFields) => void;
-  saveLineup: ActionWrapper<{ teamRole: TeamRole }>;
-  startDraggingPlayer: (args: { playerId: string; containerId: ContainerId }) => void;
-  updateDraggingPlayer: (args: { overContainer: ContainerId | null }) => void;
-  stopDraggingPlayer: () => void;
-};
-
-export type GameStore = GameStoreState & GameStoreActions;
+import type {
+  AddPlayerToGameFields,
+  GameStore,
+  GameStoreState,
+  RosterChangeFields,
+  TeamState,
+} from "./types";
 
 // Edit a team in the store using an immer mutation
 function editTeam(
@@ -312,6 +239,53 @@ export const createGameStore = (initialState: GameStoreState) =>
         });
       });
     },
+    changeFieldingConfiguration: ({ teamRole, fieldingConfiguration }) => {
+      set(state => {
+        return editTeam(state, teamRole, team => {
+          const currentLineup = team.lineup.current;
+          const prevNumFielders =
+            currentLineup.fieldingConfiguration.numInfielders +
+            currentLineup.fieldingConfiguration.numOutfielders;
+          Object.assign(currentLineup.fieldingConfiguration, fieldingConfiguration);
+          if (currentLineup.fieldingConfiguration.numInfielders === 5) {
+            // If there are 5 infielders, only allow 3 outfielders
+            currentLineup.fieldingConfiguration.numOutfielders = 3;
+          }
+          if (fieldingConfiguration.numInfielders === 4) {
+            // If switching from 5 to 4 infielders, switch to 4 outfielders
+            currentLineup.fieldingConfiguration.numOutfielders = 4;
+          }
+
+          const possiblePositions = new Set(
+            getPossiblePositions(currentLineup.fieldingConfiguration),
+          );
+          const newNumFielders =
+            currentLineup.fieldingConfiguration.numInfielders +
+            currentLineup.fieldingConfiguration.numOutfielders;
+          // If we increase the total number of fielders in the new configuration, reposition an
+          // extra hitter into a fielding position if one exists
+          let extraHitterRepositioned = false;
+
+          currentLineup.players.forEach(lineupSpot => {
+            if (!possiblePositions.has(lineupSpot.position)) {
+              const { player } = team.rosterPlayers[lineupSpot.playerId];
+              lineupSpot.position = getInitialPositionForPlayer(player, currentLineup);
+            }
+            if (
+              lineupSpot.position === "extra_hitter" &&
+              newNumFielders > prevNumFielders &&
+              !extraHitterRepositioned
+            ) {
+              const { player } = team.rosterPlayers[lineupSpot.playerId];
+              lineupSpot.position = getInitialPositionForPlayer(player, currentLineup);
+              extraHitterRepositioned = true;
+            }
+          });
+
+          team.lineup.isDirty = true;
+        });
+      });
+    },
     saveLineup: createAsyncAction(set)<{ teamRole: TeamRole }>({
       action(state, { teamRole }) {
         return editTeam(state, teamRole, team => {
@@ -360,14 +334,61 @@ export const createGameStore = (initialState: GameStoreState) =>
         },
       });
     },
+    setSelectedTeamRole: teamRole => {
+      set({ lineupViewSelectedTeamRole: teamRole });
+    },
+    updateOpponentLineupMode: mode => {
+      set(({ gameData }) => ({
+        gameData: produce(gameData, state => {
+          state.current.opponentLineupSettings.mode = mode;
+          state.isDirty = true;
+        }),
+      }));
+    },
+    updateGameConfiguration: updates => {
+      set(({ gameData }) => ({
+        gameData: produce(gameData, state => {
+          Object.assign(state.current.gameConfiguration, updates);
+          state.isDirty = true;
+        }),
+      }));
+    },
+    saveGameData: createAsyncAction(set)({
+      action({ gameData }) {
+        return {
+          gameData: produce(gameData, state => {
+            state.isSaving = true;
+            state.saving = state.current;
+          }),
+        };
+      },
+      success({ gameData }) {
+        return {
+          gameData: produce(gameData, state => {
+            state.isSaving = false;
+            state.saved = state.saving;
+            state.saving = null;
+            state.isDirty = !isEqual(state.current, state.saved);
+          }),
+        };
+      },
+      error({ gameData }) {
+        return {
+          gameData: produce(gameData, state => {
+            state.isSaving = false;
+            state.saving = null;
+          }),
+        };
+      },
+    }),
   }));
 
 export type GameStoreApi = ReturnType<typeof createGameStore>;
 
-export const gameStoreContext = createContext<GameStoreApi | undefined>(undefined);
+export const GameStoreContext = createContext<GameStoreApi | undefined>(undefined);
 
 export const useGameStoreApi = () => {
-  const gameStore = use(gameStoreContext);
+  const gameStore = use(GameStoreContext);
   if (!gameStore) {
     throw new Error("Must be wrapped in GameStoreProvider");
   }

@@ -29,14 +29,16 @@ export function getInitialPositionForPlayer(
   const occupiedPositions = new Set(lineup.players.map(p => p.position));
   if (
     !occupiedPositions.has(player.primary_position) &&
-    possiblePositions.has(player.primary_position)
+    possiblePositions.has(player.primary_position) &&
+    player.primary_position !== "extra_hitter"
   ) {
     return player.primary_position;
   }
   if (
     player.secondary_position &&
     !occupiedPositions.has(player.secondary_position) &&
-    possiblePositions.has(player.secondary_position)
+    possiblePositions.has(player.secondary_position) &&
+    player.secondary_position !== "extra_hitter"
   ) {
     return player.secondary_position;
   }

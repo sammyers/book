@@ -5,8 +5,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { setFlashMessage } from "@/utils/flash";
+import { defaultGameConfiguration, defaultSetupState } from "@/utils/game/metadata";
 import { createServerClient } from "@/utils/supabase/server";
 
+import type { GameData } from "@/utils/game/metadata";
 import type { FormState } from "@/utils/types";
 import type { NewGameFormActionData } from "../../../forms";
 
@@ -32,6 +34,15 @@ export async function createTournamentGame(
 ): Promise<FormState> {
   const supabase = await createServerClient();
 
+  const gameData: GameData = {
+    opponentLineupSettings: {
+      // TODO: implement detailed mode
+      mode: formData.trackOpponentAtBats ? "minimal" : "runs-only",
+    },
+    setupState: defaultSetupState,
+    gameConfiguration: defaultGameConfiguration,
+  };
+
   const { data: newGame, error } = await supabase.rpc("create_tournament_game_for_team", {
     game_name: formData.name ?? "",
     tournament_id: formData.tournamentId,
@@ -41,9 +52,7 @@ export async function createTournamentGame(
     scheduled_start_time: formData.scheduledStartTime,
     location_id: formData.locationId,
     field_name: formData.fieldName,
-    game_data: {
-      trackOpponentAtBats: formData.trackOpponentAtBats,
-    },
+    game_data: gameData,
   });
 
   if (error) {

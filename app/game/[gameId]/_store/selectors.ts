@@ -4,10 +4,10 @@ import { createSelector } from "reselect";
 import { getPositionAbbreviation } from "@/utils/display";
 import { getPossiblePositions } from "@/utils/game/positions";
 
-import { BENCH_CONTAINER_ID, TEAM_LINEUP_CONTAINER_ID, TEAM_ROSTER_CONTAINER_ID } from "./store";
+import { BENCH_CONTAINER_ID, TEAM_LINEUP_CONTAINER_ID, TEAM_ROSTER_CONTAINER_ID } from "./types";
 
 import type { TeamRole } from "@/utils/supabase/database.types";
-import type { ContainerId, GameStoreState } from "./store";
+import type { ContainerId, GameStoreState } from "./types";
 
 const getDraggingState = (state: GameStoreState) => state.dragging;
 export const getActiveDraggingPlayer = createSelector(
@@ -23,6 +23,7 @@ export const getDraggingOriginContainer = createSelector(
   ({ originContainer }) => originContainer,
 );
 
+const getTeams = (state: GameStoreState) => state.teams;
 const getTeam = (state: GameStoreState, teamRole: TeamRole) => state.teams[teamRole];
 export const getLineup = createSelector(getTeam, ({ lineup }) => lineup.current);
 const getAllRosterPlayers = createSelector(getTeam, ({ rosterPlayers }) => rosterPlayers);
@@ -70,12 +71,20 @@ export const getPlayerLineupIndex = createSelector(
   (lineup, playerId) => lineup.players.findIndex(p => p.playerId === playerId),
 );
 
-const getFieldingConfiguration = createSelector(getLineup, lineup => lineup.fieldingConfiguration);
+export const getFieldingConfiguration = createSelector(
+  getLineup,
+  lineup => lineup.fieldingConfiguration,
+);
 const getFieldingPositions = createSelector(getFieldingConfiguration, fieldingConfiguration =>
   getPossiblePositions(fieldingConfiguration),
 );
 export const getFieldingPositionOptions = createSelector(getFieldingPositions, positions =>
   positions.map(position => ({ value: position, label: getPositionAbbreviation(position) })),
+);
+
+export const getOccupiedFieldingPositions = createSelector(
+  getLineup,
+  lineup => new Set(lineup.players.map(p => p.position)),
 );
 
 export const getLineupViewPlayer = createSelector(
@@ -251,4 +260,52 @@ export const isDraggingFromGame = createSelector(
   getDraggingOriginContainer,
   originContainer =>
     originContainer === TEAM_LINEUP_CONTAINER_ID || originContainer === BENCH_CONTAINER_ID,
+);
+
+const getGameData = (state: GameStoreState) => state.gameData;
+export const getCurrentGameData = createSelector(getGameData, ({ current }) => current);
+
+export const getGameDataStatus = createSelector(getGameData, ({ isDirty, isSaving }) => ({
+  isDirty,
+  isSaving,
+}));
+
+const getOpponentLineupSettings = createSelector(
+  getCurrentGameData,
+  ({ opponentLineupSettings }) => opponentLineupSettings,
+);
+export const getOpponentLineupMode = createSelector(getOpponentLineupSettings, ({ mode }) => mode);
+
+export const getGameConfiguration = createSelector(
+  getCurrentGameData,
+  ({ gameConfiguration }) => gameConfiguration,
+);
+
+export const getSelectedTeamRole = (state: GameStoreState) => state.lineupViewSelectedTeamRole;
+export const getSelectedTeamId = createSelector(
+  getTeams,
+  getSelectedTeamRole,
+  (teams, selectedTeamRole) => teams[selectedTeamRole].id,
+);
+
+export const getLineupValidity = createSelector(
+  getFieldingPositions,
+  getOccupiedFieldingPositions,
+  (fieldingPositions, occupiedFieldingPositions) => {
+    const requiredPositions = new Set(
+      fieldingPositions.filter(position => position !== "extra_hitter"),
+    );
+    const missingPositions = requiredPositions.difference(occupiedFieldingPositions);
+
+    if (missingPositions.size) {
+      return {
+        isValid: false,
+        missingPositions: Array.from(missingPositions),
+      };
+    }
+    return {
+      isValid: true,
+      missingPositions: [],
+    };
+  },
 );

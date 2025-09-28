@@ -6,7 +6,7 @@ import { ChairIcon } from "@phosphor-icons/react";
 
 import { CardTitle } from "@/components/CardTitle";
 
-import { BENCH_CONTAINER_ID } from "../_store/store";
+import { BENCH_CONTAINER_ID } from "../_store/types";
 import { useBench } from "./context";
 import { SortablePlayerItem } from "./PlayerItem";
 

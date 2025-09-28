@@ -5,11 +5,14 @@ import { useMemo } from "react";
 
 import { BoxScoreView } from "./box/BoxScoreView";
 import { GameView } from "./game/GameView";
+import { GameDataProvider } from "./gameData";
 import { LineupView } from "./lineup/LineupView";
 import { SettingsView } from "./settings/SettingsView";
 
+// import { SetupGuide } from "./SetupGuide";
+
 export function GamePageClient() {
-  const { path } = useParams<{ path?: string[]; gameId: string }>();
+  const { path, gameId } = useParams<{ path?: string[]; gameId: string }>();
 
   const joinedPath = path?.join("/") ?? "";
 
@@ -29,8 +32,9 @@ export function GamePageClient() {
   }, [joinedPath]);
 
   return (
-    <>
-      <div className="relative h-full w-full flex flex-col overflow-hidden">{currentView}</div>
-    </>
+    <div className="relative h-full w-full flex flex-col overflow-hidden">
+      <GameDataProvider gameId={gameId}>{currentView}</GameDataProvider>
+      {/* <SetupGuide currentTab={joinedPath} /> */}
+    </div>
   );
 }

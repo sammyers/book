@@ -2,7 +2,10 @@ import { Tab, Tabs } from "@heroui/tabs";
 import { StarIcon } from "@phosphor-icons/react";
 import { useShallow } from "zustand/shallow";
 
+import { getSelectedTeamRole } from "../_store/selectors";
 import { useGameStore } from "../_store/store";
+
+import type { TeamRole } from "@/utils/supabase/database.types";
 
 function TeamTitle({ name, isPrimary }: { name: string; isPrimary: boolean }) {
   if (isPrimary) {
@@ -19,11 +22,12 @@ function TeamTitle({ name, isPrimary }: { name: string; isPrimary: boolean }) {
 
 interface Props {
   primaryTeamId: string;
-  selectedTeamId: string;
-  setSelectedTeamId: (teamId: string) => void;
 }
 
-export function LineupTeamSelector({ primaryTeamId, selectedTeamId, setSelectedTeamId }: Props) {
+export function LineupTeamSelector({ primaryTeamId }: Props) {
+  const selectedTeamRole = useGameStore(getSelectedTeamRole);
+  const setSelectedTeamRole = useGameStore(store => store.setSelectedTeamRole);
+
   const homeTeam = useGameStore(
     useShallow(state => ({
       name: state.teams.home.name,
@@ -47,11 +51,11 @@ export function LineupTeamSelector({ primaryTeamId, selectedTeamId, setSelectedT
           tabList: "shadow-small",
           tabContent: "group-data-[selected=true]:text-primary-500",
         }}
-        selectedKey={selectedTeamId}
-        onSelectionChange={key => setSelectedTeamId(key as string)}
+        selectedKey={selectedTeamRole}
+        onSelectionChange={key => setSelectedTeamRole(key as TeamRole)}
       >
-        <Tab key={awayTeam.id} title={<TeamTitle {...awayTeam} />} />
-        <Tab key={homeTeam.id} title={<TeamTitle {...homeTeam} />} />
+        <Tab key="away" title={<TeamTitle {...awayTeam} />} />
+        <Tab key="home" title={<TeamTitle {...homeTeam} />} />
       </Tabs>
     </div>
   );

@@ -1,8 +1,7 @@
+import { cn } from "@heroui/react";
 import { Spinner } from "@heroui/spinner";
 import { CheckIcon, ClockIcon, PencilLineIcon } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion";
-
-import { useLineupStatus } from "./context";
 
 import type { ReactNode } from "react";
 
@@ -60,9 +59,16 @@ function IconWrapper({ children }: IconWrapperProps) {
   );
 }
 
-export function LineupStatus() {
-  const { isDirty, isSaving, preventSaving } = useLineupStatus();
+interface Props {
+  className?: string;
+  status: {
+    isDirty: boolean;
+    isSaving: boolean;
+    preventSaving: boolean;
+  };
+}
 
+export function SavingStatus({ className, status: { isDirty, isSaving, preventSaving } }: Props) {
   // Determine content based on state
   let content;
   if (isSaving) {
@@ -107,7 +113,7 @@ export function LineupStatus() {
   }
 
   return (
-    <div className="relative size-6">
+    <div className={cn("relative size-6", className)}>
       <AnimatePresence mode="wait">{content}</AnimatePresence>
     </div>
   );

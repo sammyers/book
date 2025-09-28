@@ -70,7 +70,6 @@ export default function GamePageNavbar({ gameStatus }: Props) {
       >
         <Tab
           key=""
-          isDisabled={gameStatus === "not_started"}
           title={
             <TabTitle>
               <BaseballIcon size={24} weight="duotone" />

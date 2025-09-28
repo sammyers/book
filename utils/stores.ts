@@ -8,7 +8,7 @@ interface ActionCreatorFunctions<Store, Args> {
   error?(store: Store, args: Args, error?: Error): Store | Partial<Store>;
 }
 
-export interface ActionWrapper<Args> {
+export interface ActionWrapper<Args = null> {
   (
     args: Args,
     isOptimistic: true,
@@ -20,7 +20,7 @@ export interface ActionWrapper<Args> {
 }
 
 export function createAsyncAction<Store>(set: SetState<Store>) {
-  const actionCreator = <Args>({
+  const actionCreator = <Args = null>({
     action: actionFn,
     success: successFn,
     error: errorFn,
