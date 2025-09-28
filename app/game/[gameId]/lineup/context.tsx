@@ -7,10 +7,13 @@ import { useShallow } from "zustand/shallow";
 import { createClient } from "@/utils/supabase/browser";
 
 import {
+  getFieldingConfiguration,
   getFieldingPositionOptions,
   getLineup,
   getLineupStatus,
+  getLineupValidity,
   getLineupViewPlayer,
+  getOccupiedFieldingPositions,
   getPlayerLineupIndex as getPlayerLineupIndexSelector,
   getVisibleBenchPlayers,
   getVisibleLineupPlayers,
@@ -18,9 +21,10 @@ import {
 } from "../_store/selectors";
 import { useGameStore, useGameStoreApi } from "../_store/store";
 
+import type { FieldingConfiguration } from "@/utils/game/lineups";
 import type { FieldingPosition, TeamRole } from "@/utils/supabase/database.types";
 import type { ReactNode } from "react";
-import type { GameStore } from "../_store/store";
+import type { GameStore } from "../_store/types";
 
 function useLineupView({ teamId }: { teamId: string }) {
   const store = useGameStoreApi();
@@ -36,6 +40,9 @@ function useLineupView({ teamId }: { teamId: string }) {
   const movePlayerToBench = useGameStore(state => state.movePlayerToBench);
   const changePlayerPositionAction = useGameStore(state => state.changePlayerPosition);
   const changePlayerBattingOrderAction = useGameStore(state => state.changePlayerBattingOrder);
+  const changeFieldingConfigurationAction = useGameStore(
+    state => state.changeFieldingConfiguration,
+  );
   const saveLineupAction = useGameStore(state => state.saveLineup);
 
   const addPlayerToGameOptimistically = useCallback(
@@ -116,6 +123,12 @@ function useLineupView({ teamId }: { teamId: string }) {
     [changePlayerBattingOrderAction, teamRole],
   );
 
+  const changeFieldingConfiguration = useCallback(
+    (fieldingConfiguration: Partial<FieldingConfiguration>) =>
+      changeFieldingConfigurationAction({ teamRole, fieldingConfiguration }),
+    [changeFieldingConfigurationAction, teamRole],
+  );
+
   const saveLineup = useCallback(async () => {
     const { isDirty, isSaving, preventSaving } = getLineupStatus(store.getState(), teamRole);
     if (!isDirty || preventSaving || isSaving) {
@@ -149,6 +162,7 @@ function useLineupView({ teamId }: { teamId: string }) {
     movePlayerFromBenchToLineup,
     changePlayerPosition,
     changePlayerBattingOrder,
+    changeFieldingConfiguration,
     saveLineup,
   };
 }
@@ -210,6 +224,11 @@ export const useFieldingPositionOptions = () => {
   return useGameStore(state => getFieldingPositionOptions(state, teamRole));
 };
 
+export const useOccupiedFieldingPositions = () => {
+  const { teamRole } = useLineupViewContext();
+  return useGameStore(state => getOccupiedFieldingPositions(state, teamRole));
+};
+
 export const useRoster = () => {
   const { teamRole } = useLineupViewContext();
 
@@ -224,6 +243,16 @@ export const useRoster = () => {
 export const useLineup = () => {
   const { teamRole } = useLineupViewContext();
   return useGameStore(state => getVisibleLineupPlayers(state, teamRole));
+};
+
+export const useLineupValidity = () => {
+  const { teamRole } = useLineupViewContext();
+  return useGameStore(state => getLineupValidity(state, teamRole));
+};
+
+export const useFieldingConfiguration = () => {
+  const { teamRole } = useLineupViewContext();
+  return useGameStore(state => getFieldingConfiguration(state, teamRole));
 };
 
 export const useBench = () => {

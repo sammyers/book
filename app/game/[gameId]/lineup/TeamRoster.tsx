@@ -5,7 +5,7 @@ import { UsersIcon } from "@phosphor-icons/react";
 
 import { CardTitle } from "@/components/CardTitle";
 
-import { TEAM_ROSTER_CONTAINER_ID } from "../_store/store";
+import { TEAM_ROSTER_CONTAINER_ID } from "../_store/types";
 import { useRoster } from "./context";
 import { SortablePlayerItem } from "./PlayerItem";
 

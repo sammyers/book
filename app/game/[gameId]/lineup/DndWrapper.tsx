@@ -14,13 +14,12 @@ import {
   getDraggingOverContainer,
   getVisiblePlayerIds,
 } from "../_store/selectors";
+import { useGameStore, useGameStoreApi } from "../_store/store";
 import {
   BENCH_CONTAINER_ID,
   TEAM_LINEUP_CONTAINER_ID,
   TEAM_ROSTER_CONTAINER_ID,
-  useGameStore,
-  useGameStoreApi,
-} from "../_store/store";
+} from "../_store/types";
 import { useLineupViewContext } from "./context";
 import { PlayerItem } from "./PlayerItem";
 
@@ -31,7 +30,7 @@ import type {
   DragStartEvent,
 } from "@dnd-kit/core";
 import type { ReactNode } from "react";
-import type { ContainerId } from "../_store/store";
+import type { ContainerId } from "../_store/types";
 
 export function DndWrapper({ children }: { children: ReactNode }) {
   const {

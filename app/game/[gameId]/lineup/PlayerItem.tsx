@@ -41,7 +41,7 @@ export function PlayerItem({ playerId, className, ...props }: PlayerItemProps) {
         "w-full",
         "flex",
         "flex-col",
-        "bg-default-50",
+        "bg-default-75",
         "border",
         "border-default-100",
         "rounded-lg",
@@ -176,7 +176,11 @@ function LineupPlayerContent({ player }: { player: LineupPlayer }) {
             },
           }}
         >
-          {({ value, label }) => <SelectItem key={value}>{label}</SelectItem>}
+          {({ value, label }) => (
+            <SelectItem key={value} textValue={label}>
+              {label}
+            </SelectItem>
+          )}
         </Select>
         <div className="flex items-center gap-2">
           <Button size="sm" variant="flat" color="warning" onPress={moveToBench} isIconOnly>
